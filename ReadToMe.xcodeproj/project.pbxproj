@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C12F07871ABF88FD0039EA89 /* Images.xcassets */; };
 		C12F077A1ABF88FD0039EA89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07791ABF88FD0039EA89 /* main.m */; };
 		C12F077D1ABF88FD0039EA89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F077C1ABF88FD0039EA89 /* AppDelegate.m */; };
 		C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C12F077E1ABF88FD0039EA89 /* ReadToMe.xcdatamodeld */; };
@@ -299,6 +300,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */,
 				C12F07AC1ABFB00A0039EA89 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -503,6 +505,8 @@
 		C12F07B11ABFB00A0039EA89 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -517,6 +521,8 @@
 		C12F07B21ABFB00A0039EA89 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = ReadToMeAction/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
