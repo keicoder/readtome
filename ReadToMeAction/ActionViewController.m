@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
+#define debug 1
+
 #import "ActionViewController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <AVFoundation/AVFoundation.h>
@@ -22,40 +24,13 @@
 
 @implementation ActionViewController
 
+
+#pragma mark - View life cycle
+
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-	
-	NSExtensionItem *item = self.extensionContext.inputItems[0];
-	NSItemProvider *itemProvider = item.attachments[0];
-	
-	if ([itemProvider hasItemConformingToTypeIdentifier:(NSString *)kUTTypePlainText]) {
-		
-		__weak UITextView *textView = self.textView;
-		
-		[itemProvider loadItemForTypeIdentifier:(NSString *)kUTTypePlainText options:nil completionHandler:^(NSString *item, NSError *error) {
-			
-			if (item) {
-				
-				[[NSOperationQueue mainQueue] addOperationWithBlock:^{
-					
-					[textView setText:item];
-					self.utteranceString = textView.text;
-					
-					AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
-					utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
-					[utterance setRate:0.09]; //AVSpeechUtteranceMinimumSpeechRate
-					utterance.preUtteranceDelay = 0.2f;
-					utterance.postUtteranceDelay = 0.2f;
-					
-					self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-					self.synthesizer.delegate = self;
-					[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
-					[self.synthesizer speakUtterance:utterance];
-				}];
-			}
-		}];
-	}
+	self.textView.text = @"";
 }
 
 
@@ -87,9 +62,59 @@
 }
 
 
-// Return any edited content to the host app. This template doesn't do anything, so we just echo the passed in items.
-- (IBAction)done
+#pragma mark - Button Action Methods
+
+- (IBAction)pasteAndReadButtonTapped:(id)sender
 {
+	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+	
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	
+	UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+	pasteBoard.persistent = YES;
+	
+	if (pasteBoard != nil) {
+		
+		__weak UITextView *textView = self.textView;
+		
+		[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+			
+			textView.text = [pasteBoard string];
+			self.utteranceString = textView.text;
+			
+			AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
+			utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
+			[utterance setRate:0.09]; //AVSpeechUtteranceMinimumSpeechRate
+			utterance.preUtteranceDelay = 0.2f;
+			utterance.postUtteranceDelay = 0.2f;
+			
+			self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+			self.synthesizer.delegate = self;
+			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
+			[self.synthesizer speakUtterance:utterance];
+		}];
+		
+	} else {
+		
+		NSString *title = @"No Text";
+		NSString *message = @"There are no text to speech.";
+		
+		UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+		[sheet addAction:[UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
+			NSLog(@"Tapped OK");
+		}]];
+		
+		sheet.popoverPresentationController.sourceView = self.view;
+		sheet.popoverPresentationController.sourceRect = self.view.frame;
+		
+		[self presentViewController:sheet animated:YES completion:nil];
+	}
+}
+
+
+- (IBAction)doneButtonTapped:(id)sender
+{
+	// Return any edited content to the host app. This template doesn't do anything, so we just echo the passed in items.
 	[self.extensionContext completeRequestReturningItems:self.extensionContext.inputItems completionHandler:nil];
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 }

@@ -8,6 +8,48 @@
 
 /* Begin PBXBuildFile section */
 		C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C12F07871ABF88FD0039EA89 /* Images.xcassets */; };
+		C110F2981AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
+		C110F2991AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
+		C110F29A1AC12F4000B4E355 /* pop-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C110F2621AC12F4000B4E355 /* pop-Info.plist */; };
+		C110F29B1AC12F4000B4E355 /* pop-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C110F2621AC12F4000B4E355 /* pop-Info.plist */; };
+		C110F29C1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2671AC12F4000B4E355 /* POPAnimatableProperty.mm */; };
+		C110F29D1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2671AC12F4000B4E355 /* POPAnimatableProperty.mm */; };
+		C110F29E1AC12F4000B4E355 /* POPAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2691AC12F4000B4E355 /* POPAnimation.mm */; };
+		C110F29F1AC12F4000B4E355 /* POPAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2691AC12F4000B4E355 /* POPAnimation.mm */; };
+		C110F2A01AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F26B1AC12F4000B4E355 /* POPAnimationEvent.mm */; };
+		C110F2A11AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F26B1AC12F4000B4E355 /* POPAnimationEvent.mm */; };
+		C110F2A21AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F26E1AC12F4000B4E355 /* POPAnimationExtras.mm */; };
+		C110F2A31AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F26E1AC12F4000B4E355 /* POPAnimationExtras.mm */; };
+		C110F2A41AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2721AC12F4000B4E355 /* POPAnimationRuntime.mm */; };
+		C110F2A51AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2721AC12F4000B4E355 /* POPAnimationRuntime.mm */; };
+		C110F2A61AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2741AC12F4000B4E355 /* POPAnimationTracer.mm */; };
+		C110F2A71AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2741AC12F4000B4E355 /* POPAnimationTracer.mm */; };
+		C110F2A81AC12F4000B4E355 /* POPAnimator.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2771AC12F4000B4E355 /* POPAnimator.mm */; };
+		C110F2A91AC12F4000B4E355 /* POPAnimator.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2771AC12F4000B4E355 /* POPAnimator.mm */; };
+		C110F2AA1AC12F4000B4E355 /* POPBasicAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27A1AC12F4000B4E355 /* POPBasicAnimation.mm */; };
+		C110F2AB1AC12F4000B4E355 /* POPBasicAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27A1AC12F4000B4E355 /* POPBasicAnimation.mm */; };
+		C110F2AC1AC12F4000B4E355 /* POPCGUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27D1AC12F4000B4E355 /* POPCGUtils.mm */; };
+		C110F2AD1AC12F4000B4E355 /* POPCGUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27D1AC12F4000B4E355 /* POPCGUtils.mm */; };
+		C110F2AE1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27F1AC12F4000B4E355 /* POPCustomAnimation.mm */; };
+		C110F2AF1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27F1AC12F4000B4E355 /* POPCustomAnimation.mm */; };
+		C110F2B01AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2811AC12F4000B4E355 /* POPDecayAnimation.mm */; };
+		C110F2B11AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2811AC12F4000B4E355 /* POPDecayAnimation.mm */; };
+		C110F2B21AC12F4000B4E355 /* POPGeometry.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2851AC12F4000B4E355 /* POPGeometry.mm */; };
+		C110F2B31AC12F4000B4E355 /* POPGeometry.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2851AC12F4000B4E355 /* POPGeometry.mm */; };
+		C110F2B41AC12F4000B4E355 /* POPLayerExtras.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2871AC12F4000B4E355 /* POPLayerExtras.mm */; };
+		C110F2B51AC12F4000B4E355 /* POPLayerExtras.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2871AC12F4000B4E355 /* POPLayerExtras.mm */; };
+		C110F2B61AC12F4000B4E355 /* POPMath.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2891AC12F4000B4E355 /* POPMath.mm */; };
+		C110F2B71AC12F4000B4E355 /* POPMath.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2891AC12F4000B4E355 /* POPMath.mm */; };
+		C110F2B81AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F28B1AC12F4000B4E355 /* POPPropertyAnimation.mm */; };
+		C110F2B91AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F28B1AC12F4000B4E355 /* POPPropertyAnimation.mm */; };
+		C110F2BA1AC12F4000B4E355 /* POPSpringAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F28E1AC12F4000B4E355 /* POPSpringAnimation.mm */; };
+		C110F2BB1AC12F4000B4E355 /* POPSpringAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F28E1AC12F4000B4E355 /* POPSpringAnimation.mm */; };
+		C110F2BC1AC12F4000B4E355 /* POPVector.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2921AC12F4000B4E355 /* POPVector.mm */; };
+		C110F2BD1AC12F4000B4E355 /* POPVector.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2921AC12F4000B4E355 /* POPVector.mm */; };
+		C110F2BE1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C110F2951AC12F4000B4E355 /* TransformationMatrix.cpp */; };
+		C110F2BF1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C110F2951AC12F4000B4E355 /* TransformationMatrix.cpp */; };
+		C110F2C71AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */; };
+		C110F2C81AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */; };
 		C12F077A1ABF88FD0039EA89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07791ABF88FD0039EA89 /* main.m */; };
 		C12F077D1ABF88FD0039EA89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F077C1ABF88FD0039EA89 /* AppDelegate.m */; };
 		C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C12F077E1ABF88FD0039EA89 /* ReadToMe.xcdatamodeld */; };
@@ -53,6 +95,62 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C110F2611AC12F4000B4E355 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C110F2621AC12F4000B4E355 /* pop-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "pop-Info.plist"; sourceTree = "<group>"; };
+		C110F2631AC12F4000B4E355 /* pop-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pop-Prefix.pch"; sourceTree = "<group>"; };
+		C110F2641AC12F4000B4E355 /* POP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POP.h; sourceTree = "<group>"; };
+		C110F2651AC12F4000B4E355 /* POPAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAction.h; sourceTree = "<group>"; };
+		C110F2661AC12F4000B4E355 /* POPAnimatableProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimatableProperty.h; sourceTree = "<group>"; };
+		C110F2671AC12F4000B4E355 /* POPAnimatableProperty.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPAnimatableProperty.mm; sourceTree = "<group>"; };
+		C110F2681AC12F4000B4E355 /* POPAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimation.h; sourceTree = "<group>"; };
+		C110F2691AC12F4000B4E355 /* POPAnimation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPAnimation.mm; sourceTree = "<group>"; };
+		C110F26A1AC12F4000B4E355 /* POPAnimationEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimationEvent.h; sourceTree = "<group>"; };
+		C110F26B1AC12F4000B4E355 /* POPAnimationEvent.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPAnimationEvent.mm; sourceTree = "<group>"; };
+		C110F26C1AC12F4000B4E355 /* POPAnimationEventInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimationEventInternal.h; sourceTree = "<group>"; };
+		C110F26D1AC12F4000B4E355 /* POPAnimationExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimationExtras.h; sourceTree = "<group>"; };
+		C110F26E1AC12F4000B4E355 /* POPAnimationExtras.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPAnimationExtras.mm; sourceTree = "<group>"; };
+		C110F26F1AC12F4000B4E355 /* POPAnimationInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimationInternal.h; sourceTree = "<group>"; };
+		C110F2701AC12F4000B4E355 /* POPAnimationPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimationPrivate.h; sourceTree = "<group>"; };
+		C110F2711AC12F4000B4E355 /* POPAnimationRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimationRuntime.h; sourceTree = "<group>"; };
+		C110F2721AC12F4000B4E355 /* POPAnimationRuntime.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPAnimationRuntime.mm; sourceTree = "<group>"; };
+		C110F2731AC12F4000B4E355 /* POPAnimationTracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimationTracer.h; sourceTree = "<group>"; };
+		C110F2741AC12F4000B4E355 /* POPAnimationTracer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPAnimationTracer.mm; sourceTree = "<group>"; };
+		C110F2751AC12F4000B4E355 /* POPAnimationTracerInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimationTracerInternal.h; sourceTree = "<group>"; };
+		C110F2761AC12F4000B4E355 /* POPAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimator.h; sourceTree = "<group>"; };
+		C110F2771AC12F4000B4E355 /* POPAnimator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPAnimator.mm; sourceTree = "<group>"; };
+		C110F2781AC12F4000B4E355 /* POPAnimatorPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPAnimatorPrivate.h; sourceTree = "<group>"; };
+		C110F2791AC12F4000B4E355 /* POPBasicAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPBasicAnimation.h; sourceTree = "<group>"; };
+		C110F27A1AC12F4000B4E355 /* POPBasicAnimation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPBasicAnimation.mm; sourceTree = "<group>"; };
+		C110F27B1AC12F4000B4E355 /* POPBasicAnimationInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPBasicAnimationInternal.h; sourceTree = "<group>"; };
+		C110F27C1AC12F4000B4E355 /* POPCGUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPCGUtils.h; sourceTree = "<group>"; };
+		C110F27D1AC12F4000B4E355 /* POPCGUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPCGUtils.mm; sourceTree = "<group>"; };
+		C110F27E1AC12F4000B4E355 /* POPCustomAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPCustomAnimation.h; sourceTree = "<group>"; };
+		C110F27F1AC12F4000B4E355 /* POPCustomAnimation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPCustomAnimation.mm; sourceTree = "<group>"; };
+		C110F2801AC12F4000B4E355 /* POPDecayAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPDecayAnimation.h; sourceTree = "<group>"; };
+		C110F2811AC12F4000B4E355 /* POPDecayAnimation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPDecayAnimation.mm; sourceTree = "<group>"; };
+		C110F2821AC12F4000B4E355 /* POPDecayAnimationInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPDecayAnimationInternal.h; sourceTree = "<group>"; };
+		C110F2831AC12F4000B4E355 /* POPDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPDefines.h; sourceTree = "<group>"; };
+		C110F2841AC12F4000B4E355 /* POPGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPGeometry.h; sourceTree = "<group>"; };
+		C110F2851AC12F4000B4E355 /* POPGeometry.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPGeometry.mm; sourceTree = "<group>"; };
+		C110F2861AC12F4000B4E355 /* POPLayerExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPLayerExtras.h; sourceTree = "<group>"; };
+		C110F2871AC12F4000B4E355 /* POPLayerExtras.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPLayerExtras.mm; sourceTree = "<group>"; };
+		C110F2881AC12F4000B4E355 /* POPMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPMath.h; sourceTree = "<group>"; };
+		C110F2891AC12F4000B4E355 /* POPMath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPMath.mm; sourceTree = "<group>"; };
+		C110F28A1AC12F4000B4E355 /* POPPropertyAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPPropertyAnimation.h; sourceTree = "<group>"; };
+		C110F28B1AC12F4000B4E355 /* POPPropertyAnimation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPPropertyAnimation.mm; sourceTree = "<group>"; };
+		C110F28C1AC12F4000B4E355 /* POPPropertyAnimationInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPPropertyAnimationInternal.h; sourceTree = "<group>"; };
+		C110F28D1AC12F4000B4E355 /* POPSpringAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPSpringAnimation.h; sourceTree = "<group>"; };
+		C110F28E1AC12F4000B4E355 /* POPSpringAnimation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPSpringAnimation.mm; sourceTree = "<group>"; };
+		C110F28F1AC12F4000B4E355 /* POPSpringAnimationInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPSpringAnimationInternal.h; sourceTree = "<group>"; };
+		C110F2901AC12F4000B4E355 /* POPSpringSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPSpringSolver.h; sourceTree = "<group>"; };
+		C110F2911AC12F4000B4E355 /* POPVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POPVector.h; sourceTree = "<group>"; };
+		C110F2921AC12F4000B4E355 /* POPVector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = POPVector.mm; sourceTree = "<group>"; };
+		C110F2941AC12F4000B4E355 /* FloatConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatConversion.h; sourceTree = "<group>"; };
+		C110F2951AC12F4000B4E355 /* TransformationMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransformationMatrix.cpp; sourceTree = "<group>"; };
+		C110F2961AC12F4000B4E355 /* TransformationMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransformationMatrix.h; sourceTree = "<group>"; };
+		C110F2971AC12F4000B4E355 /* UnitBezier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnitBezier.h; sourceTree = "<group>"; };
+		C110F2C51AC130AA00B4E355 /* PopAnimationClearButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopAnimationClearButton.h; sourceTree = "<group>"; };
+		C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopAnimationClearButton.m; sourceTree = "<group>"; };
 		C12F07741ABF88FD0039EA89 /* ReadToMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadToMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12F07781ABF88FD0039EA89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C12F07791ABF88FD0039EA89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -99,6 +197,84 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C110F25F1AC12F4000B4E355 /* pop */ = {
+			isa = PBXGroup;
+			children = (
+				C110F2601AC12F4000B4E355 /* InfoPlist.strings */,
+				C110F2621AC12F4000B4E355 /* pop-Info.plist */,
+				C110F2631AC12F4000B4E355 /* pop-Prefix.pch */,
+				C110F2641AC12F4000B4E355 /* POP.h */,
+				C110F2651AC12F4000B4E355 /* POPAction.h */,
+				C110F2661AC12F4000B4E355 /* POPAnimatableProperty.h */,
+				C110F2671AC12F4000B4E355 /* POPAnimatableProperty.mm */,
+				C110F2681AC12F4000B4E355 /* POPAnimation.h */,
+				C110F2691AC12F4000B4E355 /* POPAnimation.mm */,
+				C110F26A1AC12F4000B4E355 /* POPAnimationEvent.h */,
+				C110F26B1AC12F4000B4E355 /* POPAnimationEvent.mm */,
+				C110F26C1AC12F4000B4E355 /* POPAnimationEventInternal.h */,
+				C110F26D1AC12F4000B4E355 /* POPAnimationExtras.h */,
+				C110F26E1AC12F4000B4E355 /* POPAnimationExtras.mm */,
+				C110F26F1AC12F4000B4E355 /* POPAnimationInternal.h */,
+				C110F2701AC12F4000B4E355 /* POPAnimationPrivate.h */,
+				C110F2711AC12F4000B4E355 /* POPAnimationRuntime.h */,
+				C110F2721AC12F4000B4E355 /* POPAnimationRuntime.mm */,
+				C110F2731AC12F4000B4E355 /* POPAnimationTracer.h */,
+				C110F2741AC12F4000B4E355 /* POPAnimationTracer.mm */,
+				C110F2751AC12F4000B4E355 /* POPAnimationTracerInternal.h */,
+				C110F2761AC12F4000B4E355 /* POPAnimator.h */,
+				C110F2771AC12F4000B4E355 /* POPAnimator.mm */,
+				C110F2781AC12F4000B4E355 /* POPAnimatorPrivate.h */,
+				C110F2791AC12F4000B4E355 /* POPBasicAnimation.h */,
+				C110F27A1AC12F4000B4E355 /* POPBasicAnimation.mm */,
+				C110F27B1AC12F4000B4E355 /* POPBasicAnimationInternal.h */,
+				C110F27C1AC12F4000B4E355 /* POPCGUtils.h */,
+				C110F27D1AC12F4000B4E355 /* POPCGUtils.mm */,
+				C110F27E1AC12F4000B4E355 /* POPCustomAnimation.h */,
+				C110F27F1AC12F4000B4E355 /* POPCustomAnimation.mm */,
+				C110F2801AC12F4000B4E355 /* POPDecayAnimation.h */,
+				C110F2811AC12F4000B4E355 /* POPDecayAnimation.mm */,
+				C110F2821AC12F4000B4E355 /* POPDecayAnimationInternal.h */,
+				C110F2831AC12F4000B4E355 /* POPDefines.h */,
+				C110F2841AC12F4000B4E355 /* POPGeometry.h */,
+				C110F2851AC12F4000B4E355 /* POPGeometry.mm */,
+				C110F2861AC12F4000B4E355 /* POPLayerExtras.h */,
+				C110F2871AC12F4000B4E355 /* POPLayerExtras.mm */,
+				C110F2881AC12F4000B4E355 /* POPMath.h */,
+				C110F2891AC12F4000B4E355 /* POPMath.mm */,
+				C110F28A1AC12F4000B4E355 /* POPPropertyAnimation.h */,
+				C110F28B1AC12F4000B4E355 /* POPPropertyAnimation.mm */,
+				C110F28C1AC12F4000B4E355 /* POPPropertyAnimationInternal.h */,
+				C110F28D1AC12F4000B4E355 /* POPSpringAnimation.h */,
+				C110F28E1AC12F4000B4E355 /* POPSpringAnimation.mm */,
+				C110F28F1AC12F4000B4E355 /* POPSpringAnimationInternal.h */,
+				C110F2901AC12F4000B4E355 /* POPSpringSolver.h */,
+				C110F2911AC12F4000B4E355 /* POPVector.h */,
+				C110F2921AC12F4000B4E355 /* POPVector.mm */,
+				C110F2931AC12F4000B4E355 /* WebCore */,
+			);
+			path = pop;
+			sourceTree = "<group>";
+		};
+		C110F2931AC12F4000B4E355 /* WebCore */ = {
+			isa = PBXGroup;
+			children = (
+				C110F2941AC12F4000B4E355 /* FloatConversion.h */,
+				C110F2951AC12F4000B4E355 /* TransformationMatrix.cpp */,
+				C110F2961AC12F4000B4E355 /* TransformationMatrix.h */,
+				C110F2971AC12F4000B4E355 /* UnitBezier.h */,
+			);
+			path = WebCore;
+			sourceTree = "<group>";
+		};
+		C110F2C01AC12F8000B4E355 /* popView */ = {
+			isa = PBXGroup;
+			children = (
+				C110F2C51AC130AA00B4E355 /* PopAnimationClearButton.h */,
+				C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */,
+			);
+			name = popView;
+			sourceTree = "<group>";
+		};
 		C12F076B1ABF88FD0039EA89 = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +298,8 @@
 		C12F07761ABF88FD0039EA89 /* ReadToMe */ = {
 			isa = PBXGroup;
 			children = (
+				C110F2C01AC12F8000B4E355 /* popView */,
+				C110F25F1AC12F4000B4E355 /* pop */,
 				C12F077B1ABF88FD0039EA89 /* AppDelegate.h */,
 				C12F077C1ABF88FD0039EA89 /* AppDelegate.m */,
 				C12F07811ABF88FD0039EA89 /* ContainerViewController.h */,
@@ -284,7 +462,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C12F07861ABF88FD0039EA89 /* Main.storyboard in Resources */,
+				C110F2981AC12F4000B4E355 /* InfoPlist.strings in Resources */,
 				C12F078B1ABF88FD0039EA89 /* LaunchScreen.xib in Resources */,
+				C110F29A1AC12F4000B4E355 /* pop-Info.plist in Resources */,
 				C12F07881ABF88FD0039EA89 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -300,7 +480,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C110F29B1AC12F4000B4E355 /* pop-Info.plist in Resources */,
 				C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */,
+				C110F2991AC12F4000B4E355 /* InfoPlist.strings in Resources */,
 				C12F07AC1ABFB00A0039EA89 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -312,10 +494,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C110F2B01AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
+				C110F2B61AC12F4000B4E355 /* POPMath.mm in Sources */,
+				C110F2B21AC12F4000B4E355 /* POPGeometry.mm in Sources */,
+				C110F2B81AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */,
+				C110F2B41AC12F4000B4E355 /* POPLayerExtras.mm in Sources */,
+				C110F2BE1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */,
+				C110F29E1AC12F4000B4E355 /* POPAnimation.mm in Sources */,
 				C12F077D1ABF88FD0039EA89 /* AppDelegate.m in Sources */,
 				C12F077A1ABF88FD0039EA89 /* main.m in Sources */,
+				C110F2A21AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */,
 				C12F07831ABF88FD0039EA89 /* ContainerViewController.m in Sources */,
+				C110F2C71AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */,
+				C110F2AE1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */,
+				C110F2BA1AC12F4000B4E355 /* POPSpringAnimation.mm in Sources */,
+				C110F2AA1AC12F4000B4E355 /* POPBasicAnimation.mm in Sources */,
+				C110F2A01AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */,
+				C110F2BC1AC12F4000B4E355 /* POPVector.mm in Sources */,
+				C110F2A41AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */,
+				C110F2A61AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */,
 				C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */,
+				C110F2AC1AC12F4000B4E355 /* POPCGUtils.mm in Sources */,
+				C110F2A81AC12F4000B4E355 /* POPAnimator.mm in Sources */,
+				C110F29C1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,6 +532,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C110F2A91AC12F4000B4E355 /* POPAnimator.mm in Sources */,
+				C110F2BB1AC12F4000B4E355 /* POPSpringAnimation.mm in Sources */,
+				C110F2C81AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */,
+				C110F29F1AC12F4000B4E355 /* POPAnimation.mm in Sources */,
+				C110F2B51AC12F4000B4E355 /* POPLayerExtras.mm in Sources */,
+				C110F2B91AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */,
+				C110F2BF1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */,
+				C110F2A31AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */,
+				C110F2A71AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */,
+				C110F2A11AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */,
+				C110F2BD1AC12F4000B4E355 /* POPVector.mm in Sources */,
+				C110F2AD1AC12F4000B4E355 /* POPCGUtils.mm in Sources */,
+				C110F2AB1AC12F4000B4E355 /* POPBasicAnimation.mm in Sources */,
+				C110F2B31AC12F4000B4E355 /* POPGeometry.mm in Sources */,
+				C110F2A51AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */,
+				C110F2B71AC12F4000B4E355 /* POPMath.mm in Sources */,
+				C110F2AF1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */,
+				C110F2B11AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
+				C110F29D1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */,
 				C12F07AA1ABFB00A0039EA89 /* ActionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -351,6 +571,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		C110F2601AC12F4000B4E355 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C110F2611AC12F4000B4E355 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		C12F07841ABF88FD0039EA89 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
