@@ -25,21 +25,21 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dAP-Gi-zig" userLabel="BottomView">
                                 <rect key="frame" x="0.0" y="540" width="600" height="60"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aWK-6t-idg" userLabel="Back">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aWK-6t-idg" userLabel="Back" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="520" y="0.0" width="60" height="60"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <inset key="contentEdgeInsets" minX="18" minY="18" maxX="18" maxY="18"/>
-                                        <state key="normal" image="circleBack">
+                                        <inset key="contentEdgeInsets" minX="15" minY="15" maxX="15" maxY="15"/>
+                                        <state key="normal" image="circle-down">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="doneButtonTapped:" destination="ObA-dk-sSI" eventType="touchUpInside" id="ciM-RW-7JZ"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HbZ-e0-n0c" userLabel="Paste">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HbZ-e0-n0c" userLabel="Paste" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="20" y="0.0" width="60" height="60"/>
                                         <color key="tintColor" red="0.18011994649999999" green="0.35997668659999998" blue="0.45442359249999997" alpha="1" colorSpace="calibratedRGB"/>
-                                        <inset key="contentEdgeInsets" minX="18" minY="18" maxX="18" maxY="18"/>
+                                        <inset key="contentEdgeInsets" minX="16" minY="16" maxX="16" maxY="16"/>
                                         <state key="normal" image="paperclip">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -87,7 +87,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="circleBack" width="44" height="44"/>
+        <image name="circle-down" width="32" height="32"/>
         <image name="paperclip" width="42" height="41"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

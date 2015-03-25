@@ -50,6 +50,8 @@
 		C110F2BF1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C110F2951AC12F4000B4E355 /* TransformationMatrix.cpp */; };
 		C110F2C71AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */; };
 		C110F2C81AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */; };
+		C110F2CC1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */; };
+		C110F2CD1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */; };
 		C12F077A1ABF88FD0039EA89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07791ABF88FD0039EA89 /* main.m */; };
 		C12F077D1ABF88FD0039EA89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F077C1ABF88FD0039EA89 /* AppDelegate.m */; };
 		C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C12F077E1ABF88FD0039EA89 /* ReadToMe.xcdatamodeld */; };
@@ -151,6 +153,8 @@
 		C110F2971AC12F4000B4E355 /* UnitBezier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnitBezier.h; sourceTree = "<group>"; };
 		C110F2C51AC130AA00B4E355 /* PopAnimationClearButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopAnimationClearButton.h; sourceTree = "<group>"; };
 		C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopAnimationClearButton.m; sourceTree = "<group>"; };
+		C110F2CA1AC233DE00B4E355 /* UIImage+ChangeColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ChangeColor.h"; sourceTree = "<group>"; };
+		C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ChangeColor.m"; sourceTree = "<group>"; };
 		C12F07741ABF88FD0039EA89 /* ReadToMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadToMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12F07781ABF88FD0039EA89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C12F07791ABF88FD0039EA89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -275,6 +279,15 @@
 			name = popView;
 			sourceTree = "<group>";
 		};
+		C110F2C91AC233BC00B4E355 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				C110F2CA1AC233DE00B4E355 /* UIImage+ChangeColor.h */,
+				C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		C12F076B1ABF88FD0039EA89 = {
 			isa = PBXGroup;
 			children = (
@@ -298,6 +311,7 @@
 		C12F07761ABF88FD0039EA89 /* ReadToMe */ = {
 			isa = PBXGroup;
 			children = (
+				C110F2C91AC233BC00B4E355 /* Categories */,
 				C110F2C01AC12F8000B4E355 /* popView */,
 				C110F25F1AC12F4000B4E355 /* pop */,
 				C12F077B1ABF88FD0039EA89 /* AppDelegate.h */,
@@ -495,6 +509,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C110F2B01AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
+				C110F2CC1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */,
 				C110F2B61AC12F4000B4E355 /* POPMath.mm in Sources */,
 				C110F2B21AC12F4000B4E355 /* POPGeometry.mm in Sources */,
 				C110F2B81AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */,
@@ -551,6 +566,7 @@
 				C110F2AF1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */,
 				C110F2B11AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
 				C110F29D1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */,
+				C110F2CD1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */,
 				C12F07AA1ABFB00A0039EA89 /* ActionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

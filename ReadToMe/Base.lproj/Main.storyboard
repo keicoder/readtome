@@ -19,18 +19,18 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U9H-OM-Fxj" userLabel="MenuView">
                                 <rect key="frame" x="0.0" y="20" width="600" height="60"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djw-qX-P0a" userLabel="MenuButton" customClass="PopAnimationClearButton">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djw-qX-P0a" userLabel="PlayPauseButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="20" y="8" width="44" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="CzE-ZL-DQ7"/>
                                             <constraint firstAttribute="width" constant="44" id="mhl-3S-lyj"/>
                                         </constraints>
                                         <inset key="contentEdgeInsets" minX="12" minY="12" maxX="12" maxY="12"/>
-                                        <state key="normal" image="menu">
+                                        <state key="normal" image="pause">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="actionButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="nZq-M5-e8V"/>
+                                            <action selector="pasteAndSpeech:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ze5-SF-j4c"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BhP-KP-gJu" userLabel="SettingsButton" customClass="PopAnimationClearButton">
@@ -40,7 +40,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="pasteAndSpeech:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Puo-dd-Aou"/>
+                                            <action selector="actionButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kHK-1k-pef"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -79,6 +79,8 @@ When the button in the toolbar is tapped, an activity view controller is present
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="playPauseButton" destination="djw-qX-P0a" id="o9K-Lj-sya"/>
+                        <outlet property="settingsButton" destination="BhP-KP-gJu" id="MPQ-FS-lAw"/>
                         <outlet property="textView" destination="VWj-si-BKE" id="TKZ-9Q-pKe"/>
                     </connections>
                 </viewController>
@@ -87,7 +89,7 @@ When the button in the toolbar is tapped, an activity view controller is present
         </scene>
     </scenes>
     <resources>
-        <image name="menu" width="43" height="35"/>
+        <image name="pause" width="18" height="32"/>
         <image name="settings" width="46" height="47"/>
     </resources>
 </document>

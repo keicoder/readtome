@@ -6,16 +6,26 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
-#define debug 1
+#define debug					1
+#define kBackgroundColor		[UIColor colorWithRed:0.286 green:0.58 blue:0.753 alpha:1]
+#define kWhiteColor				[UIColor whiteColor]
+#define kPause					[UIImage imageNamed:@"pause"]
+#define kPlay					[UIImage imageNamed:@"play"]
+#define kSettings				[UIImage imageNamed:@"settings"]
+#define kPlayInset				UIEdgeInsetsMake(0, 6, 0, 0)
+#define kPauseInset				UIEdgeInsetsMake(0, 0, 0, 0)
+
 
 #import "ContainerViewController.h"
 #import <AVFoundation/AVFoundation.h>
+#import "UIImage+ChangeColor.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate>
 
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
+@property (weak, nonatomic) IBOutlet UIButton *settingsButton;
 @property (nonatomic, strong) NSString *utteranceString;
 @property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
 
@@ -32,30 +42,8 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-	_paused = NO;
-}
-
-
-
-- (IBAction)playPauseButtonPressed:(UIButton *)sender
-{
-	[self.textView resignFirstResponder];
-	
-	if (_paused == NO) {
-		[self.playPauseButton setTitle:@"Pause" forState:UIControlStateNormal];
-		[self.synthesizer continueSpeaking];
-		_paused = YES;
-	} else {
-		[self.playPauseButton setTitle:@"Play" forState:UIControlStateNormal];
-		_paused = NO;
-		[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	}
-	if (self.synthesizer.speaking == NO) {
-		AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:self.textView.text];
-		//utterance.rate = AVSpeechUtteranceMinimumSpeechRate;
-		utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-au"];
-		[self.synthesizer speakUtterance:utterance];
-	}
+	_paused = YES;
+	[self configureUI];
 }
 
 
@@ -65,9 +53,8 @@
 {
 	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
 	
+	[self.textView resignFirstResponder];
 	self.textView.text = @"";
-	
-	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	
 	UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
 	pasteBoard.persistent = YES;
@@ -81,16 +68,31 @@
 			textView.text = [pasteBoard string];
 			self.utteranceString = textView.text;
 			
-			AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
-			utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
-			[utterance setRate:0.09]; //AVSpeechUtteranceMinimumSpeechRate
-			utterance.preUtteranceDelay = 0.2f;
-			utterance.postUtteranceDelay = 0.2f;
+			if (_paused == YES) {
+				self.playPauseButton.imageEdgeInsets = kPlayInset;
+				[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+				[self.synthesizer continueSpeaking];
+				_paused = NO;
+			} else {
+				self.playPauseButton.imageEdgeInsets = kPauseInset;
+				[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+				_paused = YES;
+				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+			}
 			
-			self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-			self.synthesizer.delegate = self;
-			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
-			[self.synthesizer speakUtterance:utterance];
+			if (self.synthesizer.speaking == NO) {
+				
+				AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
+				utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
+				[utterance setRate:0.09];
+				utterance.preUtteranceDelay = 0.2f;
+				utterance.postUtteranceDelay = 0.2f;
+				
+				self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+				self.synthesizer.delegate = self;
+				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
+				[self.synthesizer speakUtterance:utterance];
+			}
 		}];
 		
 	} else {
@@ -115,8 +117,8 @@
 
 - (IBAction)actionButtonPressed:(id)sender
 {
+	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	
 	UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.textView.text] applicationActivities:nil];
 	[self presentViewController:activityVC animated:YES completion:nil];
 }
@@ -127,21 +129,37 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
 {
-	NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:utterance.speechString];
-	[mutableAttributedString addAttribute:NSForegroundColorAttributeName value:[UIColor orangeColor] range:characterRange];
-	self.textView.attributedText = mutableAttributedString;
-}
-
-
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didStartSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.utteranceString];
+	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+//	NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:utterance.speechString];
+//	[mutableAttributedString addAttribute:NSForegroundColorAttributeName value:[UIColor orangeColor] range:characterRange];
+//	self.textView.attributedText = mutableAttributedString;
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.utteranceString];
+	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+	[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+	_paused = YES;
+	NSLog(@"Playback finished");
+}
+
+
+#pragma mark - Configure UI
+
+- (void)configureUI
+{
+	float cornerRadius = self.playPauseButton.bounds.size.height/2;
+	
+	self.playPauseButton.layer.cornerRadius = cornerRadius;
+	self.settingsButton.layer.cornerRadius = cornerRadius;
+	
+	//Image View
+	self.playPauseButton.backgroundColor = kBackgroundColor;
+	[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+	self.settingsButton.backgroundColor = kBackgroundColor;
+	[self.settingsButton setImage:kSettings forState:UIControlStateNormal];
+	
 }
 
 
