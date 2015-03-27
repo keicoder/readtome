@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D113c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7528.3" systemVersion="14D113c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7518.3"/>
     </dependencies>
     <scenes>
         <!--Container View Controller-->
@@ -25,7 +25,7 @@
                                             <constraint firstAttribute="height" constant="44" id="CzE-ZL-DQ7"/>
                                             <constraint firstAttribute="width" constant="44" id="mhl-3S-lyj"/>
                                         </constraints>
-                                        <inset key="contentEdgeInsets" minX="12" minY="12" maxX="12" maxY="12"/>
+                                        <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" image="pause">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -40,7 +40,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="actionButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kHK-1k-pef"/>
+                                            <segue destination="GW5-Ye-9d8" kind="show" id="XdF-oF-MkI"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -58,9 +58,9 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
                                 <rect key="frame" x="20" y="100" width="560" height="500"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <mutableString key="text">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
+                                <string key="text">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
 
-When the button in the toolbar is tapped, an activity view controller is presented and we will be able to invoke our Action extension from within there. Another good reason is that if you wanted to publish your extension on the App Store, it has to be part of a real app and obviously the app has to do something in order for it to be approved.</mutableString>
+When the button in the toolbar is tapped, an activity view controller is presented and we will be able to invoke our Action extension from within there. Another good reason is that if you wanted to publish your extension on the App Store, it has to be part of a real app and obviously the app has to do something in order for it to be approved.</string>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -86,9 +86,168 @@ When the button in the toolbar is tapped, an activity view controller is present
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="208" y="460"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="BKq-NA-Kxm">
+            <objects>
+                <viewController storyboardIdentifier="SettingsViewController" id="GW5-Ye-9d8" customClass="SettingsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fwc-Kz-rXf"/>
+                        <viewControllerLayoutGuide type="bottom" id="3Gn-fw-hDY"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="EXo-Jg-rQJ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="GGg-dg-8bc" customClass="PopAnimationImageView">
+                                <rect key="frame" x="280" y="125" width="40" height="40"/>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Hzj-yH-KmT"/>
+                                    <constraint firstAttribute="width" constant="40" id="uso-ja-bac"/>
+                                </constraints>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LDw-MT-ARf" userLabel="SelectVoice" customClass="PopView">
+                                <rect key="frame" x="150" y="173" width="300" height="50"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="megaphone" translatesAutoresizingMaskIntoConstraints="NO" id="iPu-En-3Iz">
+                                        <rect key="frame" x="247" y="13" width="24" height="24"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Select Voice" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4pL-4Y-EBL">
+                                        <rect key="frame" x="20" y="13" width="106" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="58b-bm-xIQ" userLabel="Pitch">
+                                <rect key="frame" x="150" y="231" width="300" height="50"/>
+                                <subviews>
+                                    <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="LvM-5n-ZkB" userLabel="PitchSlider">
+                                        <rect key="frame" x="78" y="10" width="204" height="31"/>
+                                        <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="maximumTrackTintColor" red="0.0" green="1" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="thumbTintColor" red="0.0" green="1" blue="0.50196081399917603" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <action selector="pitchSliderValueChanged:" destination="GW5-Ye-9d8" eventType="valueChanged" id="DF9-JC-chX"/>
+                                        </connections>
+                                    </slider>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Pitch" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lM7-bW-tqv">
+                                        <rect key="frame" x="20" y="13" width="44" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oD8-Ng-CKd" userLabel="Rate">
+                                <rect key="frame" x="150" y="289" width="300" height="50"/>
+                                <subviews>
+                                    <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="1Ht-SA-4MN" userLabel="rateSlider">
+                                        <rect key="frame" x="78" y="10" width="204" height="31"/>
+                                        <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="maximumTrackTintColor" red="0.0" green="1" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="thumbTintColor" red="0.0" green="1" blue="0.50196081399917603" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <action selector="rateSliderValueChanged:" destination="GW5-Ye-9d8" eventType="valueChanged" id="Lxa-N6-AKh"/>
+                                        </connections>
+                                    </slider>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Rate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yq5-zq-8oN">
+                                        <rect key="frame" x="20" y="13" width="41" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="1B0-vP-lTI"/>
+                                    <constraint firstAttribute="height" constant="50" id="nzI-Hj-Tgl"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oZ8-KR-Vk7" userLabel="BackgroundPlay">
+                                <rect key="frame" x="150" y="347" width="300" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Background Play" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ij1-cd-3zl">
+                                        <rect key="frame" x="20" y="13" width="147" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ygG-LE-juE" userLabel="backgroundPlaySwitch">
+                                        <rect key="frame" x="231" y="9" width="51" height="31"/>
+                                        <connections>
+                                            <action selector="backgroundPlaySwitchValueChanged:" destination="GW5-Ye-9d8" eventType="valueChanged" id="x00-7i-Lja"/>
+                                        </connections>
+                                    </switch>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NKC-2P-cJX" userLabel="Return" customClass="PopView">
+                                <rect key="frame" x="150" y="405" width="300" height="50"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="circle-down" translatesAutoresizingMaskIntoConstraints="NO" id="C0d-y8-fbS">
+                                        <rect key="frame" x="247" y="13" width="24" height="24"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Return" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Lm-Rs-SHf">
+                                        <rect key="frame" x="20" y="13" width="58" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="oZ8-KR-Vk7" firstAttribute="top" secondItem="oD8-Ng-CKd" secondAttribute="bottom" constant="8" id="0EZ-3E-z2k"/>
+                            <constraint firstAttribute="centerY" secondItem="oD8-Ng-CKd" secondAttribute="centerY" constant="-14" id="1bQ-WN-tjQ"/>
+                            <constraint firstItem="oZ8-KR-Vk7" firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="2Hp-Qa-nlb"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="height" secondItem="58b-bm-xIQ" secondAttribute="height" id="2vQ-Y7-IO4"/>
+                            <constraint firstItem="oZ8-KR-Vk7" firstAttribute="width" secondItem="NKC-2P-cJX" secondAttribute="width" id="5Ym-Px-e77"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="top" secondItem="GGg-dg-8bc" secondAttribute="bottom" constant="8" id="6x3-Jf-hmi"/>
+                            <constraint firstItem="oZ8-KR-Vk7" firstAttribute="width" secondItem="oD8-Ng-CKd" secondAttribute="width" id="7q5-5z-k0Z"/>
+                            <constraint firstItem="oZ8-KR-Vk7" firstAttribute="height" secondItem="NKC-2P-cJX" secondAttribute="height" id="BUU-pZ-eqI"/>
+                            <constraint firstItem="58b-bm-xIQ" firstAttribute="width" secondItem="oD8-Ng-CKd" secondAttribute="width" id="KYJ-QP-PXW"/>
+                            <constraint firstItem="NKC-2P-cJX" firstAttribute="top" secondItem="oZ8-KR-Vk7" secondAttribute="bottom" constant="8" id="OGT-cj-sor"/>
+                            <constraint firstItem="oZ8-KR-Vk7" firstAttribute="centerX" secondItem="NKC-2P-cJX" secondAttribute="centerX" id="QY7-KY-HkY"/>
+                            <constraint firstItem="oD8-Ng-CKd" firstAttribute="top" secondItem="58b-bm-xIQ" secondAttribute="bottom" constant="8" id="SMa-5U-cix"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="width" secondItem="58b-bm-xIQ" secondAttribute="width" id="YEG-lZ-b9A"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="centerX" secondItem="GGg-dg-8bc" secondAttribute="centerX" id="eVB-Tg-2C9"/>
+                            <constraint firstItem="58b-bm-xIQ" firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="ggi-PT-KGy"/>
+                            <constraint firstItem="58b-bm-xIQ" firstAttribute="top" secondItem="LDw-MT-ARf" secondAttribute="bottom" constant="8" id="gq3-u9-fDK"/>
+                            <constraint firstItem="oZ8-KR-Vk7" firstAttribute="height" secondItem="oD8-Ng-CKd" secondAttribute="height" id="kP0-Vm-I0r"/>
+                            <constraint firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="pRS-8C-7jZ"/>
+                            <constraint firstItem="58b-bm-xIQ" firstAttribute="height" secondItem="oD8-Ng-CKd" secondAttribute="height" id="xgW-D3-u7u"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="centerX" secondItem="58b-bm-xIQ" secondAttribute="centerX" id="xjN-sI-mII"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="backgroundPlaySwitch" destination="ygG-LE-juE" id="jbR-rL-BQ1"/>
+                        <outlet property="backgroundPlayView" destination="oZ8-KR-Vk7" id="W7R-Ie-wBZ"/>
+                        <outlet property="gearImageView" destination="GGg-dg-8bc" id="ZD1-kq-eP0"/>
+                        <outlet property="pitchSlider" destination="LvM-5n-ZkB" id="3VX-ly-Utz"/>
+                        <outlet property="pitchView" destination="58b-bm-xIQ" id="2uN-v9-2x5"/>
+                        <outlet property="rateSlider" destination="1Ht-SA-4MN" id="oLy-ms-nXT"/>
+                        <outlet property="rateView" destination="oD8-Ng-CKd" id="7S1-Ur-vib"/>
+                        <outlet property="returnView" destination="NKC-2P-cJX" id="LJ7-VQ-H7U"/>
+                        <outlet property="selectVoiceView" destination="LDw-MT-ARf" id="P05-FA-iQ9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mki-U5-9CZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="838" y="460"/>
         </scene>
     </scenes>
     <resources>
+        <image name="circle-down" width="32" height="32"/>
+        <image name="gear" width="44" height="44"/>
+        <image name="megaphone" width="44" height="43"/>
         <image name="pause" width="18" height="32"/>
         <image name="settings" width="46" height="47"/>
     </resources>

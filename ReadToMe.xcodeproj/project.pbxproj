@@ -63,6 +63,12 @@
 		C12F07AA1ABFB00A0039EA89 /* ActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07A91ABFB00A0039EA89 /* ActionViewController.m */; };
 		C12F07AC1ABFB00A0039EA89 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C12F07AB1ABFB00A0039EA89 /* MainInterface.storyboard */; };
 		C12F07AF1ABFB00A0039EA89 /* ReadToMeAction.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C12F07A41ABFB00A0039EA89 /* ReadToMeAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C16754991AC3A81E009F4D88 /* PopView.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754971AC3A81E009F4D88 /* PopView.m */; };
+		C167549A1AC3A81E009F4D88 /* PopView.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754971AC3A81E009F4D88 /* PopView.m */; };
+		C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
+		C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
+		C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */; };
+		C1FB14E51AC2AFD800F24030 /* PopAnimationImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -174,6 +180,12 @@
 		C12F07A81ABFB00A0039EA89 /* ActionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionViewController.h; sourceTree = "<group>"; };
 		C12F07A91ABFB00A0039EA89 /* ActionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionViewController.m; sourceTree = "<group>"; };
 		C12F07AB1ABFB00A0039EA89 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		C16754971AC3A81E009F4D88 /* PopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopView.m; sourceTree = "<group>"; };
+		C16754981AC3A81E009F4D88 /* PopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopView.h; sourceTree = "<group>"; };
+		C1FB14DE1AC29B5700F24030 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		C1FB14E21AC2AFD800F24030 /* PopAnimationImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopAnimationImageView.h; sourceTree = "<group>"; };
+		C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopAnimationImageView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -273,8 +285,12 @@
 		C110F2C01AC12F8000B4E355 /* popView */ = {
 			isa = PBXGroup;
 			children = (
+				C16754971AC3A81E009F4D88 /* PopView.m */,
+				C16754981AC3A81E009F4D88 /* PopView.h */,
 				C110F2C51AC130AA00B4E355 /* PopAnimationClearButton.h */,
 				C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */,
+				C1FB14E21AC2AFD800F24030 /* PopAnimationImageView.h */,
+				C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */,
 			);
 			name = popView;
 			sourceTree = "<group>";
@@ -311,17 +327,12 @@
 		C12F07761ABF88FD0039EA89 /* ReadToMe */ = {
 			isa = PBXGroup;
 			children = (
+				C1FB14DD1AC29B2200F24030 /* Data */,
+				C1FB14DC1AC29B0B00F24030 /* UI */,
+				C1FB14DB1AC29AF300F24030 /* Controllers */,
 				C110F2C91AC233BC00B4E355 /* Categories */,
 				C110F2C01AC12F8000B4E355 /* popView */,
 				C110F25F1AC12F4000B4E355 /* pop */,
-				C12F077B1ABF88FD0039EA89 /* AppDelegate.h */,
-				C12F077C1ABF88FD0039EA89 /* AppDelegate.m */,
-				C12F07811ABF88FD0039EA89 /* ContainerViewController.h */,
-				C12F07821ABF88FD0039EA89 /* ContainerViewController.m */,
-				C12F07841ABF88FD0039EA89 /* Main.storyboard */,
-				C12F07871ABF88FD0039EA89 /* Images.xcassets */,
-				C12F07891ABF88FD0039EA89 /* LaunchScreen.xib */,
-				C12F077E1ABF88FD0039EA89 /* ReadToMe.xcdatamodeld */,
 				C12F07771ABF88FD0039EA89 /* Supporting Files */,
 			);
 			path = ReadToMe;
@@ -370,6 +381,37 @@
 				C12F07A71ABFB00A0039EA89 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C1FB14DB1AC29AF300F24030 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				C12F077B1ABF88FD0039EA89 /* AppDelegate.h */,
+				C12F077C1ABF88FD0039EA89 /* AppDelegate.m */,
+				C12F07811ABF88FD0039EA89 /* ContainerViewController.h */,
+				C12F07821ABF88FD0039EA89 /* ContainerViewController.m */,
+				C1FB14DE1AC29B5700F24030 /* SettingsViewController.h */,
+				C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		C1FB14DC1AC29B0B00F24030 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				C12F07841ABF88FD0039EA89 /* Main.storyboard */,
+				C12F07871ABF88FD0039EA89 /* Images.xcassets */,
+				C12F07891ABF88FD0039EA89 /* LaunchScreen.xib */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		C1FB14DD1AC29B2200F24030 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				C12F077E1ABF88FD0039EA89 /* ReadToMe.xcdatamodeld */,
+			);
+			name = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -511,6 +553,7 @@
 				C110F2B01AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
 				C110F2CC1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */,
 				C110F2B61AC12F4000B4E355 /* POPMath.mm in Sources */,
+				C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */,
 				C110F2B21AC12F4000B4E355 /* POPGeometry.mm in Sources */,
 				C110F2B81AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */,
 				C110F2B41AC12F4000B4E355 /* POPLayerExtras.mm in Sources */,
@@ -519,6 +562,7 @@
 				C12F077D1ABF88FD0039EA89 /* AppDelegate.m in Sources */,
 				C12F077A1ABF88FD0039EA89 /* main.m in Sources */,
 				C110F2A21AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */,
+				C16754991AC3A81E009F4D88 /* PopView.m in Sources */,
 				C12F07831ABF88FD0039EA89 /* ContainerViewController.m in Sources */,
 				C110F2C71AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */,
 				C110F2AE1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */,
@@ -530,6 +574,7 @@
 				C110F2A61AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */,
 				C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */,
 				C110F2AC1AC12F4000B4E355 /* POPCGUtils.mm in Sources */,
+				C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */,
 				C110F2A81AC12F4000B4E355 /* POPAnimator.mm in Sources */,
 				C110F29C1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */,
 			);
@@ -553,6 +598,7 @@
 				C110F29F1AC12F4000B4E355 /* POPAnimation.mm in Sources */,
 				C110F2B51AC12F4000B4E355 /* POPLayerExtras.mm in Sources */,
 				C110F2B91AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */,
+				C167549A1AC3A81E009F4D88 /* PopView.m in Sources */,
 				C110F2BF1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */,
 				C110F2A31AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */,
 				C110F2A71AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */,
@@ -566,8 +612,10 @@
 				C110F2AF1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */,
 				C110F2B11AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
 				C110F29D1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */,
+				C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */,
 				C110F2CD1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */,
 				C12F07AA1ABFB00A0039EA89 /* ActionViewController.m in Sources */,
+				C1FB14E51AC2AFD800F24030 /* PopAnimationImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

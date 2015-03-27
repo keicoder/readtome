@@ -69,13 +69,13 @@
 			self.utteranceString = textView.text;
 			
 			if (_paused == YES) {
-				self.playPauseButton.imageEdgeInsets = kPlayInset;
-				[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+//				self.playPauseButton.imageEdgeInsets = kPlayInset;
+				[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
 				[self.synthesizer continueSpeaking];
 				_paused = NO;
 			} else {
-				self.playPauseButton.imageEdgeInsets = kPauseInset;
-				[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+//				self.playPauseButton.imageEdgeInsets = kPauseInset;
+				[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 				_paused = YES;
 				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 			}
@@ -95,7 +95,7 @@
 			}
 		}];
 		
-	} else {
+	} else if (pasteBoard == nil) {
 		
 		NSString *title = @"No Text";
 		NSString *message = @"There are no text to speech.";
@@ -150,14 +150,14 @@
 - (void)configureUI
 {
 	float cornerRadius = self.playPauseButton.bounds.size.height/2;
-	
 	self.playPauseButton.layer.cornerRadius = cornerRadius;
 	self.settingsButton.layer.cornerRadius = cornerRadius;
 	
+//	self.playPauseButton.imageEdgeInsets = kPlayInset;
 	//Image View
-	self.playPauseButton.backgroundColor = kBackgroundColor;
-	[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-	self.settingsButton.backgroundColor = kBackgroundColor;
+//	self.playPauseButton.backgroundColor = kBackgroundColor;
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+//	self.settingsButton.backgroundColor = kBackgroundColor;
 	[self.settingsButton setImage:kSettings forState:UIControlStateNormal];
 	
 }
