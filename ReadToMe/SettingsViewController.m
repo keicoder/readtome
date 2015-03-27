@@ -12,6 +12,7 @@
 #import "SettingsViewController.h"
 #import "UIImage+ChangeColor.h"
 #import "PopView.h"
+#import "LanguagePickerViewController.h"
 
 
 @interface SettingsViewController () <UIGestureRecognizerDelegate>
@@ -123,6 +124,8 @@
 	if ([touch.view isEqual:(UIView *)self.selectVoiceView]) {
 		
 		NSLog(@"self.selectVoiceView Tapped");
+		LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
+		[self presentViewController:controller animated:YES completion:^{ }];
 		
 	} else if ([touch.view isEqual:(UIView *)self.returnView]) {
 		

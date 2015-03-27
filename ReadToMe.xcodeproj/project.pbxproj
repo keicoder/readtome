@@ -65,6 +65,8 @@
 		C12F07AF1ABFB00A0039EA89 /* ReadToMeAction.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C12F07A41ABFB00A0039EA89 /* ReadToMeAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C16754991AC3A81E009F4D88 /* PopView.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754971AC3A81E009F4D88 /* PopView.m */; };
 		C167549A1AC3A81E009F4D88 /* PopView.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754971AC3A81E009F4D88 /* PopView.m */; };
+		C167549D1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */; };
+		C167549E1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */; };
 		C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */; };
@@ -182,6 +184,8 @@
 		C12F07AB1ABFB00A0039EA89 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		C16754971AC3A81E009F4D88 /* PopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopView.m; sourceTree = "<group>"; };
 		C16754981AC3A81E009F4D88 /* PopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopView.h; sourceTree = "<group>"; };
+		C167549B1AC4EDDD009F4D88 /* LanguagePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LanguagePickerViewController.h; sourceTree = "<group>"; };
+		C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LanguagePickerViewController.m; sourceTree = "<group>"; };
 		C1FB14DE1AC29B5700F24030 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		C1FB14E21AC2AFD800F24030 /* PopAnimationImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopAnimationImageView.h; sourceTree = "<group>"; };
@@ -392,6 +396,8 @@
 				C12F07821ABF88FD0039EA89 /* ContainerViewController.m */,
 				C1FB14DE1AC29B5700F24030 /* SettingsViewController.h */,
 				C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */,
+				C167549B1AC4EDDD009F4D88 /* LanguagePickerViewController.h */,
+				C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -576,6 +582,7 @@
 				C110F2AC1AC12F4000B4E355 /* POPCGUtils.mm in Sources */,
 				C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */,
 				C110F2A81AC12F4000B4E355 /* POPAnimator.mm in Sources */,
+				C167549D1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */,
 				C110F29C1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -594,6 +601,7 @@
 			files = (
 				C110F2A91AC12F4000B4E355 /* POPAnimator.mm in Sources */,
 				C110F2BB1AC12F4000B4E355 /* POPSpringAnimation.mm in Sources */,
+				C167549E1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */,
 				C110F2C81AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */,
 				C110F29F1AC12F4000B4E355 /* POPAnimation.mm in Sources */,
 				C110F2B51AC12F4000B4E355 /* POPLayerExtras.mm in Sources */,

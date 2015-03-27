@@ -55,13 +55,20 @@
                                     <constraint firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="xde-kh-g9c"/>
                                 </constraints>
                             </view>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
                                 <rect key="frame" x="20" y="100" width="560" height="500"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <string key="text">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
 
 When the button in the toolbar is tapped, an activity view controller is presented and we will be able to invoke our Action extension from within there. Another good reason is that if you wanted to publish your extension on the App Store, it has to be part of a real app and obviously the app has to do something in order for it to be approved.</string>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <attributes>
+                                            <font key="NSFont" size="20" name="HelveticaNeue-Light"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
@@ -242,6 +249,49 @@ When the button in the toolbar is tapped, an activity view controller is present
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mki-U5-9CZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="838" y="460"/>
+        </scene>
+        <!--Language Picker View Controller-->
+        <scene sceneID="2Pr-nr-QW3">
+            <objects>
+                <viewController storyboardIdentifier="LanguagePickerViewController" id="6WW-DS-Usf" customClass="LanguagePickerViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="MQ5-fY-Igk"/>
+                        <viewControllerLayoutGuide type="bottom" id="vNW-Ez-YEq"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="o5v-b2-jf7">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vjs-mp-aL1" userLabel="LanguagePickerView">
+                                <rect key="frame" x="0.0" y="219" width="600" height="162"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="162" id="kqT-uA-1cZ"/>
+                                </constraints>
+                            </pickerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Voice" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5of-6A-9gT">
+                                <rect key="frame" x="232" y="153" width="137" height="31"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="26"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="Vjs-mp-aL1" secondAttribute="centerY" id="0bQ-Ve-FHO"/>
+                            <constraint firstAttribute="centerX" secondItem="Vjs-mp-aL1" secondAttribute="centerX" id="D6Y-3h-Op1"/>
+                            <constraint firstItem="5of-6A-9gT" firstAttribute="centerX" secondItem="Vjs-mp-aL1" secondAttribute="centerX" constant="0.5" id="cmG-ks-BNw"/>
+                            <constraint firstItem="Vjs-mp-aL1" firstAttribute="leading" secondItem="o5v-b2-jf7" secondAttribute="leading" id="qlz-sA-mRk"/>
+                            <constraint firstItem="Vjs-mp-aL1" firstAttribute="top" secondItem="5of-6A-9gT" secondAttribute="bottom" constant="35" id="rhI-bi-adI"/>
+                            <constraint firstAttribute="trailing" secondItem="Vjs-mp-aL1" secondAttribute="trailing" id="suO-4h-zxB"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="languagePickerView" destination="Vjs-mp-aL1" id="p5L-ZF-U0b"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qqT-tU-SNa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="838" y="1106"/>
         </scene>
     </scenes>
     <resources>

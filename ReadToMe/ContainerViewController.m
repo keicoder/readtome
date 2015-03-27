@@ -23,9 +23,16 @@
 
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
-@property (weak, nonatomic) IBOutlet UIButton *settingsButton;
-@property (nonatomic, strong) NSString *utteranceString;
+@property (nonatomic, weak) IBOutlet UIButton *settingsButton;
+
 @property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
+@property (nonatomic, strong) NSString *utteranceString;
+
+@property (nonatomic, strong) NSArray *languageCodes;
+@property (nonatomic, strong) NSDictionary *languageDictionary;
+@property (strong, nonatomic) NSString *selectedLanguage;
+
+@property (strong, nonatomic) NSDictionary *paragraphAttributes;
 
 @end
 
@@ -42,6 +49,7 @@
 	[super viewDidLoad];
 	_paused = YES;
 	[self configureUI];
+	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
 }
 
 
@@ -50,6 +58,8 @@
 - (IBAction)pasteAndSpeech:(id)sender
 {
 	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+	
+	NSLog (@"[AVSpeechSynthesisVoice speechVoices]: %@\n", [AVSpeechSynthesisVoice speechVoices]);
 	
 	[self.textView resignFirstResponder];
 	self.textView.text = @"";
@@ -76,16 +86,18 @@
 				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 			}
 			
-			if (self.synthesizer.speaking == NO) {
-				
-				AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
-				utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
-				[utterance setRate:0.09];
-				utterance.preUtteranceDelay = 0.2f;
-				utterance.postUtteranceDelay = 0.2f;
+			if (self.synthesizer.isSpeaking == NO) {
 				
 				self.synthesizer = [[AVSpeechSynthesizer alloc]init];
 				self.synthesizer.delegate = self;
+				
+				AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
+				utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
+				[utterance setRate:0.07];
+				utterance.pitchMultiplier = 1.1; // higher pitch
+				utterance.preUtteranceDelay = 0.2f;
+				utterance.postUtteranceDelay = 0.2f;
+				
 				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
 				[self.synthesizer speakUtterance:utterance];
 			}
@@ -125,19 +137,36 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
 {
-	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-//	NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:utterance.speechString];
-//	[mutableAttributedString addAttribute:NSForegroundColorAttributeName value:[UIColor orangeColor] range:characterRange];
-//	self.textView.attributedText = mutableAttributedString;
+	
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-	[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
 	NSLog(@"Playback finished");
+}
+
+
+#pragma mark - NSAttributedString
+
+- (NSDictionary *)paragraphAttributes
+{
+	if ( _paragraphAttributes == nil) {
+		
+		UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+		
+		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+		paragraphStyle.firstLineHeadIndent = 20.0f;
+		paragraphStyle.lineSpacing = 12.0f;
+		paragraphStyle.paragraphSpacing = 24.0f;
+		paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+		
+		_paragraphAttributes = @{ NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle, NSForegroundColorAttributeName: [UIColor darkTextColor] };
+	}
+	
+	return _paragraphAttributes;
 }
 
 
