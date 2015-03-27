@@ -40,7 +40,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="GW5-Ye-9d8" kind="show" id="XdF-oF-MkI"/>
+                                            <action selector="settingsButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4en-vu-7xo"/>
                                         </connections>
                                     </button>
                                 </subviews>

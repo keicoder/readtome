@@ -17,6 +17,7 @@
 #import "ContainerViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UIImage+ChangeColor.h"
+#import "SettingsViewController.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate>
@@ -123,14 +124,15 @@
 
 #pragma mark - Button Action Methods
 
-- (IBAction)actionButtonPressed:(id)sender
+- (IBAction)settingsButtonTapped:(id)sender
 {
-	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.textView.text] applicationActivities:nil];
-	[self presentViewController:activityVC animated:YES completion:nil];
+	NSLog(@"self.settingsButton Tapped");
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	_paused = YES;
+	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	SettingsViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
+	[self presentViewController:controller animated:YES completion:^{ }];
 }
-
 
 
 #pragma mark - AVSpeechSynthesizerDelegate
@@ -158,12 +160,17 @@
 		UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
 		
 		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-		paragraphStyle.firstLineHeadIndent = 20.0f;
-		paragraphStyle.lineSpacing = 12.0f;
-		paragraphStyle.paragraphSpacing = 24.0f;
+		paragraphStyle.firstLineHeadIndent = 14.0f;
+		paragraphStyle.lineSpacing = 6.0f;
+		paragraphStyle.paragraphSpacing = 14.0f;
 		paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 		
-		_paragraphAttributes = @{ NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle, NSForegroundColorAttributeName: [UIColor darkTextColor] };
+		NSShadow *shadow = [[NSShadow alloc] init];
+		[shadow setShadowColor:[UIColor grayColor]];
+		[shadow setShadowOffset:CGSizeMake(0, 0)];
+		[shadow setShadowBlurRadius:0];
+		
+		_paragraphAttributes = @{ NSFontAttributeName: font, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [UIColor darkTextColor], NSShadowAttributeName: shadow };
 	}
 	
 	return _paragraphAttributes;
