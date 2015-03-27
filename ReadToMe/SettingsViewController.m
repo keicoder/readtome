@@ -160,7 +160,7 @@
 	self.returnView.layer.cornerRadius = cornerRadius;
 	
 	//Color
-	UIColor *colorNormal1 = [UIColor colorWithRed:0.137 green:0.271 blue:0.424 alpha:1];
+	UIColor *colorNormal1 = [UIColor colorWithRed:0.396 green:0.675 blue:0.82 alpha:1];
 	UIColor *colorNormal2 = [UIColor colorWithRed:0.192 green:0.667 blue:0.224 alpha:1];
 	
 	self.selectVoiceView.backgroundColor = colorNormal1;

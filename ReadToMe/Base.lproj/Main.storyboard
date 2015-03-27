@@ -30,7 +30,18 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="pasteAndSpeech:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ze5-SF-j4c"/>
+                                            <action selector="pasteAndSpeechText:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CnT-gK-VfD"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="ResetButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="84" y="8" width="44" height="44"/>
+                                        <accessibility key="accessibilityConfiguration" label="ResetButton"/>
+                                        <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                                        <state key="normal" image="reset">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="resetButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YCl-5R-ct5"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BhP-KP-gJu" userLabel="SettingsButton" customClass="PopAnimationClearButton">
@@ -47,12 +58,16 @@
                                 <color key="backgroundColor" red="1" green="0.84303140639999996" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="20" id="1lk-ho-gC4"/>
+                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="height" secondItem="djw-qX-P0a" secondAttribute="height" id="37a-se-ACb"/>
                                     <constraint firstAttribute="height" constant="60" id="4mi-Pe-nfX"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="BhP-KP-gJu" secondAttribute="centerY" id="XhU-gj-0s1"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="BhP-KP-gJu" secondAttribute="width" id="b1B-W7-44a"/>
                                     <constraint firstAttribute="trailing" secondItem="BhP-KP-gJu" secondAttribute="trailing" constant="20" id="dhS-bj-sH5"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="BhP-KP-gJu" secondAttribute="height" id="fbq-CE-O0z"/>
+                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="leading" secondItem="djw-qX-P0a" secondAttribute="trailing" constant="20" id="hXq-ie-nr1"/>
                                     <constraint firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="xde-kh-g9c"/>
+                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="xwe-ZT-EcT"/>
+                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="width" secondItem="djw-qX-P0a" secondAttribute="width" id="zuU-mG-kG7"/>
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
@@ -299,6 +314,7 @@ When the button in the toolbar is tapped, an activity view controller is present
         <image name="gear" width="44" height="44"/>
         <image name="megaphone" width="44" height="43"/>
         <image name="pause" width="18" height="32"/>
+        <image name="reset" width="33" height="32"/>
         <image name="settings" width="46" height="47"/>
     </resources>
 </document>

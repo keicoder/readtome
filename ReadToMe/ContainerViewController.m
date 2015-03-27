@@ -35,6 +35,8 @@
 
 @property (strong, nonatomic) NSDictionary *paragraphAttributes;
 
+@property (nonatomic, strong) UIPasteboard *pasteBoard;
+
 @end
 
 
@@ -49,32 +51,30 @@
 {
 	[super viewDidLoad];
 	_paused = YES;
+	self.pasteBoard = [UIPasteboard generalPasteboard];
+	self.pasteBoard.persistent = YES;
 	[self configureUI];
+	self.textView.text = @"Hit the play button above to start your text. Pause it at any time. Resume it at any time. ";
 	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
+	NSLog (@"[AVSpeechSynthesisVoice speechVoices]: %@\n", [AVSpeechSynthesisVoice speechVoices]);
 }
 
 
-#pragma mark - Speech
-
-- (IBAction)pasteAndSpeech:(id)sender
+- (IBAction)pasteAndSpeechText:(UIPasteboard *)pasteboard
 {
-	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-	
-	NSLog (@"[AVSpeechSynthesisVoice speechVoices]: %@\n", [AVSpeechSynthesisVoice speechVoices]);
-	
 	[self.textView resignFirstResponder];
 	self.textView.text = @"";
 	
-	UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
-	pasteBoard.persistent = YES;
-	
-	if (pasteBoard != nil) {
+	if (self.pasteBoard == nil) {
+		
+		NSString *title = @"No Text to speech";
+		NSString *message = @"There are no text to speech.";
 		
 		__weak UITextView *textView = self.textView;
 		
 		[[NSOperationQueue mainQueue] addOperationWithBlock:^{
 			
-			textView.text = [pasteBoard string];
+			textView.text = title;
 			self.utteranceString = textView.text;
 			
 			if (_paused == YES) {
@@ -104,11 +104,6 @@
 			}
 		}];
 		
-	} else if (pasteBoard == nil) {
-		
-		NSString *title = @"No Text";
-		NSString *message = @"There are no text to speech.";
-		
 		UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
 		[sheet addAction:[UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
 			NSLog(@"Tapped OK");
@@ -118,6 +113,42 @@
 		sheet.popoverPresentationController.sourceRect = self.view.frame;
 		
 		[self presentViewController:sheet animated:YES completion:nil];
+		
+	} else {
+		
+		__weak UITextView *textView = self.textView;
+		
+		[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+			
+			textView.text = [self.pasteBoard string];
+			self.utteranceString = textView.text;
+			
+			if (_paused == YES) {
+				[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+				[self.synthesizer continueSpeaking];
+				_paused = NO;
+			} else {
+				[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+				_paused = YES;
+				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+			}
+			
+			if (self.synthesizer.isSpeaking == NO) {
+				
+				self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+				self.synthesizer.delegate = self;
+				
+				AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
+				utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
+				[utterance setRate:0.07];
+				utterance.pitchMultiplier = 1.1; // higher pitch
+				utterance.preUtteranceDelay = 0.2f;
+				utterance.postUtteranceDelay = 0.2f;
+				
+				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
+				[self.synthesizer speakUtterance:utterance];
+			}
+		}];
 	}
 }
 
@@ -132,6 +163,14 @@
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	SettingsViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
+}
+
+
+- (IBAction)resetButtonTapped:(id)sender
+{
+	NSLog(@"Reset Button Tapped");
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	[self pasteAndSpeechText:self.pasteBoard];
 }
 
 
