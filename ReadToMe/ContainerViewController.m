@@ -22,6 +22,7 @@
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
 @property (nonatomic, weak) IBOutlet UIButton *settingsButton;
@@ -220,6 +221,8 @@
 
 - (void)configureUI
 {
+	self.menuView.backgroundColor = [UIColor colorWithRed:0.396 green:0.675 blue:0.82 alpha:1];
+	
 	float cornerRadius = self.playPauseButton.bounds.size.height/2;
 	self.playPauseButton.layer.cornerRadius = cornerRadius;
 	self.settingsButton.layer.cornerRadius = cornerRadius;

@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7528.3" systemVersion="14D113c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7518.3"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Container View Controller-->
@@ -101,6 +102,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="menuView" destination="U9H-OM-Fxj" id="SLX-Bo-y7O"/>
                         <outlet property="playPauseButton" destination="djw-qX-P0a" id="o9K-Lj-sya"/>
                         <outlet property="settingsButton" destination="BhP-KP-gJu" id="MPQ-FS-lAw"/>
                         <outlet property="textView" destination="VWj-si-BKE" id="TKZ-9Q-pKe"/>
@@ -122,16 +124,8 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="GGg-dg-8bc" customClass="PopAnimationImageView">
-                                <rect key="frame" x="280" y="125" width="40" height="40"/>
-                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="Hzj-yH-KmT"/>
-                                    <constraint firstAttribute="width" constant="40" id="uso-ja-bac"/>
-                                </constraints>
-                            </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LDw-MT-ARf" userLabel="SelectVoice" customClass="PopView">
-                                <rect key="frame" x="150" y="173" width="300" height="50"/>
+                                <rect key="frame" x="150" y="199" width="300" height="50"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="megaphone" translatesAutoresizingMaskIntoConstraints="NO" id="iPu-En-3Iz">
                                         <rect key="frame" x="247" y="13" width="24" height="24"/>
@@ -146,7 +140,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="58b-bm-xIQ" userLabel="Pitch">
-                                <rect key="frame" x="150" y="231" width="300" height="50"/>
+                                <rect key="frame" x="150" y="257" width="300" height="50"/>
                                 <subviews>
                                     <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="LvM-5n-ZkB" userLabel="PitchSlider">
                                         <rect key="frame" x="78" y="10" width="204" height="31"/>
@@ -167,7 +161,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oD8-Ng-CKd" userLabel="Rate">
-                                <rect key="frame" x="150" y="289" width="300" height="50"/>
+                                <rect key="frame" x="150" y="315" width="300" height="50"/>
                                 <subviews>
                                     <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="1Ht-SA-4MN" userLabel="rateSlider">
                                         <rect key="frame" x="78" y="10" width="204" height="31"/>
@@ -192,7 +186,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oZ8-KR-Vk7" userLabel="BackgroundPlay">
-                                <rect key="frame" x="150" y="347" width="300" height="50"/>
+                                <rect key="frame" x="150" y="373" width="300" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Background Play" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ij1-cd-3zl">
                                         <rect key="frame" x="20" y="13" width="147" height="24"/>
@@ -210,7 +204,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NKC-2P-cJX" userLabel="Return" customClass="PopView">
-                                <rect key="frame" x="150" y="405" width="300" height="50"/>
+                                <rect key="frame" x="150" y="431" width="300" height="50"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="circle-down" translatesAutoresizingMaskIntoConstraints="NO" id="C0d-y8-fbS">
                                         <rect key="frame" x="247" y="13" width="24" height="24"/>
@@ -224,17 +218,28 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="GGg-dg-8bc" customClass="PopAnimationImageView">
+                                <rect key="frame" x="280" y="119" width="40" height="40"/>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Hzj-yH-KmT"/>
+                                    <constraint firstAttribute="width" constant="40" id="uso-ja-bac"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="oZ8-KR-Vk7" firstAttribute="top" secondItem="oD8-Ng-CKd" secondAttribute="bottom" constant="8" id="0EZ-3E-z2k"/>
-                            <constraint firstAttribute="centerY" secondItem="oD8-Ng-CKd" secondAttribute="centerY" constant="-14" id="1bQ-WN-tjQ"/>
+                            <constraint firstAttribute="centerY" secondItem="oD8-Ng-CKd" secondAttribute="centerY" constant="-40" id="1bQ-WN-tjQ">
+                                <variation key="heightClass=compact" constant="0.0"/>
+                            </constraint>
                             <constraint firstItem="oZ8-KR-Vk7" firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="2Hp-Qa-nlb"/>
                             <constraint firstItem="LDw-MT-ARf" firstAttribute="height" secondItem="58b-bm-xIQ" secondAttribute="height" id="2vQ-Y7-IO4"/>
                             <constraint firstItem="oZ8-KR-Vk7" firstAttribute="width" secondItem="NKC-2P-cJX" secondAttribute="width" id="5Ym-Px-e77"/>
-                            <constraint firstItem="LDw-MT-ARf" firstAttribute="top" secondItem="GGg-dg-8bc" secondAttribute="bottom" constant="8" id="6x3-Jf-hmi"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="top" secondItem="GGg-dg-8bc" secondAttribute="bottom" constant="40" id="6x3-Jf-hmi"/>
                             <constraint firstItem="oZ8-KR-Vk7" firstAttribute="width" secondItem="oD8-Ng-CKd" secondAttribute="width" id="7q5-5z-k0Z"/>
                             <constraint firstItem="oZ8-KR-Vk7" firstAttribute="height" secondItem="NKC-2P-cJX" secondAttribute="height" id="BUU-pZ-eqI"/>
+                            <constraint firstItem="GGg-dg-8bc" firstAttribute="centerY" secondItem="oD8-Ng-CKd" secondAttribute="centerY" id="DkE-fq-0ID"/>
                             <constraint firstItem="58b-bm-xIQ" firstAttribute="width" secondItem="oD8-Ng-CKd" secondAttribute="width" id="KYJ-QP-PXW"/>
                             <constraint firstItem="NKC-2P-cJX" firstAttribute="top" secondItem="oZ8-KR-Vk7" secondAttribute="bottom" constant="8" id="OGT-cj-sor"/>
                             <constraint firstItem="oZ8-KR-Vk7" firstAttribute="centerX" secondItem="NKC-2P-cJX" secondAttribute="centerX" id="QY7-KY-HkY"/>
@@ -244,10 +249,27 @@ When the button in the toolbar is tapped, an activity view controller is present
                             <constraint firstItem="58b-bm-xIQ" firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="ggi-PT-KGy"/>
                             <constraint firstItem="58b-bm-xIQ" firstAttribute="top" secondItem="LDw-MT-ARf" secondAttribute="bottom" constant="8" id="gq3-u9-fDK"/>
                             <constraint firstItem="oZ8-KR-Vk7" firstAttribute="height" secondItem="oD8-Ng-CKd" secondAttribute="height" id="kP0-Vm-I0r"/>
-                            <constraint firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="pRS-8C-7jZ"/>
+                            <constraint firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="pRS-8C-7jZ">
+                                <variation key="heightClass=compact" constant="-25"/>
+                            </constraint>
                             <constraint firstItem="58b-bm-xIQ" firstAttribute="height" secondItem="oD8-Ng-CKd" secondAttribute="height" id="xgW-D3-u7u"/>
                             <constraint firstItem="LDw-MT-ARf" firstAttribute="centerX" secondItem="58b-bm-xIQ" secondAttribute="centerX" id="xjN-sI-mII"/>
+                            <constraint firstItem="oD8-Ng-CKd" firstAttribute="leading" secondItem="GGg-dg-8bc" secondAttribute="trailing" constant="26" id="y8v-Jf-gSb"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="DkE-fq-0ID"/>
+                                <exclude reference="y8v-Jf-gSb"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="constraints">
+                                <exclude reference="6x3-Jf-hmi"/>
+                                <exclude reference="eVB-Tg-2C9"/>
+                                <include reference="DkE-fq-0ID"/>
+                                <include reference="y8v-Jf-gSb"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="backgroundPlaySwitch" destination="ygG-LE-juE" id="jbR-rL-BQ1"/>
@@ -277,31 +299,73 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vjs-mp-aL1" userLabel="LanguagePickerView">
-                                <rect key="frame" x="0.0" y="219" width="600" height="162"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="162" id="kqT-uA-1cZ"/>
-                                </constraints>
-                            </pickerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Voice" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5of-6A-9gT">
-                                <rect key="frame" x="232" y="153" width="137" height="31"/>
+                                <rect key="frame" x="232" y="114" width="137" height="31"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="26"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vjs-mp-aL1" userLabel="LanguagePickerView">
+                                <rect key="frame" x="0.0" y="192" width="600" height="216"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="240" id="kqT-uA-1cZ"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="dataSource" destination="6WW-DS-Usf" id="XwC-In-dcc"/>
+                                    <outlet property="delegate" destination="6WW-DS-Usf" id="szh-jv-8M0"/>
+                                </connections>
+                            </pickerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wXE-AV-4Ud" userLabel="ReturnButton" customClass="PopAnimationClearButton">
+                                <rect key="frame" x="275" y="455" width="50" height="50"/>
+                                <color key="backgroundColor" red="1" green="0.84303140639999996" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="WWz-pW-4t1"/>
+                                    <constraint firstAttribute="width" constant="50" id="mq3-Jr-p04"/>
+                                </constraints>
+                                <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" image="circle-down">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="returnButtonTapped:" destination="6WW-DS-Usf" eventType="touchUpInside" id="tvy-Mr-b5N"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="Vjs-mp-aL1" secondAttribute="centerY" id="0bQ-Ve-FHO"/>
+                            <constraint firstAttribute="centerY" secondItem="Vjs-mp-aL1" secondAttribute="centerY" id="0bQ-Ve-FHO">
+                                <variation key="heightClass=compact" constant="-30"/>
+                            </constraint>
+                            <constraint firstItem="wXE-AV-4Ud" firstAttribute="top" secondItem="Vjs-mp-aL1" secondAttribute="bottom" constant="35" id="6hj-x2-IDy"/>
                             <constraint firstAttribute="centerX" secondItem="Vjs-mp-aL1" secondAttribute="centerX" id="D6Y-3h-Op1"/>
+                            <constraint firstItem="wXE-AV-4Ud" firstAttribute="top" secondItem="MQ5-fY-Igk" secondAttribute="bottom" constant="40" id="J4H-BZ-thD"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="wXE-AV-4Ud" secondAttribute="trailing" constant="18" id="TFU-Ls-tc2"/>
                             <constraint firstItem="5of-6A-9gT" firstAttribute="centerX" secondItem="Vjs-mp-aL1" secondAttribute="centerX" constant="0.5" id="cmG-ks-BNw"/>
+                            <constraint firstItem="Vjs-mp-aL1" firstAttribute="centerX" secondItem="wXE-AV-4Ud" secondAttribute="centerX" id="nN6-le-PSK"/>
                             <constraint firstItem="Vjs-mp-aL1" firstAttribute="leading" secondItem="o5v-b2-jf7" secondAttribute="leading" id="qlz-sA-mRk"/>
-                            <constraint firstItem="Vjs-mp-aL1" firstAttribute="top" secondItem="5of-6A-9gT" secondAttribute="bottom" constant="35" id="rhI-bi-adI"/>
+                            <constraint firstItem="Vjs-mp-aL1" firstAttribute="top" secondItem="5of-6A-9gT" secondAttribute="bottom" constant="35" id="rhI-bi-adI">
+                                <variation key="heightClass=compact" constant="10"/>
+                            </constraint>
                             <constraint firstAttribute="trailing" secondItem="Vjs-mp-aL1" secondAttribute="trailing" id="suO-4h-zxB"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="J4H-BZ-thD"/>
+                                <exclude reference="TFU-Ls-tc2"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="constraints">
+                                <exclude reference="nN6-le-PSK"/>
+                                <exclude reference="6hj-x2-IDy"/>
+                                <include reference="J4H-BZ-thD"/>
+                                <include reference="TFU-Ls-tc2"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="languagePickerView" destination="Vjs-mp-aL1" id="p5L-ZF-U0b"/>
+                        <outlet property="returnButton" destination="wXE-AV-4Ud" id="z7H-UL-Scj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qqT-tU-SNa" userLabel="First Responder" sceneMemberID="firstResponder"/>

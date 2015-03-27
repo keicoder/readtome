@@ -161,7 +161,7 @@
 	
 	//Color
 	UIColor *colorNormal1 = [UIColor colorWithRed:0.396 green:0.675 blue:0.82 alpha:1];
-	UIColor *colorNormal2 = [UIColor colorWithRed:0.192 green:0.667 blue:0.224 alpha:1];
+	UIColor *colorNormal2 = [UIColor colorWithRed:0.906 green:0.298 blue:0.235 alpha:1];
 	
 	self.selectVoiceView.backgroundColor = colorNormal1;
 	self.pitchView.backgroundColor = colorNormal1;
