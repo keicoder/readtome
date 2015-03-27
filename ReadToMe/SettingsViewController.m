@@ -86,6 +86,8 @@
 
 - (void)getTheBackgroundPlaySwitchValue
 {
+	_backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
+	
 	if ([_backgroundPlayValue isKindOfClass:[NSNull class]]) {
 		
 		_backgroundPlayValue = @"isOn";
