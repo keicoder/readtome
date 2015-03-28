@@ -24,6 +24,8 @@
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *menuView;
+@property (weak, nonatomic) IBOutlet UIView *equalizerView;
+
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
 @property (nonatomic, weak) IBOutlet UIButton *settingsButton;
@@ -38,12 +40,15 @@
 
 @property (nonatomic, strong) UIPasteboard *pasteBoard;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
+
 @end
 
 
 @implementation ContainerViewController
 {
 	BOOL _paused;
+	BOOL _volumeViewExpanded;
 	NSUserDefaults *_defaults;
 	NSString *_selectedLanguage;
 }
@@ -53,6 +58,8 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	_volumeViewExpanded = YES;
+	[self adjustEqualizerViewHeight];
 	_defaults = [NSUserDefaults standardUserDefaults];
 	_paused = YES;
 	self.pasteBoard = [UIPasteboard generalPasteboard];
@@ -117,13 +124,11 @@
 		utterance.postUtteranceDelay = 0.3f;
 		
 		if (_paused == YES) {
-			
 			[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
 			[self.synthesizer continueSpeaking];
 			_paused = NO;
 			
 		} else {
-			
 			[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 			_paused = YES;
@@ -131,7 +136,6 @@
 		}
 		
 		if (self.synthesizer.isSpeaking == NO) {
-			
 			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
 			[self.synthesizer speakUtterance:utterance];
 			
@@ -157,6 +161,20 @@
 
 #pragma mark - Button Action Methods
 
+- (IBAction)resetButtonTapped:(id)sender
+{
+	NSLog(@"Reset Button Tapped");
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	[self pasteAndSpeechText:self.pasteBoard];
+}
+
+
+- (IBAction)equalizerButtonTappped:(id)sender
+{
+	[self adjustEqualizerViewHeight];
+}
+
+
 - (IBAction)settingsButtonTapped:(id)sender
 {
 	NSLog(@"self.settingsButton Tapped");
@@ -165,14 +183,6 @@
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	SettingsViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
-}
-
-
-- (IBAction)resetButtonTapped:(id)sender
-{
-	NSLog(@"Reset Button Tapped");
-	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self pasteAndSpeechText:self.pasteBoard];
 }
 
 
@@ -212,12 +222,34 @@
 }
 
 
+#pragma mark - Show volumeView when user touches speakerIcon
+
+- (void)adjustEqualizerViewHeight
+{
+	if (_volumeViewExpanded == NO) {
+		self.equalizerViewHeightConstraint.constant = 60;
+		_volumeViewExpanded = YES;
+	} else {
+		self.equalizerViewHeightConstraint.constant = 0;
+		_volumeViewExpanded = NO;
+	}
+	
+	CGFloat duration = 0.3f;
+	CGFloat delay = 0.3f;
+	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+		
+		[self.view layoutIfNeeded];
+		
+	} completion:^(BOOL finished) { }];
+}
+
+
 #pragma mark - Configure UI
 
 - (void)configureUI
 {
 	self.menuView.backgroundColor = [UIColor colorWithRed:0.396 green:0.675 blue:0.82 alpha:1];
-	
+	self.equalizerView.backgroundColor = [UIColor colorWithRed:0.137 green:0.271 blue:0.424 alpha:1];
 	float cornerRadius = self.playPauseButton.bounds.size.height/2;
 	self.playPauseButton.layer.cornerRadius = cornerRadius;
 	self.settingsButton.layer.cornerRadius = cornerRadius;
