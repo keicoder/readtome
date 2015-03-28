@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
+#define kSelectedLanguage @"kSelectedLanguage"
+
+
 #import "LanguagePickerViewController.h"
 #import "UIImage+ChangeColor.h"
 
@@ -18,14 +21,16 @@
 
 
 @implementation LanguagePickerViewController
+{
+	NSString *_languageCode;
+}
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	[self languageDictionary];
-	[self languageCodes];
-	NSLog (@"self.languageDictionary: %@\n", self.languageDictionary);
-	NSLog (@"self.languageCodes: %@\n", self.languageCodes);
+	
+	[self restoreUserPreferences];
 	
 	NSUInteger index = [self.languageCodes indexOfObject:self.selectedLanguage];
 	if (index != NSNotFound)
@@ -34,6 +39,21 @@
 	}
 	
 	[self configureUI];
+}
+
+
+#pragma mark - State Restoration
+
+- (void)restoreUserPreferences
+{
+	NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
+	
+	NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+	NSDictionary *defaults = @{ kSelectedLanguage:currentLanguageCode };
+	[preferences registerDefaults:defaults];
+	
+	self.selectedLanguage = [preferences stringForKey:kSelectedLanguage];
+	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
 }
 
 
@@ -88,8 +108,9 @@
 {
 	self.selectedLanguage = [self.languageCodes objectAtIndex:row];
 	NSUserDefaults *defults = [NSUserDefaults standardUserDefaults];
-	[defults setObject:self.selectedLanguage forKey:@"kSelectedLanguage"];
+	[defults setObject:self.selectedLanguage forKey:kSelectedLanguage];
 	[defults synchronize];
+	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
 }
 
 

@@ -12,6 +12,7 @@
 #define kPause					[UIImage imageNamed:@"pause"]
 #define kPlay					[UIImage imageNamed:@"play"]
 #define kSettings				[UIImage imageNamed:@"settings"]
+#define kSelectedLanguage		@"kSelectedLanguage"
 
 
 #import "ContainerViewController.h"
@@ -32,7 +33,6 @@
 
 @property (nonatomic, strong) NSArray *languageCodes;
 @property (nonatomic, strong) NSDictionary *languageDictionary;
-@property (strong, nonatomic) NSString *selectedLanguage;
 
 @property (strong, nonatomic) NSDictionary *paragraphAttributes;
 
@@ -44,6 +44,8 @@
 @implementation ContainerViewController
 {
 	BOOL _paused;
+	NSUserDefaults *_defaults;
+	NSString *_selectedLanguage;
 }
 
 #pragma mark - View life cycle
@@ -51,6 +53,7 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	_defaults = [NSUserDefaults standardUserDefaults];
 	_paused = YES;
 	self.pasteBoard = [UIPasteboard generalPasteboard];
 	self.pasteBoard.persistent = YES;
@@ -58,52 +61,87 @@
 	self.textView.text = @"Hit the play button above to start your text. Pause it at any time. Resume it at any time. ";
 	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
 	NSLog (@"[AVSpeechSynthesisVoice speechVoices]: %@\n", [AVSpeechSynthesisVoice speechVoices]);
+	[self selectedLanguage];
+	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+	self.synthesizer.delegate = self;
 }
 
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	[self selectedLanguage];
+}
+
+
+#pragma mark - State Restoration
+
+- (NSString *)selectedLanguage
+{
+	_selectedLanguage = [_defaults objectForKey:kSelectedLanguage];
+	
+	if ([_selectedLanguage isKindOfClass:[NSNull class]]) {
+		
+		_selectedLanguage = @"en-US";
+		[_defaults setObject:_selectedLanguage forKey:kSelectedLanguage];
+		[_defaults synchronize];
+		
+	} else {
+		
+		_selectedLanguage = [_defaults objectForKey:kSelectedLanguage];
+		
+	}
+	
+	NSLog (@"_selectedLanguage: %@\n", _selectedLanguage);
+	return _selectedLanguage;
+}
+
+
+#pragma mark - Speech
 
 - (IBAction)pasteAndSpeechText:(UIPasteboard *)pasteboard
 {
 	[self.textView resignFirstResponder];
 	self.textView.text = @"";
 	
-	if (self.pasteBoard == nil) {
+	if (self.pasteBoard != nil) {
+		
+		self.textView.text = [self.pasteBoard string];
+		
+		AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+		utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:_selectedLanguage];
+		utterance.rate = 0.07;
+		utterance.pitchMultiplier = 1.0;
+		utterance.volume = 0.5;
+		utterance.preUtteranceDelay = 0.3f;
+		utterance.postUtteranceDelay = 0.3f;
+		
+		if (_paused == YES) {
+			
+			[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+			[self.synthesizer continueSpeaking];
+			_paused = NO;
+			
+		} else {
+			
+			[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+			_paused = YES;
+			
+		}
+		
+		if (self.synthesizer.isSpeaking == NO) {
+			
+			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
+			[self.synthesizer speakUtterance:utterance];
+			
+		}
+		
+	} else {
 		
 		NSString *title = @"No Text to speech";
 		NSString *message = @"There are no text to speech.";
-		
-		__weak UITextView *textView = self.textView;
-		
-		[[NSOperationQueue mainQueue] addOperationWithBlock:^{
-			
-			textView.text = title;
-			self.utteranceString = textView.text;
-			
-			if (_paused == YES) {
-				[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-				[self.synthesizer continueSpeaking];
-				_paused = NO;
-			} else {
-				[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-				_paused = YES;
-				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-			}
-			
-			if (self.synthesizer.isSpeaking == NO) {
-				
-				self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-				self.synthesizer.delegate = self;
-				
-				AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
-				utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
-				[utterance setRate:0.07];
-				utterance.pitchMultiplier = 1.1; // higher pitch
-				utterance.preUtteranceDelay = 0.2f;
-				utterance.postUtteranceDelay = 0.2f;
-				
-				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
-				[self.synthesizer speakUtterance:utterance];
-			}
-		}];
 		
 		UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
 		[sheet addAction:[UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
@@ -114,42 +152,6 @@
 		sheet.popoverPresentationController.sourceRect = self.view.frame;
 		
 		[self presentViewController:sheet animated:YES completion:nil];
-		
-	} else {
-		
-		__weak UITextView *textView = self.textView;
-		
-		[[NSOperationQueue mainQueue] addOperationWithBlock:^{
-			
-			textView.text = [self.pasteBoard string];
-			self.utteranceString = textView.text;
-			
-			if (_paused == YES) {
-				[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-				[self.synthesizer continueSpeaking];
-				_paused = NO;
-			} else {
-				[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-				_paused = YES;
-				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-			}
-			
-			if (self.synthesizer.isSpeaking == NO) {
-				
-				self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-				self.synthesizer.delegate = self;
-				
-				AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.utteranceString];
-				utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
-				[utterance setRate:0.07];
-				utterance.pitchMultiplier = 1.1; // higher pitch
-				utterance.preUtteranceDelay = 0.2f;
-				utterance.postUtteranceDelay = 0.2f;
-				
-				[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
-				[self.synthesizer speakUtterance:utterance];
-			}
-		}];
 	}
 }
 
@@ -187,7 +189,6 @@
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-	NSLog(@"Playback finished");
 }
 
 
@@ -200,17 +201,12 @@
 		UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
 		
 		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-		paragraphStyle.firstLineHeadIndent = 14.0f;
-		paragraphStyle.lineSpacing = 6.0f;
-		paragraphStyle.paragraphSpacing = 14.0f;
+		paragraphStyle.firstLineHeadIndent = 0.0f;
+		paragraphStyle.lineSpacing = 5.0f;
+		paragraphStyle.paragraphSpacing = 10.0f;
 		paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 		
-		NSShadow *shadow = [[NSShadow alloc] init];
-		[shadow setShadowColor:[UIColor grayColor]];
-		[shadow setShadowOffset:CGSizeMake(0, 0)];
-		[shadow setShadowBlurRadius:0];
-		
-		_paragraphAttributes = @{ NSFontAttributeName: font, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [UIColor darkTextColor], NSShadowAttributeName: shadow };
+		_paragraphAttributes = @{ NSFontAttributeName: font, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [UIColor darkTextColor] };
 	}
 	
 	return _paragraphAttributes;
