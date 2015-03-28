@@ -19,12 +19,21 @@
 #import <AVFoundation/AVFoundation.h>
 #import "UIImage+ChangeColor.h"
 #import "SettingsViewController.h"
+#import "LanguagePickerViewController.h"
+#import "ListViewController.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate>
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIView *equalizerView;
+@property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *pitchLabel;
+@property (weak, nonatomic) IBOutlet UILabel *rateLabel;
+@property (weak, nonatomic) IBOutlet UISlider *volumeSlider;
+@property (weak, nonatomic) IBOutlet UISlider *pitchSlider;
+@property (weak, nonatomic) IBOutlet UISlider *rateSlider;
 
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
@@ -40,15 +49,13 @@
 
 @property (nonatomic, strong) UIPasteboard *pasteBoard;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
-
 @end
 
 
 @implementation ContainerViewController
 {
 	BOOL _paused;
-	BOOL _volumeViewExpanded;
+	BOOL _equalizerViewExpanded;
 	NSUserDefaults *_defaults;
 	NSString *_selectedLanguage;
 }
@@ -58,7 +65,7 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-	_volumeViewExpanded = YES;
+	_equalizerViewExpanded = YES;
 	[self adjustEqualizerViewHeight];
 	_defaults = [NSUserDefaults standardUserDefaults];
 	_paused = YES;
@@ -161,11 +168,25 @@
 
 #pragma mark - Button Action Methods
 
+- (IBAction)listButtonTapped:(id)sender
+{
+	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
+	[self presentViewController:controller animated:YES completion:^{ }];
+}
+
+
 - (IBAction)resetButtonTapped:(id)sender
 {
 	NSLog(@"Reset Button Tapped");
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self pasteAndSpeechText:self.pasteBoard];
+}
+
+
+- (IBAction)languageButtonTapped:(id)sender
+{
+	LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
+	[self presentViewController:controller animated:YES completion:^{ }];
 }
 
 
@@ -222,21 +243,58 @@
 }
 
 
-#pragma mark - Show volumeView when user touches speakerIcon
+#pragma mark - Slider value changed
+
+- (IBAction)volumeSliderValueChanged:(UISlider *)sender
+{
+	NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
+}
+
+
+- (IBAction)pitchSliderValueChanged:(UISlider *)sender
+{
+	NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
+}
+
+
+- (IBAction)rateSliderValueChanged:(UISlider *)sender
+{
+	NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
+}
+
+
+#pragma mark - Show equalizer view when user touches equalizer button
 
 - (void)adjustEqualizerViewHeight
 {
-	if (_volumeViewExpanded == NO) {
-		self.equalizerViewHeightConstraint.constant = 60;
-		_volumeViewExpanded = YES;
+	if (_equalizerViewExpanded == NO) {
+		self.equalizerViewHeightConstraint.constant = 180;
+		_equalizerViewExpanded = YES;
 	} else {
 		self.equalizerViewHeightConstraint.constant = 0;
-		_volumeViewExpanded = NO;
+		_equalizerViewExpanded = NO;
 	}
 	
 	CGFloat duration = 0.3f;
 	CGFloat delay = 0.3f;
 	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+		
+		if (_equalizerViewExpanded == NO) {
+			self.volumeLabel.alpha = 0.0;
+			self.pitchLabel.alpha = 0.0;
+			self.rateLabel.alpha = 0.0;
+			self.volumeSlider.alpha = 0.0;
+			self.pitchSlider.alpha = 0.0;
+			self.rateSlider.alpha = 0.0;
+			
+		} else {
+			self.volumeLabel.alpha = 1.0;
+			self.pitchLabel.alpha = 1.0;
+			self.rateLabel.alpha = 1.0;
+			self.volumeSlider.alpha = 1.0;
+			self.pitchSlider.alpha = 1.0;
+			self.rateSlider.alpha = 1.0;
+		}
 		
 		[self.view layoutIfNeeded];
 		
@@ -248,8 +306,8 @@
 
 - (void)configureUI
 {
-	self.menuView.backgroundColor = [UIColor colorWithRed:0.396 green:0.675 blue:0.82 alpha:1];
-	self.equalizerView.backgroundColor = [UIColor colorWithRed:0.137 green:0.271 blue:0.424 alpha:1];
+	self.menuView.backgroundColor = [UIColor colorWithRed:0.161 green:0.502 blue:0.725 alpha:1];
+	self.equalizerView.backgroundColor = [UIColor colorWithRed:0.204 green:0.596 blue:0.859 alpha:1];
 	float cornerRadius = self.playPauseButton.bounds.size.height/2;
 	self.playPauseButton.layer.cornerRadius = cornerRadius;
 	self.settingsButton.layer.cornerRadius = cornerRadius;
