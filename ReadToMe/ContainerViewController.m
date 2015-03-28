@@ -103,11 +103,10 @@
 - (IBAction)pasteAndSpeechText:(UIPasteboard *)pasteboard
 {
 	[self.textView resignFirstResponder];
-	self.textView.text = @"";
 	
-	if (self.pasteBoard != nil) {
-		
-		self.textView.text = [self.pasteBoard string];
+	self.textView.text = [self.pasteBoard string];
+	
+	if (![self.textView.text isEqualToString:@""]) {
 		
 		AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
 		utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:_selectedLanguage];
