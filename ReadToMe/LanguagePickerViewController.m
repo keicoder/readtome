@@ -11,6 +11,7 @@
 
 #import "LanguagePickerViewController.h"
 #import "UIImage+ChangeColor.h"
+#import "ContainerViewController.h"
 
 
 @interface LanguagePickerViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
@@ -59,8 +60,6 @@
 
 #pragma mark - Language Accessors
 
-// Language codes used to create custom voices. Array is sorted based
-// on the display names in the language dictionary
 - (NSArray *)languageCodes
 {
 	if (!_languageCodes)
@@ -71,7 +70,6 @@
 }
 
 
-// Map between language codes and locale specific display name
 - (NSDictionary *)languageDictionary
 {
 	if (!_languageDictionary)
@@ -104,13 +102,19 @@
 	return [self.languageCodes count];
 }
 
+
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
 	self.selectedLanguage = [self.languageCodes objectAtIndex:row];
 	NSUserDefaults *defults = [NSUserDefaults standardUserDefaults];
 	[defults setObject:self.selectedLanguage forKey:kSelectedLanguage];
 	[defults synchronize];
-	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
+	
+	//Post a notification when picked
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"DidPickedLanguageNotification" object:nil userInfo:nil];
+	
+	ContainerViewController *controller = (ContainerViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
+	controller.selectedLanguage = self.selectedLanguage;
 }
 
 

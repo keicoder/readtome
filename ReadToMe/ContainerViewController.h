@@ -10,6 +10,7 @@
 
 @interface ContainerViewController : UIViewController
 
+@property (nonatomic, strong) NSString *selectedLanguage;
 
 @end
 

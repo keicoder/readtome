@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7528.3" systemVersion="14D113c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D113c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7518.3"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Container View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ContainerViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ContainerViewController" id="BYZ-38-t0r" customClass="ContainerViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -35,25 +35,25 @@
                                             <action selector="listButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="L0P-Lb-O0Z"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="ResetButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="52" y="8" width="44" height="44"/>
-                                        <accessibility key="accessibilityConfiguration" label="ResetButton"/>
-                                        <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
-                                        <state key="normal" image="reset">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="resetButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7lY-I9-lMD"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djw-qX-P0a" userLabel="PlayPauseButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="100" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="52" y="8" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" image="pause">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="pasteAndSpeechText:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CnT-gK-VfD"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="StopButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="100" y="8" width="44" height="44"/>
+                                        <accessibility key="accessibilityConfiguration" label="ResetButton"/>
+                                        <inset key="contentEdgeInsets" minX="9" minY="9" maxX="9" maxY="9"/>
+                                        <state key="normal" image="stop">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="stopButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8ZH-e9-4OX"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xtD-FV-k3Q" userLabel="LanguageButton" customClass="PopAnimationClearButton">
@@ -89,28 +89,36 @@
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="0.84303140639999996" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="leading" secondItem="6rW-tW-Hkj" secondAttribute="trailing" constant="4" id="03S-KF-yji"/>
-                                    <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="6rW-tW-Hkj" secondAttribute="height" id="1HC-9d-lUt"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="width" secondItem="UuS-46-ldZ" secondAttribute="width" id="2ED-ul-oPF"/>
-                                    <constraint firstItem="UuS-46-ldZ" firstAttribute="leading" secondItem="xtD-FV-k3Q" secondAttribute="trailing" constant="4" id="4RN-F3-zOL"/>
-                                    <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="6rW-tW-Hkj" secondAttribute="width" id="4Wn-so-64f"/>
+                                    <constraint firstItem="UuS-46-ldZ" firstAttribute="leading" secondItem="xtD-FV-k3Q" secondAttribute="trailing" constant="4" id="4RN-F3-zOL">
+                                        <variation key="heightClass=compact" constant="20"/>
+                                    </constraint>
                                     <constraint firstAttribute="height" constant="60" id="4mi-Pe-nfX"/>
+                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="6AE-ZV-dTp"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="width" secondItem="BhP-KP-gJu" secondAttribute="width" id="A6T-bj-irn"/>
-                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="centerY" secondItem="6rW-tW-Hkj" secondAttribute="centerY" id="CU4-VW-Kzo"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="UuS-46-ldZ" secondAttribute="centerY" constant="-1" id="P8z-Q8-ReA"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="width" secondItem="xtD-FV-k3Q" secondAttribute="width" id="RXp-ax-cCx"/>
+                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="leading" secondItem="djw-qX-P0a" secondAttribute="trailing" constant="4" id="SLU-OA-313">
+                                        <variation key="heightClass=compact" constant="20"/>
+                                    </constraint>
+                                    <constraint firstItem="djw-qX-P0a" firstAttribute="leading" secondItem="6rW-tW-Hkj" secondAttribute="trailing" constant="4" id="Szb-tz-PwF">
+                                        <variation key="heightClass=compact" constant="20"/>
+                                    </constraint>
+                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="height" secondItem="gGU-LD-ksn" secondAttribute="height" id="TD8-gF-DqH"/>
                                     <constraint firstAttribute="centerY" secondItem="6rW-tW-Hkj" secondAttribute="centerY" id="XCj-M5-VK5"/>
-                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="height" secondItem="6rW-tW-Hkj" secondAttribute="height" id="Xrc-fx-nRq"/>
-                                    <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="6rW-tW-Hkj" secondAttribute="centerY" id="YUb-yc-nec"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="height" secondItem="BhP-KP-gJu" secondAttribute="height" id="aKc-a5-Wsp"/>
-                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="width" secondItem="6rW-tW-Hkj" secondAttribute="width" id="eGU-6g-cL9"/>
+                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="height" secondItem="djw-qX-P0a" secondAttribute="height" id="bL5-P7-mHC"/>
+                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="width" secondItem="gGU-LD-ksn" secondAttribute="width" id="bWt-LD-pWy"/>
+                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="width" secondItem="djw-qX-P0a" secondAttribute="width" id="dYS-wT-sPe"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="BhP-KP-gJu" secondAttribute="centerY" id="hIN-Hl-eXZ"/>
+                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="gGU-LD-ksn" secondAttribute="centerY" id="kPB-8W-clI"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="xtD-FV-k3Q" secondAttribute="centerY" constant="-1" id="lfi-fo-VZW"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="4" id="mvw-3V-OcE"/>
                                     <constraint firstAttribute="trailing" secondItem="BhP-KP-gJu" secondAttribute="trailing" constant="4" id="nTs-60-f5O"/>
-                                    <constraint firstItem="djw-qX-P0a" firstAttribute="leading" secondItem="gGU-LD-ksn" secondAttribute="trailing" constant="4" id="nf3-d6-vLt"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="height" secondItem="xtD-FV-k3Q" secondAttribute="height" id="r6l-x3-lfR"/>
-                                    <constraint firstItem="BhP-KP-gJu" firstAttribute="leading" secondItem="UuS-46-ldZ" secondAttribute="trailing" constant="4" id="rBd-B0-aip"/>
+                                    <constraint firstItem="BhP-KP-gJu" firstAttribute="leading" secondItem="UuS-46-ldZ" secondAttribute="trailing" constant="4" id="rBd-B0-aip">
+                                        <variation key="heightClass=compact" constant="20"/>
+                                    </constraint>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="height" secondItem="UuS-46-ldZ" secondAttribute="height" id="w91-xn-TNx"/>
                                 </constraints>
                             </view>
@@ -221,7 +229,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <outlet property="playPauseButton" destination="djw-qX-P0a" id="o9K-Lj-sya"/>
                         <outlet property="rateLabel" destination="Skf-hE-fIQ" id="bei-Lv-jda"/>
                         <outlet property="rateSlider" destination="Kur-ii-tqL" id="31K-fQ-Cqb"/>
-                        <outlet property="settingsButton" destination="BhP-KP-gJu" id="MPQ-FS-lAw"/>
+                        <outlet property="stopButton" destination="gGU-LD-ksn" id="7Rf-9p-RmK"/>
                         <outlet property="textView" destination="VWj-si-BKE" id="TKZ-9Q-pKe"/>
                         <outlet property="volumeLabel" destination="Bak-fz-q7P" id="UcD-a3-3yM"/>
                         <outlet property="volumeSlider" destination="ypv-Nl-rZa" id="Uct-dq-Nbm"/>
@@ -589,8 +597,8 @@ When the button in the toolbar is tapped, an activity view controller is present
         <image name="megaphone" width="44" height="43"/>
         <image name="menu" width="43" height="35"/>
         <image name="pause" width="18" height="32"/>
-        <image name="reset" width="33" height="32"/>
         <image name="settings" width="46" height="47"/>
         <image name="speaker" width="32" height="31"/>
+        <image name="stop" width="44" height="44"/>
     </resources>
 </document>

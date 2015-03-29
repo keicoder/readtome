@@ -12,9 +12,9 @@
 @interface LanguagePickerViewController : UIViewController
 
 @property (nonatomic, weak) IBOutlet UIPickerView *languagePickerView;
-@property (strong, nonatomic) AVSpeechSynthesizer *synthesizer;
+@property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
 @property (nonatomic, strong) NSArray *languageCodes;
 @property (nonatomic, strong) NSDictionary *languageDictionary;
-@property (strong, nonatomic) NSString *selectedLanguage;
+@property (nonatomic, strong) NSString *selectedLanguage;
 
 @end

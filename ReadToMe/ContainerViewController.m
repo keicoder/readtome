@@ -37,9 +37,10 @@
 
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
-@property (nonatomic, weak) IBOutlet UIButton *settingsButton;
+@property (weak, nonatomic) IBOutlet UIButton *stopButton;
 
 @property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
+@property (nonatomic, strong) AVSpeechUtterance *utterance;
 @property (nonatomic, strong) NSString *utteranceString;
 
 @property (nonatomic, strong) NSArray *languageCodes;
@@ -57,7 +58,6 @@
 	BOOL _paused;
 	BOOL _equalizerViewExpanded;
 	NSUserDefaults *_defaults;
-	NSString *_selectedLanguage;
 }
 
 #pragma mark - View life cycle
@@ -78,6 +78,7 @@
 	[self selectedLanguage];
 	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
 	self.synthesizer.delegate = self;
+	[self addNotificationObserver];
 }
 
 
@@ -86,6 +87,7 @@
 {
 	[super viewWillAppear:animated];
 	[self selectedLanguage];
+	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
 }
 
 
@@ -122,30 +124,30 @@
 	
 	if (![self.textView.text isEqualToString:@""]) {
 		
-		AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-		utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:_selectedLanguage];
-		utterance.rate = 0.07;
-		utterance.pitchMultiplier = 1.0;
-		utterance.volume = 0.5;
-		utterance.preUtteranceDelay = 0.3f;
-		utterance.postUtteranceDelay = 0.3f;
+		self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+		self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
+		self.utterance.rate = 0.07;
+		self.utterance.pitchMultiplier = 1.0;
+		self.utterance.volume = 0.5;
+		self.utterance.preUtteranceDelay = 0.3f;
+		self.utterance.postUtteranceDelay = 0.3f;
 		
 		if (_paused == YES) {
 			[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
 			[self.synthesizer continueSpeaking];
 			_paused = NO;
-			
+			[self adjustStopButtonAlpha:1.0];
 		} else {
 			[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 			_paused = YES;
-			
+			[self adjustStopButtonAlpha:0.0];
 		}
 		
 		if (self.synthesizer.isSpeaking == NO) {
 			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
-			[self.synthesizer speakUtterance:utterance];
-			
+			[self.synthesizer speakUtterance:self.utterance];
+			[self adjustStopButtonAlpha:1.0];
 		}
 		
 	} else {
@@ -154,7 +156,7 @@
 		NSString *message = @"There are no text to speech.";
 		
 		UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-		[sheet addAction:[UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
+		[sheet addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
 			NSLog(@"Tapped OK");
 		}]];
 		
@@ -170,14 +172,16 @@
 
 - (IBAction)listButtonTapped:(id)sender
 {
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	_paused = YES;
+	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
 }
 
 
-- (IBAction)resetButtonTapped:(id)sender
+- (IBAction)stopButtonTapped:(id)sender
 {
-	NSLog(@"Reset Button Tapped");
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self pasteAndSpeechText:self.pasteBoard];
 }
@@ -185,6 +189,10 @@
 
 - (IBAction)languageButtonTapped:(id)sender
 {
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	_paused = YES;
+	[self adjustStopButtonAlpha:0.0];
 	LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
 }
@@ -193,12 +201,14 @@
 - (IBAction)equalizerButtonTappped:(id)sender
 {
 	[self adjustEqualizerViewHeight];
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	_paused = YES;
+	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 }
 
 
 - (IBAction)settingsButtonTapped:(id)sender
 {
-	NSLog(@"self.settingsButton Tapped");
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
@@ -218,6 +228,7 @@
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	[self adjustStopButtonAlpha:0.0];
 	_paused = YES;
 }
 
@@ -260,6 +271,33 @@
 - (IBAction)rateSliderValueChanged:(UISlider *)sender
 {
 	NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
+}
+
+
+#pragma mark - Listening Notification
+
+- (void)addNotificationObserver
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPickedLanguageNotification:) name:@"DidPickedLanguageNotification" object:nil];
+}
+
+
+- (void)didPickedLanguageNotification:(NSNotification *)notification
+{
+	NSLog(@"DidPickedLanguageNotification Recieved");
+//	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
+}
+
+
+
+#pragma mark - Show stop button when speech started
+
+- (void)adjustStopButtonAlpha:(CGFloat)alpha
+{
+	CGFloat duration = 0.25f;
+	[UIView animateWithDuration:duration animations:^{
+		self.stopButton.alpha = alpha;
+	}completion:^(BOOL finished) { }];
 }
 
 
@@ -308,14 +346,11 @@
 {
 	self.menuView.backgroundColor = [UIColor colorWithRed:0.161 green:0.502 blue:0.725 alpha:1];
 	self.equalizerView.backgroundColor = [UIColor colorWithRed:0.204 green:0.596 blue:0.859 alpha:1];
-	float cornerRadius = self.playPauseButton.bounds.size.height/2;
-	self.playPauseButton.layer.cornerRadius = cornerRadius;
-	self.settingsButton.layer.cornerRadius = cornerRadius;
 	
 	//Image View
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	[self.settingsButton setImage:kSettings forState:UIControlStateNormal];
 	
+	self.stopButton.alpha = 0.0;
 }
 
 
