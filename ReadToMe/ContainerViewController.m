@@ -13,7 +13,9 @@
 #define kPlay					[UIImage imageNamed:@"play"]
 #define kSettings				[UIImage imageNamed:@"settings"]
 #define kSelectedLanguage		@"kSelectedLanguage"
-
+#define kVolumeSliderValue		@"kVolumeSliderValue"
+#define kPitchSliderValue		@"kPitchSliderValue"
+#define kRateSliderValue		@"kRateSliderValue"
 
 #import "ContainerViewController.h"
 #import <AVFoundation/AVFoundation.h>
@@ -58,6 +60,9 @@
 	BOOL _paused;
 	BOOL _equalizerViewExpanded;
 	NSUserDefaults *_defaults;
+	CGFloat _volumeSliderValue;
+	CGFloat _pitchSliderValue;
+	CGFloat _rateSliderValue;
 }
 
 #pragma mark - View life cycle
@@ -65,17 +70,27 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	
+	_equalizerViewExpanded = NO;
 	[self configureUI];
-	_defaults = [NSUserDefaults standardUserDefaults];
-	_paused = YES;
+	
+	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+	self.synthesizer.delegate = self;
 	self.pasteBoard = [UIPasteboard generalPasteboard];
 	self.pasteBoard.persistent = YES;
 	self.textView.text = @"Hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
 	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
-	NSLog (@"[AVSpeechSynthesisVoice speechVoices]: %@\n", [AVSpeechSynthesisVoice speechVoices]);
+	
+	_defaults = [NSUserDefaults standardUserDefaults];
+	_paused = YES;
+	
 	[self selectedLanguage];
-	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-	self.synthesizer.delegate = self;
+	[self volumeSliderValue];
+	[self pitchSliderValue];
+	[self rateSliderValue];
+	
+	
+	
 	[self addNotificationObserver];
 }
 
@@ -112,6 +127,36 @@
 }
 
 
+- (CGFloat)volumeSliderValue
+{
+	_volumeSliderValue = [_defaults floatForKey:kVolumeSliderValue];
+	
+	self.volumeSlider.value = _volumeSliderValue;
+	NSLog (@"_volumeSliderValue: %f\n", _volumeSliderValue);
+	return _volumeSliderValue;
+}
+
+
+- (CGFloat)pitchSliderValue
+{
+	_pitchSliderValue = [_defaults floatForKey:kPitchSliderValue];
+	
+	self.pitchSlider.value = _pitchSliderValue;
+	NSLog (@"_pitchSliderValue: %f\n", _pitchSliderValue);
+	return _pitchSliderValue;
+}
+
+
+- (CGFloat)rateSliderValue
+{
+	_rateSliderValue = [_defaults floatForKey:kRateSliderValue];
+	
+	self.rateSlider.value = _rateSliderValue;
+	NSLog (@"_rateSliderValue: %f\n", _rateSliderValue);
+	return _rateSliderValue;
+}
+
+
 #pragma mark - Speech
 
 - (IBAction)pasteAndSpeechText:(UIPasteboard *)pasteboard
@@ -124,9 +169,9 @@
 		
 		self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
 		self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
-		self.utterance.rate = 0.07;
-		self.utterance.pitchMultiplier = 1.0;
-		self.utterance.volume = 0.5;
+		self.utterance.rate = _rateSliderValue; //0.07;
+		self.utterance.pitchMultiplier = _pitchSliderValue; //1.0;
+		self.utterance.volume = _volumeSliderValue; //0.5;
 		self.utterance.preUtteranceDelay = 0.3f;
 		self.utterance.postUtteranceDelay = 0.3f;
 		
@@ -172,6 +217,7 @@
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
+	[self adjustStopButtonAlpha:0.0];
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
@@ -181,16 +227,26 @@
 - (IBAction)stopButtonTapped:(id)sender
 {
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	[self adjustStopButtonAlpha:0.0];
 	[self pasteAndSpeechText:self.pasteBoard];
 }
 
 
 - (IBAction)languageButtonTapped:(id)sender
 {
+	if (_equalizerViewExpanded == YES) {
+		[self adjustEqualizerViewHeight];
+	}
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
 	[self adjustStopButtonAlpha:0.0];
+	[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.4];
+}
+
+
+- (void)showLanguagePickerView:(id)sender
+{
 	LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
 }
@@ -198,10 +254,10 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self adjustEqualizerViewHeight];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 }
 
 
@@ -209,6 +265,7 @@
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
+	[self adjustStopButtonAlpha:0.0];
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	SettingsViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
@@ -219,7 +276,9 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
 {
-	
+	self.utterance.volume = _volumeSliderValue;
+	self.utterance.pitchMultiplier = _pitchSliderValue;
+	self.utterance.rate = _rateSliderValue;
 }
 
 
@@ -256,19 +315,41 @@
 
 - (IBAction)volumeSliderValueChanged:(UISlider *)sender
 {
-	NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
+	NSLog (@"self.volumeSlider.value: %f\n", sender.value);
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	_paused = YES;
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	[self adjustStopButtonAlpha:0.0];
+	_volumeSliderValue = sender.value;
+	[_defaults setFloat:sender.value forKey:kVolumeSliderValue];
+	[_defaults synchronize];
+	
 }
 
 
 - (IBAction)pitchSliderValueChanged:(UISlider *)sender
 {
-	NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
+	NSLog (@"self.pitchSlider.value: %f\n", sender.value);
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	_paused = YES;
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	[self adjustStopButtonAlpha:0.0];
+	_pitchSliderValue = sender.value;
+	[_defaults setFloat:sender.value forKey:kPitchSliderValue];
+	[_defaults synchronize];
 }
 
 
 - (IBAction)rateSliderValueChanged:(UISlider *)sender
 {
 	NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	_paused = YES;
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	[self adjustStopButtonAlpha:0.0];
+	_rateSliderValue = sender.value;
+	[_defaults setFloat:self.rateSlider.value forKey:kRateSliderValue];
+	[_defaults synchronize];
 }
 
 
@@ -283,7 +364,7 @@
 - (void)didPickedLanguageNotification:(NSNotification *)notification
 {
 	NSLog(@"DidPickedLanguageNotification Recieved");
-//	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
+	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
 }
 
 
@@ -303,36 +384,36 @@
 
 - (void)adjustEqualizerViewHeight
 {
-	if (_equalizerViewExpanded == NO) {
-		self.equalizerViewHeightConstraint.constant = 180;
-		_equalizerViewExpanded = YES;
-	} else {
-		self.equalizerViewHeightConstraint.constant = 0;
+	if (_equalizerViewExpanded == YES) {
+		self.equalizerViewHeightConstraint.constant = 0.0;
 		_equalizerViewExpanded = NO;
+	} else {
+		self.equalizerViewHeightConstraint.constant = 180.0;
+		_equalizerViewExpanded = YES;
 	}
 	
 	CGFloat duration = 0.3f;
 	CGFloat delay = 0.3f;
 	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
 		
-		if (_equalizerViewExpanded == NO) {
-			self.volumeLabel.alpha = 0.0;
-			self.pitchLabel.alpha = 0.0;
-			self.rateLabel.alpha = 0.0;
-			self.volumeSlider.alpha = 0.0;
-			self.pitchSlider.alpha = 0.0;
-			self.rateSlider.alpha = 0.0;
-			
-		} else {
+		[self.view layoutIfNeeded];
+		
+		if (_equalizerViewExpanded == YES) {
 			self.volumeLabel.alpha = 1.0;
 			self.pitchLabel.alpha = 1.0;
 			self.rateLabel.alpha = 1.0;
 			self.volumeSlider.alpha = 1.0;
 			self.pitchSlider.alpha = 1.0;
 			self.rateSlider.alpha = 1.0;
+			
+		} else {
+			self.volumeLabel.alpha = 0.0;
+			self.pitchLabel.alpha = 0.0;
+			self.rateLabel.alpha = 0.0;
+			self.volumeSlider.alpha = 0.0;
+			self.pitchSlider.alpha = 0.0;
+			self.rateSlider.alpha = 0.0;
 		}
-		
-		[self.view layoutIfNeeded];
 		
 	} completion:^(BOOL finished) { }];
 }
@@ -352,7 +433,6 @@
 	self.stopButton.alpha = 0.0;
 	
 	//Equalizer View
-	_equalizerViewExpanded = NO;
 	self.volumeLabel.alpha = 0.0;
 	self.pitchLabel.alpha = 0.0;
 	self.rateLabel.alpha = 0.0;
