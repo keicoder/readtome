@@ -65,12 +65,12 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	[self configureUI];
 	_defaults = [NSUserDefaults standardUserDefaults];
 	_paused = YES;
 	self.pasteBoard = [UIPasteboard generalPasteboard];
 	self.pasteBoard.persistent = YES;
-	[self configureUI];
-	self.textView.text = @"Hit the play button above to start your text. Pause it at any time. Resume it at any time. ";
+	self.textView.text = @"Hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
 	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
 	NSLog (@"[AVSpeechSynthesisVoice speechVoices]: %@\n", [AVSpeechSynthesisVoice speechVoices]);
 	[self selectedLanguage];

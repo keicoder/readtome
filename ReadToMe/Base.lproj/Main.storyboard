@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="20" width="600" height="60"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rW-tW-Hkj" userLabel="ListButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="4" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="6" y="8" width="44" height="44"/>
                                         <accessibility key="accessibilityConfiguration" label="ResetButton"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="44" id="VWc-zU-y7g"/>
@@ -36,7 +36,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djw-qX-P0a" userLabel="PlayPauseButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="52" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="56" y="8" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" image="pause">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -46,7 +46,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="StopButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="100" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="106" y="8" width="44" height="44"/>
                                         <accessibility key="accessibilityConfiguration" label="ResetButton"/>
                                         <inset key="contentEdgeInsets" minX="9" minY="9" maxX="9" maxY="9"/>
                                         <state key="normal" image="stop">
@@ -57,7 +57,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xtD-FV-k3Q" userLabel="LanguageButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="456" y="9" width="44" height="44"/>
+                                        <rect key="frame" x="450" y="9" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" image="speaker">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -67,7 +67,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UuS-46-ldZ" userLabel="EqualizerButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="504" y="9" width="44" height="44"/>
+                                        <rect key="frame" x="500" y="9" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="8" maxX="10" maxY="8"/>
                                         <state key="normal" image="equalizer">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -77,7 +77,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BhP-KP-gJu" userLabel="SettingsButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="552" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="550" y="8" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" image="settings">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -90,7 +90,7 @@
                                 <color key="backgroundColor" red="1" green="0.84303140639999996" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="width" secondItem="UuS-46-ldZ" secondAttribute="width" id="2ED-ul-oPF"/>
-                                    <constraint firstItem="UuS-46-ldZ" firstAttribute="leading" secondItem="xtD-FV-k3Q" secondAttribute="trailing" constant="4" id="4RN-F3-zOL">
+                                    <constraint firstItem="UuS-46-ldZ" firstAttribute="leading" secondItem="xtD-FV-k3Q" secondAttribute="trailing" constant="6" id="4RN-F3-zOL">
                                         <variation key="heightClass=compact" constant="20"/>
                                         <variation key="heightClass=regular-widthClass=regular" constant="24"/>
                                     </constraint>
@@ -99,11 +99,11 @@
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="width" secondItem="BhP-KP-gJu" secondAttribute="width" id="A6T-bj-irn"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="UuS-46-ldZ" secondAttribute="centerY" constant="-1" id="P8z-Q8-ReA"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="width" secondItem="xtD-FV-k3Q" secondAttribute="width" id="RXp-ax-cCx"/>
-                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="leading" secondItem="djw-qX-P0a" secondAttribute="trailing" constant="4" id="SLU-OA-313">
+                                    <constraint firstItem="gGU-LD-ksn" firstAttribute="leading" secondItem="djw-qX-P0a" secondAttribute="trailing" constant="6" id="SLU-OA-313">
                                         <variation key="heightClass=compact" constant="20"/>
                                         <variation key="heightClass=regular-widthClass=regular" constant="24"/>
                                     </constraint>
-                                    <constraint firstItem="djw-qX-P0a" firstAttribute="leading" secondItem="6rW-tW-Hkj" secondAttribute="trailing" constant="4" id="Szb-tz-PwF">
+                                    <constraint firstItem="djw-qX-P0a" firstAttribute="leading" secondItem="6rW-tW-Hkj" secondAttribute="trailing" constant="6" id="Szb-tz-PwF">
                                         <variation key="heightClass=compact" constant="20"/>
                                         <variation key="heightClass=regular-widthClass=regular" constant="24"/>
                                     </constraint>
@@ -116,10 +116,10 @@
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="BhP-KP-gJu" secondAttribute="centerY" id="hIN-Hl-eXZ"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="gGU-LD-ksn" secondAttribute="centerY" id="kPB-8W-clI"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="centerY" secondItem="xtD-FV-k3Q" secondAttribute="centerY" constant="-1" id="lfi-fo-VZW"/>
-                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="4" id="mvw-3V-OcE"/>
-                                    <constraint firstAttribute="trailing" secondItem="BhP-KP-gJu" secondAttribute="trailing" constant="4" id="nTs-60-f5O"/>
+                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="6" id="mvw-3V-OcE"/>
+                                    <constraint firstAttribute="trailing" secondItem="BhP-KP-gJu" secondAttribute="trailing" constant="6" id="nTs-60-f5O"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="height" secondItem="xtD-FV-k3Q" secondAttribute="height" id="r6l-x3-lfR"/>
-                                    <constraint firstItem="BhP-KP-gJu" firstAttribute="leading" secondItem="UuS-46-ldZ" secondAttribute="trailing" constant="4" id="rBd-B0-aip">
+                                    <constraint firstItem="BhP-KP-gJu" firstAttribute="leading" secondItem="UuS-46-ldZ" secondAttribute="trailing" constant="6" id="rBd-B0-aip">
                                         <variation key="heightClass=compact" constant="20"/>
                                         <variation key="heightClass=regular-widthClass=regular" constant="24"/>
                                     </constraint>
@@ -127,42 +127,41 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ofM-O5-Xtc" userLabel="EqualizerView">
-                                <rect key="frame" x="0.0" y="80" width="600" height="180"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Volume" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bak-fz-q7P">
-                                        <rect key="frame" x="28" y="18" width="64" height="24"/>
+                                        <rect key="frame" x="28" y="-72" width="64" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="ypv-Nl-rZa" userLabel="VolumeSlider">
-                                        <rect key="frame" x="116" y="15" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="-75" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="volumeSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="eBE-0R-iEk"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pitch" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OwE-xb-ztj">
-                                        <rect key="frame" x="28" y="78" width="44" height="24"/>
+                                        <rect key="frame" x="28" y="-12" width="44" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="PDz-gG-Mvc" userLabel="PitchSlider">
-                                        <rect key="frame" x="116" y="75" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="-15" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="pitchSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="KGA-Fs-9zi"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Skf-hE-fIQ">
-                                        <rect key="frame" x="28" y="138" width="41" height="24"/>
+                                        <rect key="frame" x="28" y="48" width="41" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Kur-ii-tqL" userLabel="RateSlider">
-                                        <rect key="frame" x="116" y="135" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="45" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="rateSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="ZB5-MQ-ilR"/>
@@ -187,14 +186,14 @@
                                     <constraint firstAttribute="trailing" secondItem="PDz-gG-Mvc" secondAttribute="trailing" constant="33" id="jnf-Qq-Xxh"/>
                                     <constraint firstItem="PDz-gG-Mvc" firstAttribute="height" secondItem="Kur-ii-tqL" secondAttribute="height" id="mV8-RZ-ehW"/>
                                     <constraint firstItem="Bak-fz-q7P" firstAttribute="centerY" secondItem="ypv-Nl-rZa" secondAttribute="centerY" id="oC0-yL-2OM"/>
-                                    <constraint firstAttribute="height" constant="180" id="ojG-De-zjn">
-                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                    <constraint firstAttribute="height" id="ojG-De-zjn">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="180"/>
                                     </constraint>
                                     <constraint firstItem="Skf-hE-fIQ" firstAttribute="top" secondItem="OwE-xb-ztj" secondAttribute="bottom" constant="36" id="seB-WK-fpt"/>
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
-                                <rect key="frame" x="20" y="260" width="560" height="340"/>
+                                <rect key="frame" x="20" y="80" width="560" height="520"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
