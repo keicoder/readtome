@@ -65,8 +65,6 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-	_equalizerViewExpanded = YES;
-	[self adjustEqualizerViewHeight];
 	_defaults = [NSUserDefaults standardUserDefaults];
 	_paused = YES;
 	self.pasteBoard = [UIPasteboard generalPasteboard];
@@ -350,7 +348,17 @@
 	//Image View
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	
+	//Button
 	self.stopButton.alpha = 0.0;
+	
+	//Equalizer View
+	_equalizerViewExpanded = NO;
+	self.volumeLabel.alpha = 0.0;
+	self.pitchLabel.alpha = 0.0;
+	self.rateLabel.alpha = 0.0;
+	self.volumeSlider.alpha = 0.0;
+	self.pitchSlider.alpha = 0.0;
+	self.rateSlider.alpha = 0.0;
 }
 
 
