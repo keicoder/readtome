@@ -138,7 +138,6 @@
 	
 	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
 	documentsForSpeech.uniqueIdString = uniqueIDString;
-	
 	NSDate *now = [NSDate date];
 	if (self.currentDocumentsForSpeech.createdDate == nil) {
 		self.currentDocumentsForSpeech.createdDate = now;

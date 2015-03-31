@@ -182,7 +182,8 @@
 	}
 	
 	DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = documentsForSpeech.document;
+	cell.textLabel.text = documentsForSpeech.dateString;
+	cell.detailTextLabel.text = documentsForSpeech.uniqueIdString;
 	
 	return cell;
 }
