@@ -221,6 +221,12 @@
 - (IBAction)actionButtonTapped:(id)sender
 {
 	NSLog(@"Action Button Tapped");
+	if (_equalizerViewExpanded == YES) {
+		[self adjustEqualizerViewHeight];
+		
+	} else {
+		
+	}
 }
 
 
@@ -260,6 +266,19 @@
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	
+	if (_equalizerViewExpanded == YES) {
+		[self adjustEqualizerViewHeight];
+		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.35];
+	} else {
+		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.0];
+	}
+	
+}
+
+
+- (void)showSettingsView:(id)sender
+{
 	SettingsViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
 }
