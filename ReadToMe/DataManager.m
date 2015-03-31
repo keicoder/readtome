@@ -15,9 +15,9 @@
 #pragma mark -
 #pragma mark 싱글턴 모델
 
-//참조: [NoteDataManager sharedNoteDataManager]
+//참조: [DataManager sharedNoteDataManager]
 
-+ (instancetype)sharedNoteDataManager
++ (instancetype)sharedDataManager
 {
     static dispatch_once_t pred;
     static DataManager *shared = nil;
@@ -29,8 +29,7 @@
 }
 
 
-#pragma mark -
-#pragma mark 코어데이터 스택
+#pragma mark - 코어데이터 스택
 
 #pragma mark 모델
 
@@ -43,7 +42,7 @@
         return _managedObjectModel;
     }
     
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Clarity" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"ReadToMe" withExtension:@"momd"];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
     //NSLog (@"ManagedObjectModel URL: %@\n", modelURL);
@@ -52,7 +51,7 @@
 }
 
 
-#pragma mark 영구 저장소 조율기: 노트 영구저장소 이원화 > 로컬 노트, 드랍박스 노트
+#pragma mark 영구 저장소 조율기: 노트 영구저장소
 
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
@@ -66,7 +65,7 @@
     
     //노트 영구 저장소
     {
-        NSURL *storeURL = [applicationDocumentsDirectory URLByAppendingPathComponent:@"DocumentsForSpeech.sqlite"];
+        NSURL *storeURL = [applicationDocumentsDirectory URLByAppendingPathComponent:@"ReadToMe.sqlite"];
         //NSLog (@"NoteDataManager > Persistent Store URL: %@\n", storeURL);
         
         NSError *error = nil;

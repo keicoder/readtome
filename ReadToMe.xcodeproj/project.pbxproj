@@ -52,6 +52,8 @@
 		C110F2C81AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */; };
 		C110F2CC1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */; };
 		C110F2CD1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */; };
+		C12245451ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */ = {isa = PBXBuildFile; fileRef = C12245441ACA6C900085C0E6 /* DocumentsForSpeech.m */; };
+		C12245461ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */ = {isa = PBXBuildFile; fileRef = C12245441ACA6C900085C0E6 /* DocumentsForSpeech.m */; };
 		C12F077A1ABF88FD0039EA89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07791ABF88FD0039EA89 /* main.m */; };
 		C12F077D1ABF88FD0039EA89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F077C1ABF88FD0039EA89 /* AppDelegate.m */; };
 		C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C12F077E1ABF88FD0039EA89 /* ReadToMe.xcdatamodeld */; };
@@ -69,8 +71,6 @@
 		C167549E1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */; };
 		C16754A11AC6AC33009F4D88 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754A01AC6AC33009F4D88 /* ListViewController.m */; };
 		C16754A21AC6AC33009F4D88 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754A01AC6AC33009F4D88 /* ListViewController.m */; };
-		C1D39E681ACA4BB800C52463 /* DocumentsForSpeech.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D39E671ACA4BB800C52463 /* DocumentsForSpeech.m */; };
-		C1D39E691ACA4BB800C52463 /* DocumentsForSpeech.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D39E671ACA4BB800C52463 /* DocumentsForSpeech.m */; };
 		C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */; };
@@ -169,6 +169,8 @@
 		C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopAnimationClearButton.m; sourceTree = "<group>"; };
 		C110F2CA1AC233DE00B4E355 /* UIImage+ChangeColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ChangeColor.h"; sourceTree = "<group>"; };
 		C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ChangeColor.m"; sourceTree = "<group>"; };
+		C12245431ACA6C900085C0E6 /* DocumentsForSpeech.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentsForSpeech.h; sourceTree = "<group>"; };
+		C12245441ACA6C900085C0E6 /* DocumentsForSpeech.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentsForSpeech.m; sourceTree = "<group>"; };
 		C12F07741ABF88FD0039EA89 /* ReadToMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadToMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12F07781ABF88FD0039EA89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C12F07791ABF88FD0039EA89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -194,8 +196,6 @@
 		C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LanguagePickerViewController.m; sourceTree = "<group>"; };
 		C167549F1AC6AC33009F4D88 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		C16754A01AC6AC33009F4D88 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
-		C1D39E661ACA4BB800C52463 /* DocumentsForSpeech.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentsForSpeech.h; sourceTree = "<group>"; };
-		C1D39E671ACA4BB800C52463 /* DocumentsForSpeech.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentsForSpeech.m; sourceTree = "<group>"; };
 		C1FB14DE1AC29B5700F24030 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		C1FB14E21AC2AFD800F24030 /* PopAnimationImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopAnimationImageView.h; sourceTree = "<group>"; };
@@ -431,8 +431,8 @@
 			children = (
 				C1FF5C1C1ACA48DE0094FCD1 /* DataManager.h */,
 				C1FF5C1D1ACA48DE0094FCD1 /* DataManager.m */,
-				C1D39E661ACA4BB800C52463 /* DocumentsForSpeech.h */,
-				C1D39E671ACA4BB800C52463 /* DocumentsForSpeech.m */,
+				C12245431ACA6C900085C0E6 /* DocumentsForSpeech.h */,
+				C12245441ACA6C900085C0E6 /* DocumentsForSpeech.m */,
 				C12F077E1ABF88FD0039EA89 /* ReadToMe.xcdatamodeld */,
 			);
 			name = Data;
@@ -597,7 +597,7 @@
 				C1FF5C1E1ACA48DE0094FCD1 /* DataManager.m in Sources */,
 				C110F2BC1AC12F4000B4E355 /* POPVector.mm in Sources */,
 				C110F2A41AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */,
-				C1D39E681ACA4BB800C52463 /* DocumentsForSpeech.m in Sources */,
+				C12245451ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */,
 				C110F2A61AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */,
 				C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */,
 				C110F2AC1AC12F4000B4E355 /* POPCGUtils.mm in Sources */,
@@ -636,7 +636,7 @@
 				C110F2A11AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */,
 				C110F2BD1AC12F4000B4E355 /* POPVector.mm in Sources */,
 				C110F2AD1AC12F4000B4E355 /* POPCGUtils.mm in Sources */,
-				C1D39E691ACA4BB800C52463 /* DocumentsForSpeech.m in Sources */,
+				C12245461ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */,
 				C110F2AB1AC12F4000B4E355 /* POPBasicAnimation.mm in Sources */,
 				C110F2B31AC12F4000B4E355 /* POPGeometry.mm in Sources */,
 				C110F2A51AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */,

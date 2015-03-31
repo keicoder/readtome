@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DocumentsForSpeech.h"
 
 @interface ContainerViewController : UIViewController
 
 @property (nonatomic, strong) NSString *selectedLanguage;
+@property (strong, nonatomic) DocumentsForSpeech *currentDocumentsForSpeech;
+
 
 @end
 

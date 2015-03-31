@@ -24,6 +24,9 @@
 #import "SettingsViewController.h"
 #import "LanguagePickerViewController.h"
 #import "ListViewController.h"
+#import <CoreData/CoreData.h>
+#import "DocumentsForSpeech.h"
+#import "DataManager.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate>
@@ -54,6 +57,8 @@
 @property (strong, nonatomic) NSDictionary *paragraphAttributes;
 
 @property (nonatomic, strong) UIPasteboard *pasteBoard;
+
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -105,6 +110,49 @@
 	[super viewWillAppear:animated];
 	[self selectedLanguage];
 	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
+}
+
+
+#pragma mark - Save Current Documents For Speech
+/*
+ @property (nonatomic, retain) NSString * documentBody;
+ @property (nonatomic, retain) NSDate * createdDate;
+ @property (nonatomic, retain) NSString * dateString;
+ @property (nonatomic, retain) NSString * dayString;
+ @property (nonatomic, retain) NSString * language;
+ @property (nonatomic, retain) NSString * monthString;
+ @property (nonatomic, retain) NSNumber * pitch;
+ @property (nonatomic, retain) NSNumber * rate;
+ @property (nonatomic, retain) NSString * section;
+ @property (nonatomic, retain) NSString * documentTitle;
+ @property (nonatomic, retain) NSString * uniqueIdString;
+ @property (nonatomic, retain) NSNumber * volume;
+ @property (nonatomic, retain) NSString * yearString;
+ @property (nonatomic, retain) NSString * document;
+ */
+- (void)saveCurrentDocumentsForSpeech
+{
+	NSManagedObjectContext *managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+	
+	DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:managedObjectContext];
+	
+	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+	documentsForSpeech.uniqueIdString = uniqueIDString;
+	
+	NSDate *now = [NSDate date];
+	if (self.currentDocumentsForSpeech.createdDate == nil) {
+		self.currentDocumentsForSpeech.createdDate = now;
+	}
+	self.currentDocumentsForSpeech.document = self.textView.text;
+	
+	[managedObjectContext performBlock:^{
+		NSError *error = nil;
+		if ([managedObjectContext save:&error]) {
+			NSLog (@"managedObjectContext save: %@\n", managedObjectContext);
+		} else {
+			NSLog(@"Error saving context: %@", error);
+		}
+	}];
 }
 
 
@@ -180,6 +228,8 @@
 			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
 			[self.synthesizer speakUtterance:self.utterance];
 		}
+		
+		[self saveCurrentDocumentsForSpeech]; //코더데이터 저장
 		
 	} else {
 		

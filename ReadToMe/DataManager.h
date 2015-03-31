@@ -13,7 +13,7 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 
-+ (instancetype)sharedNoteDataManager;
++ (instancetype)sharedDataManager;
 
 
 @end

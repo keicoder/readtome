@@ -12,7 +12,7 @@
 
 @interface DocumentsForSpeech : NSManagedObject
 
-@property (nonatomic, retain) NSString * body;
+@property (nonatomic, retain) NSString * documentBody;
 @property (nonatomic, retain) NSDate * createdDate;
 @property (nonatomic, retain) NSString * dateString;
 @property (nonatomic, retain) NSString * dayString;
@@ -21,9 +21,10 @@
 @property (nonatomic, retain) NSNumber * pitch;
 @property (nonatomic, retain) NSNumber * rate;
 @property (nonatomic, retain) NSString * section;
-@property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSString * documentTitle;
 @property (nonatomic, retain) NSString * uniqueIdString;
 @property (nonatomic, retain) NSNumber * volume;
 @property (nonatomic, retain) NSString * yearString;
+@property (nonatomic, retain) NSString * document;
 
 @end
