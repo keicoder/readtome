@@ -16,6 +16,7 @@
 #define kVolumeSliderValue		@"kVolumeSliderValue"
 #define kPitchSliderValue		@"kPitchSliderValue"
 #define kRateSliderValue		@"kRateSliderValue"
+#define kHasLaunchedOnce        @"kHasLaunchedOnce"
 
 #import "ContainerViewController.h"
 #import <AVFoundation/AVFoundation.h>
@@ -30,6 +31,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIView *equalizerView;
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *pitchLabel;
 @property (weak, nonatomic) IBOutlet UILabel *rateLabel;
@@ -39,7 +41,8 @@
 
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
-@property (weak, nonatomic) IBOutlet UIButton *stopButton;
+@property (weak, nonatomic) IBOutlet UIButton *resetButton;
+@property (weak, nonatomic) IBOutlet UIButton *actionButton;
 
 @property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
 @property (nonatomic, strong) AVSpeechUtterance *utterance;
@@ -65,14 +68,16 @@
 	CGFloat _rateSliderValue;
 }
 
+
 #pragma mark - View life cycle
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
 	
-	_equalizerViewExpanded = NO;
 	[self configureUI];
+	_equalizerViewExpanded = YES;
+	[self adjustEqualizerViewHeight];
 	
 	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
 	self.synthesizer.delegate = self;
@@ -84,12 +89,11 @@
 	_defaults = [NSUserDefaults standardUserDefaults];
 	_paused = YES;
 	
+    [self checkHasLaunchedOnce];
 	[self selectedLanguage];
 	[self volumeSliderValue];
 	[self pitchSliderValue];
 	[self rateSliderValue];
-	
-	
 	
 	[self addNotificationObserver];
 }
@@ -108,20 +112,7 @@
 
 - (NSString *)selectedLanguage
 {
-	_selectedLanguage = [_defaults objectForKey:kSelectedLanguage];
-	
-	if ([_selectedLanguage isKindOfClass:[NSNull class]]) {
-		
-		_selectedLanguage = @"en-US";
-		[_defaults setObject:_selectedLanguage forKey:kSelectedLanguage];
-		[_defaults synchronize];
-		
-	} else {
-		
-		_selectedLanguage = [_defaults objectForKey:kSelectedLanguage];
-		
-	}
-	
+    _selectedLanguage = [_defaults objectForKey:kSelectedLanguage];
 	NSLog (@"_selectedLanguage: %@\n", _selectedLanguage);
 	return _selectedLanguage;
 }
@@ -179,18 +170,15 @@
 			[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
 			[self.synthesizer continueSpeaking];
 			_paused = NO;
-			[self adjustStopButtonAlpha:1.0];
 		} else {
 			[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 			_paused = YES;
-			[self adjustStopButtonAlpha:0.0];
 		}
 		
 		if (self.synthesizer.isSpeaking == NO) {
 			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
 			[self.synthesizer speakUtterance:self.utterance];
-			[self adjustStopButtonAlpha:1.0];
 		}
 		
 	} else {
@@ -217,18 +205,22 @@
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-	[self adjustStopButtonAlpha:0.0];
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
 }
 
 
-- (IBAction)stopButtonTapped:(id)sender
+- (IBAction)resetButtonTapped:(id)sender
 {
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self adjustStopButtonAlpha:0.0];
 	[self pasteAndSpeechText:self.pasteBoard];
+}
+
+
+- (IBAction)actionButtonTapped:(id)sender
+{
+	NSLog(@"Action Button Tapped");
 }
 
 
@@ -236,12 +228,14 @@
 {
 	if (_equalizerViewExpanded == YES) {
 		[self adjustEqualizerViewHeight];
+		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.35];
+	} else {
+		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.0];
 	}
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-	[self adjustStopButtonAlpha:0.0];
-	[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.4];
+	
 }
 
 
@@ -265,7 +259,6 @@
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-	[self adjustStopButtonAlpha:0.0];
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	SettingsViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
@@ -285,7 +278,6 @@
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	[self adjustStopButtonAlpha:0.0];
 	_paused = YES;
 }
 
@@ -319,7 +311,6 @@
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	_paused = YES;
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	[self adjustStopButtonAlpha:0.0];
 	_volumeSliderValue = sender.value;
 	[_defaults setFloat:sender.value forKey:kVolumeSliderValue];
 	[_defaults synchronize];
@@ -333,7 +324,6 @@
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	_paused = YES;
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	[self adjustStopButtonAlpha:0.0];
 	_pitchSliderValue = sender.value;
 	[_defaults setFloat:sender.value forKey:kPitchSliderValue];
 	[_defaults synchronize];
@@ -346,7 +336,6 @@
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	_paused = YES;
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	[self adjustStopButtonAlpha:0.0];
 	_rateSliderValue = sender.value;
 	[_defaults setFloat:self.rateSlider.value forKey:kRateSliderValue];
 	[_defaults synchronize];
@@ -368,15 +357,25 @@
 }
 
 
+#pragma mark - 앱 처음 실행인지 체크 > Volume, Pitch, Rate 기본값 적용
 
-#pragma mark - Show stop button when speech started
-
-- (void)adjustStopButtonAlpha:(CGFloat)alpha
+- (void)checkHasLaunchedOnce
 {
-	CGFloat duration = 0.25f;
-	[UIView animateWithDuration:duration animations:^{
-		self.stopButton.alpha = alpha;
-	}completion:^(BOOL finished) { }];
+    if ([_defaults boolForKey:kHasLaunchedOnce] == YES) {
+        NSLog(@"App has aleady launched");
+        NSLog (@"HasLaunchedOnce: %@\n", [_defaults boolForKey:kHasLaunchedOnce] ? @"YES" : @"NO");
+    }
+    else {
+        NSLog(@"It's first time launching");
+        NSLog (@"HasLaunchedOnce: %@\n", [_defaults boolForKey:kHasLaunchedOnce] ? @"YES" : @"NO");
+        [_defaults setBool:YES forKey:kHasLaunchedOnce];
+        _selectedLanguage = @"en-US";
+        [_defaults setObject:_selectedLanguage forKey:kSelectedLanguage];
+        [_defaults setFloat:1.0 forKey:kVolumeSliderValue];
+        [_defaults setFloat:1.0 forKey:kPitchSliderValue];
+        [_defaults setFloat:0.07 forKey:kRateSliderValue];
+        [_defaults synchronize];
+    }
 }
 
 
@@ -388,12 +387,12 @@
 		self.equalizerViewHeightConstraint.constant = 0.0;
 		_equalizerViewExpanded = NO;
 	} else {
-		self.equalizerViewHeightConstraint.constant = 180.0;
+		self.equalizerViewHeightConstraint.constant = 150.0;
 		_equalizerViewExpanded = YES;
 	}
 	
-	CGFloat duration = 0.3f;
-	CGFloat delay = 0.3f;
+	CGFloat duration = 0.25f;
+	CGFloat delay = 0.0f;
 	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
 		
 		[self.view layoutIfNeeded];
@@ -423,14 +422,13 @@
 
 - (void)configureUI
 {
-	self.menuView.backgroundColor = [UIColor colorWithRed:0.161 green:0.502 blue:0.725 alpha:1];
+	UIColor *viewColor = [UIColor colorWithRed:0.161 green:0.502 blue:0.725 alpha:1];
+	self.menuView.backgroundColor = viewColor;
+	self.bottomView.backgroundColor = viewColor;
 	self.equalizerView.backgroundColor = [UIColor colorWithRed:0.204 green:0.596 blue:0.859 alpha:1];
 	
 	//Image View
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	
-	//Button
-	self.stopButton.alpha = 0.0;
 	
 	//Equalizer View
 	self.volumeLabel.alpha = 0.0;
