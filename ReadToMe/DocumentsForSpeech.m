@@ -11,18 +11,18 @@
 
 @implementation DocumentsForSpeech
 
-@dynamic yearString;
-@dynamic dayString;
-@dynamic monthString;
-@dynamic createdDate;
-@dynamic title;
-@dynamic dateString;
-@dynamic uniqueIdString;
 @dynamic body;
-@dynamic section;
+@dynamic createdDate;
+@dynamic dateString;
+@dynamic dayString;
 @dynamic language;
-@dynamic volume;
+@dynamic monthString;
 @dynamic pitch;
 @dynamic rate;
+@dynamic section;
+@dynamic title;
+@dynamic uniqueIdString;
+@dynamic volume;
+@dynamic yearString;
 
 @end
