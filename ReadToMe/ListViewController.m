@@ -198,7 +198,9 @@
 -(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
 	if (section == 0) {
-		return nil; //@"Footer";
+		NSUInteger count = [[self.fetchedResultsController sections][section] numberOfObjects];
+		NSString *documentsCount = [NSString stringWithFormat:@"%lu Documents for Speech", (unsigned long)count];
+		return documentsCount;
 	}
 	return nil;
 }

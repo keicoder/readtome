@@ -43,6 +43,8 @@
 @property (weak, nonatomic) IBOutlet UISlider *rateSlider;
 
 @property (nonatomic, weak) IBOutlet UITextView *textView;
+
+@property (weak, nonatomic) IBOutlet UIButton *saveButton;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 @property (weak, nonatomic) IBOutlet UIButton *actionButton;
@@ -228,8 +230,6 @@
 			[self.synthesizer speakUtterance:self.utterance];
 		}
 		
-		[self saveCurrentDocumentsForSpeech]; //코더데이터 저장
-		
 	} else {
 		
 		NSString *title = @"No Text to speech";
@@ -257,6 +257,12 @@
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
+}
+
+
+- (IBAction)saveButtonTapped:(id)sender
+{
+	[self saveCurrentDocumentsForSpeech]; //코더데이터 저장
 }
 
 
