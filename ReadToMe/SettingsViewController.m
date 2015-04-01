@@ -18,14 +18,10 @@
 @interface SettingsViewController () <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *gearImageView;
-@property (weak, nonatomic) IBOutlet PopView *selectVoiceView;
-@property (weak, nonatomic) IBOutlet UIView *pitchView;
-@property (weak, nonatomic) IBOutlet UIView *rateView;
-@property (weak, nonatomic) IBOutlet UIView *backgroundPlayView;
+@property (weak, nonatomic) IBOutlet PopView *backgroundPlayView;
+@property (weak, nonatomic) IBOutlet PopView *aboutView;
+@property (weak, nonatomic) IBOutlet PopView *openSourceView;
 @property (weak, nonatomic) IBOutlet PopView *returnView;
-@property (weak, nonatomic) IBOutlet UISlider *pitchSlider;
-@property (weak, nonatomic) IBOutlet UISlider *rateSlider;
-@property (weak, nonatomic) IBOutlet UISwitch *backgroundPlaySwitch;
 
 @end
 
@@ -44,48 +40,27 @@
     [super viewDidLoad];
 	_defaults = [NSUserDefaults standardUserDefaults];
 	[self configureUI];
-	[self addTapGestureOnTheView:self.selectVoiceView];
+	[self addTapGestureOnTheView:self.backgroundPlayView];
+	[self addTapGestureOnTheView:self.aboutView];
+	[self addTapGestureOnTheView:self.openSourceView];
 	[self addTapGestureOnTheView:self.returnView];
-	[self getTheBackgroundPlaySwitchValue];
+	[self getTheBackgroundPlayValue];
 }
 
 
 #pragma mark - Slider and Switch Value
 
-- (IBAction)pitchSliderValueChanged:(id)sender
+
+
+- (void)backgroundPlayValueChanged
 {
-	NSString *pitchValue = [NSString stringWithFormat:@"%f", self.pitchSlider.value];
-	NSLog (@"pitchValue: %@\n", pitchValue);
-}
-
-
-- (IBAction)rateSliderValueChanged:(id)sender
-{
-	NSString *rateValue = [NSString stringWithFormat:@"%f", self.rateSlider.value];
-	NSLog (@"rateValue: %@\n", rateValue);
-}
-
-
-- (IBAction)backgroundPlaySwitchValueChanged:(UISwitch *)sender
-{
-	if([sender isOn]){
-		
-		_backgroundPlayValue = @"isOn";
-		[_defaults setObject:_backgroundPlayValue forKey:kBackgroundPlayValue];
-		[_defaults synchronize];
-		
-	} else{
-		_backgroundPlayValue = @"isOff";
-		[_defaults setObject:_backgroundPlayValue forKey:kBackgroundPlayValue];
-		[_defaults synchronize];
-		
-	}
+	
 }
 
 
 #pragma mark - Get the stored NSUserDefaults data
 
-- (void)getTheBackgroundPlaySwitchValue
+- (void)getTheBackgroundPlayValue
 {
 	_backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
 	
@@ -94,15 +69,14 @@
 		_backgroundPlayValue = @"isOn";
 		[_defaults setObject:_backgroundPlayValue forKey:kBackgroundPlayValue];
 		[_defaults synchronize];
-		[self.backgroundPlaySwitch setOn:YES animated:YES];
 		
 	} else if ([_backgroundPlayValue isEqualToString: @"isOn"]) {
 		
-		[self.backgroundPlaySwitch setOn:YES animated:YES];
+		
 		
 	} else if ([_backgroundPlayValue isEqualToString: @"isOff"]) {
 		
-		[self.backgroundPlaySwitch setOn:NO animated:YES];
+		
 	}
 }
 
@@ -121,15 +95,21 @@
 
 - (void)gestureViewTapped:(UITouch *)touch
 {
-	if ([touch.view isEqual:(UIView *)self.selectVoiceView]) {
+	if ([touch.view isEqual:(UIView *)self.backgroundPlayView]) {
 		
-		NSLog(@"self.selectVoiceView Tapped");
-		LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
-		[self presentViewController:controller animated:YES completion:^{ }];
 		
-	} else if ([touch.view isEqual:(UIView *)self.returnView]) {
+	} else if ([touch.view isEqual:(UIView *)self.aboutView]) {
 		
-		NSLog(@"self.returnView Tapped");
+		
+	}
+	
+	else if ([touch.view isEqual:(UIView *)self.openSourceView]) {
+	
+		
+	}
+	
+	else if ([touch.view isEqual:(UIView *)self.returnView]) {
+		
 		[self dismissViewControllerAnimated:YES completion:nil];
 	}
 }
@@ -139,7 +119,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-	if (touch.view == self.selectVoiceView || touch.view == self.returnView) {
+	if (touch.view == self.backgroundPlayView || touch.view == self.aboutView || touch.view == self.openSourceView || touch.view == self.returnView) {
 		return YES;
 	}
 	return NO;
@@ -151,22 +131,20 @@
 - (void)configureUI
 {
 	//Corner Radius
-	float cornerRadius = self.rateView.bounds.size.height/2;
+	float cornerRadius = self.aboutView.bounds.size.height/2;
 	
-	self.selectVoiceView.layer.cornerRadius = cornerRadius;
-	self.pitchView.layer.cornerRadius = cornerRadius;
-	self.rateView.layer.cornerRadius = cornerRadius;
 	self.backgroundPlayView.layer.cornerRadius = cornerRadius;
+	self.aboutView.layer.cornerRadius = cornerRadius;
+	self.openSourceView.layer.cornerRadius = cornerRadius;
 	self.returnView.layer.cornerRadius = cornerRadius;
 	
 	//Color
 	UIColor *colorNormal1 = [UIColor colorWithRed:0.396 green:0.675 blue:0.82 alpha:1];
 	UIColor *colorNormal2 = [UIColor colorWithRed:0.906 green:0.298 blue:0.235 alpha:1];
 	
-	self.selectVoiceView.backgroundColor = colorNormal1;
-	self.pitchView.backgroundColor = colorNormal1;
-	self.rateView.backgroundColor = colorNormal1;
 	self.backgroundPlayView.backgroundColor = colorNormal1;
+	self.aboutView.backgroundColor = colorNormal1;
+	self.openSourceView.backgroundColor = colorNormal1;
 	self.returnView.backgroundColor = colorNormal2;
 	
 	//Image View

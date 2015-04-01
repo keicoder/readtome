@@ -388,56 +388,15 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LDw-MT-ARf" userLabel="About" customClass="PopView">
-                                <rect key="frame" x="150" y="275" width="300" height="50"/>
-                                <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="megaphone" translatesAutoresizingMaskIntoConstraints="NO" id="iPu-En-3Iz">
-                                        <rect key="frame" x="20" y="13" width="24" height="24"/>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="About" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4pL-4Y-EBL">
-                                        <rect key="frame" x="124" y="13" width="52" height="24"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="GGg-dg-8bc" customClass="PopAnimationImageView">
+                                <rect key="frame" x="280" y="157" width="40" height="40"/>
                                 <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oD8-Ng-CKd" userLabel="OpenSource">
-                                <rect key="frame" x="150" y="333" width="300" height="50"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Open Source" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yq5-zq-8oN">
-                                        <rect key="frame" x="93" y="13" width="115" height="24"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="openSource" translatesAutoresizingMaskIntoConstraints="NO" id="6S3-Ex-MKO">
-                                        <rect key="frame" x="20" y="13" width="24" height="24"/>
-                                    </imageView>
-                                </subviews>
-                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NKC-2P-cJX" userLabel="Return" customClass="PopView">
-                                <rect key="frame" x="150" y="391" width="300" height="50"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Return" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Lm-Rs-SHf">
-                                        <rect key="frame" x="121" y="13" width="58" height="24"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="circle-down" translatesAutoresizingMaskIntoConstraints="NO" id="C0d-y8-fbS">
-                                        <rect key="frame" x="20" y="13" width="24" height="24"/>
-                                    </imageView>
-                                </subviews>
-                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="GGg-dg-8bc" customClass="PopAnimationImageView">
-                                <rect key="frame" x="280" y="169" width="40" height="40"/>
-                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="ZAU-HU-Ucf"/>
+                                    <constraint firstAttribute="height" constant="40" id="qWB-0B-TOT"/>
+                                </constraints>
                             </imageView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Cc-OC-0dn" userLabel="Background" customClass="PopView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Cc-OC-0dn" userLabel="Background" customClass="PopView">
                                 <rect key="frame" x="150" y="217" width="300" height="50"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="lO9-KD-d3b">
@@ -452,14 +411,84 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="0.69527506829999997" blue="0.3225385845" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LDw-MT-ARf" userLabel="About" customClass="PopView">
+                                <rect key="frame" x="150" y="275" width="300" height="50"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="megaphone" translatesAutoresizingMaskIntoConstraints="NO" id="iPu-En-3Iz">
+                                        <rect key="frame" x="20" y="13" width="24" height="24"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="About" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4pL-4Y-EBL">
+                                        <rect key="frame" x="124" y="13" width="52" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="Nbb-FE-LrC"/>
+                                    <constraint firstAttribute="height" constant="50" id="maZ-0W-i84"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oD8-Ng-CKd" userLabel="OpenSource" customClass="PopView">
+                                <rect key="frame" x="150" y="333" width="300" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Open Source" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yq5-zq-8oN">
+                                        <rect key="frame" x="93" y="13" width="115" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="openSource" translatesAutoresizingMaskIntoConstraints="NO" id="6S3-Ex-MKO">
+                                        <rect key="frame" x="20" y="13" width="24" height="24"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NKC-2P-cJX" userLabel="Return" customClass="PopView">
+                                <rect key="frame" x="150" y="391" width="300" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Return" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Lm-Rs-SHf">
+                                        <rect key="frame" x="121" y="13" width="58" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="circle-down" translatesAutoresizingMaskIntoConstraints="NO" id="C0d-y8-fbS">
+                                        <rect key="frame" x="20" y="13" width="24" height="24"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="height" secondItem="1Cc-OC-0dn" secondAttribute="height" id="3FT-ck-J3g"/>
+                            <constraint firstItem="1Cc-OC-0dn" firstAttribute="centerX" secondItem="GGg-dg-8bc" secondAttribute="centerX" id="4Cz-B5-6Wc"/>
+                            <constraint firstItem="1Cc-OC-0dn" firstAttribute="top" secondItem="GGg-dg-8bc" secondAttribute="bottom" constant="20" id="6ZN-RZ-vBq">
+                                <variation key="heightClass=compact" constant="8"/>
+                            </constraint>
+                            <constraint firstItem="oD8-Ng-CKd" firstAttribute="width" secondItem="LDw-MT-ARf" secondAttribute="width" id="LEW-2P-Jig"/>
+                            <constraint firstItem="NKC-2P-cJX" firstAttribute="top" secondItem="oD8-Ng-CKd" secondAttribute="bottom" constant="8" id="MXo-qo-hdu"/>
+                            <constraint firstItem="oD8-Ng-CKd" firstAttribute="height" secondItem="LDw-MT-ARf" secondAttribute="height" id="Mqd-Og-K1I"/>
+                            <constraint firstItem="NKC-2P-cJX" firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="PHf-BF-YR3"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="top" secondItem="1Cc-OC-0dn" secondAttribute="bottom" constant="8" id="QAy-a2-QWV"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="centerX" secondItem="1Cc-OC-0dn" secondAttribute="centerX" id="RKL-Ec-E5d"/>
+                            <constraint firstAttribute="centerY" secondItem="LDw-MT-ARf" secondAttribute="centerY" id="dKm-ck-9Bw"/>
+                            <constraint firstItem="NKC-2P-cJX" firstAttribute="height" secondItem="oD8-Ng-CKd" secondAttribute="height" id="fbO-Hh-Qdv"/>
+                            <constraint firstAttribute="centerX" secondItem="LDw-MT-ARf" secondAttribute="centerX" id="gCc-DN-hXm"/>
+                            <constraint firstItem="oD8-Ng-CKd" firstAttribute="centerX" secondItem="LDw-MT-ARf" secondAttribute="centerX" id="kGM-Mc-qWJ"/>
+                            <constraint firstItem="NKC-2P-cJX" firstAttribute="width" secondItem="oD8-Ng-CKd" secondAttribute="width" id="o5c-HQ-CG5"/>
+                            <constraint firstItem="oD8-Ng-CKd" firstAttribute="top" secondItem="LDw-MT-ARf" secondAttribute="bottom" constant="8" id="poh-RT-i9x"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="width" secondItem="1Cc-OC-0dn" secondAttribute="width" id="rkG-Oq-DX0"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="aboutView" destination="LDw-MT-ARf" id="dDF-DV-hrF"/>
+                        <outlet property="backgroundPlayView" destination="1Cc-OC-0dn" id="GdH-Tq-kQs"/>
                         <outlet property="gearImageView" destination="GGg-dg-8bc" id="ZD1-kq-eP0"/>
-                        <outlet property="rateView" destination="oD8-Ng-CKd" id="7S1-Ur-vib"/>
-                        <outlet property="returnView" destination="NKC-2P-cJX" id="LJ7-VQ-H7U"/>
-                        <outlet property="selectVoiceView" destination="LDw-MT-ARf" id="P05-FA-iQ9"/>
+                        <outlet property="openSourceView" destination="oD8-Ng-CKd" id="UJn-hS-P0k"/>
+                        <outlet property="returnView" destination="NKC-2P-cJX" id="DaO-ff-2wj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mki-U5-9CZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -554,7 +583,7 @@ When the button in the toolbar is tapped, an activity view controller is present
     </scenes>
     <resources>
         <image name="action" width="44" height="44"/>
-        <image name="background" width="34" height="44"/>
+        <image name="background" width="44" height="44"/>
         <image name="circle-down" width="32" height="32"/>
         <image name="equalizer" width="45" height="45"/>
         <image name="gear" width="44" height="44"/>
