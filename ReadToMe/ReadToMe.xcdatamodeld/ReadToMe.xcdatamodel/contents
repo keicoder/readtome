@@ -7,16 +7,18 @@
         <attribute name="document" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="documentBody" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="documentTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isNewDocument" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="language" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="monthString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pitch" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="rate" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="savedDocument" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="section" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uniqueIdString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="volume" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="yearString" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="DocumentsForSpeech" positionX="-63" positionY="-18" width="128" height="255"/>
+        <element name="DocumentsForSpeech" positionX="-63" positionY="-18" width="128" height="285"/>
     </elements>
 </model>

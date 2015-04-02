@@ -27,6 +27,8 @@
 @dynamic pitch;
 @dynamic rate;
 @dynamic section;
+@dynamic isNewDocument;
+@dynamic savedDocument;
 @dynamic documentTitle;
 @dynamic uniqueIdString;
 @dynamic volume;

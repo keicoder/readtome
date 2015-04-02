@@ -132,6 +132,8 @@
  @property (nonatomic, retain) NSNumber * pitch;
  @property (nonatomic, retain) NSNumber * rate;
  @property (nonatomic, retain) NSString * section;
+ @property (nonatomic, retain) NSNumber * isNewDocument;
+ @property (nonatomic, retain) NSString * savedDocument;
  @property (nonatomic, retain) NSString * documentTitle;
  @property (nonatomic, retain) NSString * uniqueIdString;
  @property (nonatomic, retain) NSNumber * volume;
@@ -146,6 +148,8 @@
 	
 	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
 	documentsForSpeech.uniqueIdString = uniqueIDString;
+	documentsForSpeech.isNewDocument = [NSNumber numberWithBool:YES];
+	
 	NSDate *now = [NSDate date];
 	if (self.currentDocumentsForSpeech.createdDate == nil) {
 		self.currentDocumentsForSpeech.createdDate = now;
