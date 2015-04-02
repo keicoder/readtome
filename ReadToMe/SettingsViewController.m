@@ -18,6 +18,7 @@
 #import "PopView.h"
 #import "LanguagePickerViewController.h"
 #import <AudioToolbox/AudioToolbox.h>
+#import "AboutViewController.h"
 
 
 @interface SettingsViewController () <UIGestureRecognizerDelegate>
@@ -113,7 +114,9 @@
 		
 	} else if ([touch.view isEqual:(UIView *)self.aboutView]) {
 		
-		
+		AboutViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"AboutViewController"];
+		controller.view.frame = self.view.bounds;
+		[controller presentInParentViewController:self];
 	}
 	
 	else if ([touch.view isEqual:(UIView *)self.openSourceView]) {

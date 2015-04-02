@@ -581,11 +581,100 @@ When the button in the toolbar is tapped, an activity view controller is present
             </objects>
             <point key="canvasLocation" x="838" y="1106"/>
         </scene>
+        <!--About View Controller-->
+        <scene sceneID="YvF-50-7Wk">
+            <objects>
+                <viewController storyboardIdentifier="AboutViewController" id="4ZX-3a-xYC" customClass="AboutViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="X0g-vQ-48A"/>
+                        <viewControllerLayoutGuide type="bottom" id="gpc-nE-JNJ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="QRO-8y-cZX">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8FV-Mr-BWX" userLabel="ContainerView">
+                                <rect key="frame" x="160" y="160" width="280" height="280"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="clip" translatesAutoresizingMaskIntoConstraints="NO" id="Cjf-rf-nD6" userLabel="Clip">
+                                        <rect key="frame" x="125" y="-15" width="30" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="lVe-BZ-1Bq"/>
+                                            <constraint firstAttribute="width" constant="30" id="nMG-FH-mnJ"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c6f-wW-Xjl" userLabel="AboutLabel">
+                                        <rect key="frame" x="20" y="131" width="240" height="19"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                        <variation key="heightClass=regular-widthClass=regular">
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="26"/>
+                                        </variation>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9MY-ZR-UZa" userLabel="X Button">
+                                        <rect key="frame" x="240" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="pPm-oy-KYS">
+                                                <variation key="heightClass=regular-widthClass=regular" constant="60"/>
+                                            </constraint>
+                                            <constraint firstAttribute="width" constant="40" id="xsX-h9-J21">
+                                                <variation key="heightClass=regular-widthClass=regular" constant="60"/>
+                                            </constraint>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <state key="normal" title="X">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <variation key="heightClass=regular-widthClass=regular">
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="34"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="dismissButtonTapped:" destination="4ZX-3a-xYC" eventType="touchUpInside" id="x1p-cc-fjx"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.84303140639999996" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="9MY-ZR-UZa" secondAttribute="trailing" id="2BC-Zb-Rpp"/>
+                                    <constraint firstAttribute="centerY" secondItem="c6f-wW-Xjl" secondAttribute="centerY" id="AkZ-dy-dfO"/>
+                                    <constraint firstAttribute="width" constant="280" id="Sjy-JW-993">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="500"/>
+                                    </constraint>
+                                    <constraint firstAttribute="centerX" secondItem="Cjf-rf-nD6" secondAttribute="centerX" id="YNw-Q5-ZTo"/>
+                                    <constraint firstAttribute="trailing" secondItem="c6f-wW-Xjl" secondAttribute="trailing" constant="20" id="aEn-AA-R9X"/>
+                                    <constraint firstItem="Cjf-rf-nD6" firstAttribute="top" secondItem="8FV-Mr-BWX" secondAttribute="top" constant="-15" id="deU-qS-xJI"/>
+                                    <constraint firstAttribute="height" constant="280" id="e14-ly-gHc">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="500"/>
+                                    </constraint>
+                                    <constraint firstItem="c6f-wW-Xjl" firstAttribute="leading" secondItem="8FV-Mr-BWX" secondAttribute="leading" constant="20" id="fz1-Zy-XuK"/>
+                                    <constraint firstItem="9MY-ZR-UZa" firstAttribute="top" secondItem="8FV-Mr-BWX" secondAttribute="top" id="gmG-hW-SMU"/>
+                                    <constraint firstAttribute="centerX" secondItem="c6f-wW-Xjl" secondAttribute="centerX" id="rm4-Hu-t5E"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="8FV-Mr-BWX" secondAttribute="centerX" id="UkI-ee-89O"/>
+                            <constraint firstAttribute="centerY" secondItem="8FV-Mr-BWX" secondAttribute="centerY" id="Yo8-Jk-Nio"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="aboutLabel" destination="c6f-wW-Xjl" id="2Bc-2b-jAE"/>
+                        <outlet property="containerView" destination="8FV-Mr-BWX" id="kJd-fq-dUN"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="W8U-Fe-0Uk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1462" y="460"/>
+        </scene>
     </scenes>
     <resources>
         <image name="action" width="44" height="44"/>
         <image name="background" width="44" height="44"/>
         <image name="circle-down" width="32" height="32"/>
+        <image name="clip" width="42" height="41"/>
         <image name="equalizer" width="45" height="45"/>
         <image name="gear" width="44" height="44"/>
         <image name="megaphone" width="44" height="43"/>
