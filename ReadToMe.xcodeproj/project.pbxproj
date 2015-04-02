@@ -71,6 +71,8 @@
 		C167549E1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */; };
 		C16754A11AC6AC33009F4D88 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754A01AC6AC33009F4D88 /* ListViewController.m */; };
 		C16754A21AC6AC33009F4D88 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754A01AC6AC33009F4D88 /* ListViewController.m */; };
+		C18978F31ACCC28D00BFFA61 /* correct.caf in Resources */ = {isa = PBXBuildFile; fileRef = C18978F21ACCC28D00BFFA61 /* correct.caf */; };
+		C18978F41ACCC28D00BFFA61 /* correct.caf in Resources */ = {isa = PBXBuildFile; fileRef = C18978F21ACCC28D00BFFA61 /* correct.caf */; };
 		C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */; };
@@ -196,6 +198,7 @@
 		C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LanguagePickerViewController.m; sourceTree = "<group>"; };
 		C167549F1AC6AC33009F4D88 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		C16754A01AC6AC33009F4D88 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
+		C18978F21ACCC28D00BFFA61 /* correct.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = correct.caf; sourceTree = "<group>"; };
 		C1FB14DE1AC29B5700F24030 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		C1FB14E21AC2AFD800F24030 /* PopAnimationImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopAnimationImageView.h; sourceTree = "<group>"; };
@@ -343,6 +346,7 @@
 		C12F07761ABF88FD0039EA89 /* ReadToMe */ = {
 			isa = PBXGroup;
 			children = (
+				C18978F11ACCC27400BFFA61 /* Sound */,
 				C1FB14DD1AC29B2200F24030 /* Data */,
 				C1FB14DC1AC29B0B00F24030 /* UI */,
 				C1FB14DB1AC29AF300F24030 /* Controllers */,
@@ -397,6 +401,14 @@
 				C12F07A71ABFB00A0039EA89 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C18978F11ACCC27400BFFA61 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				C18978F21ACCC28D00BFFA61 /* correct.caf */,
+			);
+			name = Sound;
 			sourceTree = "<group>";
 		};
 		C1FB14DB1AC29AF300F24030 /* Controllers */ = {
@@ -546,6 +558,7 @@
 				C12F078B1ABF88FD0039EA89 /* LaunchScreen.xib in Resources */,
 				C110F29A1AC12F4000B4E355 /* pop-Info.plist in Resources */,
 				C12F07881ABF88FD0039EA89 /* Images.xcassets in Resources */,
+				C18978F31ACCC28D00BFFA61 /* correct.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,6 +577,7 @@
 				C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */,
 				C110F2991AC12F4000B4E355 /* InfoPlist.strings in Resources */,
 				C12F07AC1ABFB00A0039EA89 /* MainInterface.storyboard in Resources */,
+				C18978F41ACCC28D00BFFA61 /* correct.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

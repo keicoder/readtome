@@ -485,6 +485,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                     </view>
                     <connections>
                         <outlet property="aboutView" destination="LDw-MT-ARf" id="dDF-DV-hrF"/>
+                        <outlet property="backgroundPlayValueLabel" destination="Obp-nd-1sZ" id="5ha-Hp-Us2"/>
                         <outlet property="backgroundPlayView" destination="1Cc-OC-0dn" id="GdH-Tq-kQs"/>
                         <outlet property="gearImageView" destination="GGg-dg-8bc" id="ZD1-kq-eP0"/>
                         <outlet property="openSourceView" destination="oD8-Ng-CKd" id="UJn-hS-P0k"/>

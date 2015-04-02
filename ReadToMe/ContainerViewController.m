@@ -17,6 +17,9 @@
 #define kPitchSliderValue		@"kPitchSliderValue"
 #define kRateSliderValue		@"kRateSliderValue"
 #define kHasLaunchedOnce        @"kHasLaunchedOnce"
+#define kBackgroundPlayValue	@"kBackgroundPlayValue"
+#define kBackgroundOn			@"Background On"
+
 
 #import "ContainerViewController.h"
 #import <AVFoundation/AVFoundation.h>
@@ -101,6 +104,8 @@
 	[self volumeSliderValue];
 	[self pitchSliderValue];
 	[self rateSliderValue];
+	NSString *backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
+	NSLog (@"backgroundPlayValue: %@\n", backgroundPlayValue);
 	
 	[self addNotificationObserver];
 }
@@ -112,6 +117,7 @@
 	[super viewWillAppear:animated];
 	[self selectedLanguage];
 	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
+	NSLog (@"kBackgroundPlayValue: %@\n", [_defaults objectForKey:kBackgroundPlayValue]);
 }
 
 
@@ -448,6 +454,7 @@
         [_defaults setFloat:1.0 forKey:kVolumeSliderValue];
         [_defaults setFloat:1.0 forKey:kPitchSliderValue];
         [_defaults setFloat:0.07 forKey:kRateSliderValue];
+		[_defaults setObject:kBackgroundOn forKey:kBackgroundPlayValue];
         [_defaults synchronize];
     }
 }

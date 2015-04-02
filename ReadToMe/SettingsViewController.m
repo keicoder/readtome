@@ -6,19 +6,25 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
-#define kBackgroundPlayValue @"_backgroundPlayValue"
+#define kBackgroundPlayValue	@"kBackgroundPlayValue"
+#define kBackgroundOn			@"Background On"
+#define kBackgroundOff			@"Background Off"
+#define kIsOnColor  [UIColor colorWithRed:1 green:0.73 blue:0.2 alpha:1]
+#define kIsOffColor [UIColor colorWithRed:0.227 green:0.414 blue:0.610 alpha:1.000]
 
 
 #import "SettingsViewController.h"
 #import "UIImage+ChangeColor.h"
 #import "PopView.h"
 #import "LanguagePickerViewController.h"
+#import <AudioToolbox/AudioToolbox.h>
 
 
 @interface SettingsViewController () <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *gearImageView;
 @property (weak, nonatomic) IBOutlet PopView *backgroundPlayView;
+@property (weak, nonatomic) IBOutlet UILabel *backgroundPlayValueLabel;
 @property (weak, nonatomic) IBOutlet PopView *aboutView;
 @property (weak, nonatomic) IBOutlet PopView *openSourceView;
 @property (weak, nonatomic) IBOutlet PopView *returnView;
@@ -48,36 +54,25 @@
 }
 
 
-#pragma mark - Slider and Switch Value
-
-
-
-- (void)backgroundPlayValueChanged
-{
-	
-}
-
-
 #pragma mark - Get the stored NSUserDefaults data
 
 - (void)getTheBackgroundPlayValue
 {
 	_backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
 	
-	if ([_backgroundPlayValue isKindOfClass:[NSNull class]]) {
+	if ([_backgroundPlayValue isEqualToString:kBackgroundOn]) {
 		
-		_backgroundPlayValue = @"isOn";
-		[_defaults setObject:_backgroundPlayValue forKey:kBackgroundPlayValue];
-		[_defaults synchronize];
+		self.backgroundPlayView.backgroundColor = kIsOnColor;
+		self.backgroundPlayView.backgroundColorNormal = kIsOnColor;
 		
-	} else if ([_backgroundPlayValue isEqualToString: @"isOn"]) {
+	} else {
 		
-		
-		
-	} else if ([_backgroundPlayValue isEqualToString: @"isOff"]) {
-		
-		
+		self.backgroundPlayView.backgroundColor = kIsOffColor;
+		self.backgroundPlayView.backgroundColorNormal = kIsOffColor;
 	}
+	
+	NSLog (@"_backgroundPlayValue: %@\n", _backgroundPlayValue);
+	self.backgroundPlayValueLabel.text = _backgroundPlayValue;
 }
 
 
@@ -97,6 +92,24 @@
 {
 	if ([touch.view isEqual:(UIView *)self.backgroundPlayView]) {
 		
+		if ([_backgroundPlayValue isEqualToString:kBackgroundOn]) {
+			
+			_backgroundPlayValue = kBackgroundOff;
+			self.backgroundPlayView.backgroundColor = kIsOffColor;
+			self.backgroundPlayView.backgroundColorNormal = kIsOffColor;
+			
+		} else {
+			
+			_backgroundPlayValue = kBackgroundOn;
+			self.backgroundPlayView.backgroundColor = kIsOnColor;
+			self.backgroundPlayView.backgroundColorNormal = kIsOnColor;
+			[self playSound];
+		}
+		
+		NSLog (@"_backgroundPlayValue: %@\n", _backgroundPlayValue);
+		self.backgroundPlayValueLabel.text = _backgroundPlayValue;
+		[_defaults setObject:_backgroundPlayValue forKey:kBackgroundPlayValue];
+		[_defaults synchronize];
 		
 	} else if ([touch.view isEqual:(UIView *)self.aboutView]) {
 		
@@ -126,6 +139,18 @@
 }
 
 
+#pragma mark - Sound
+
+- (void)playSound
+{
+	NSString *path = [[NSBundle mainBundle] pathForResource:@"correct" ofType:@"caf"];
+	NSURL *URL = [NSURL fileURLWithPath:path];
+	SystemSoundID correctSoundID;
+	AudioServicesCreateSystemSoundID((__bridge CFURLRef)URL, &correctSoundID);
+	AudioServicesPlaySystemSound(correctSoundID);
+}
+
+
 #pragma mark - Configure UI
 
 - (void)configureUI
@@ -141,8 +166,7 @@
 	//Color
 	UIColor *colorNormal1 = [UIColor colorWithRed:0.396 green:0.675 blue:0.82 alpha:1];
 	UIColor *colorNormal2 = [UIColor colorWithRed:0.906 green:0.298 blue:0.235 alpha:1];
-	
-	self.backgroundPlayView.backgroundColor = colorNormal1;
+
 	self.aboutView.backgroundColor = colorNormal1;
 	self.openSourceView.backgroundColor = colorNormal1;
 	self.returnView.backgroundColor = colorNormal2;
