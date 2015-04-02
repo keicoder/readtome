@@ -9,8 +9,9 @@
 #define kBackgroundPlayValue	@"kBackgroundPlayValue"
 #define kBackgroundOn			@"Background On"
 #define kBackgroundOff			@"Background Off"
-#define kIsOnColor  [UIColor colorWithRed:1 green:0.73 blue:0.2 alpha:1]
-#define kIsOffColor [UIColor colorWithRed:0.227 green:0.414 blue:0.610 alpha:1.000]
+#define kIsOnColor		[UIColor colorWithRed:1 green:0.73 blue:0.2 alpha:1]
+#define kIsOffColor		[UIColor colorWithRed:0.227 green:0.414 blue:0.610 alpha:1.000]
+#define iPad			[[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad
 
 
 #import "SettingsViewController.h"
@@ -19,15 +20,17 @@
 #import "LanguagePickerViewController.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import "AboutViewController.h"
+#import <MessageUI/MessageUI.h>
 
 
-@interface SettingsViewController () <UIGestureRecognizerDelegate>
+@interface SettingsViewController () <UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *gearImageView;
-@property (weak, nonatomic) IBOutlet PopView *backgroundPlayView;
 @property (weak, nonatomic) IBOutlet UILabel *backgroundPlayValueLabel;
+@property (weak, nonatomic) IBOutlet PopView *backgroundPlayView;
 @property (weak, nonatomic) IBOutlet PopView *aboutView;
 @property (weak, nonatomic) IBOutlet PopView *openSourceView;
+@property (weak, nonatomic) IBOutlet PopView *sendMailView;
 @property (weak, nonatomic) IBOutlet PopView *returnView;
 
 @end
@@ -50,6 +53,7 @@
 	[self addTapGestureOnTheView:self.backgroundPlayView];
 	[self addTapGestureOnTheView:self.aboutView];
 	[self addTapGestureOnTheView:self.openSourceView];
+	[self addTapGestureOnTheView:self.sendMailView];
 	[self addTapGestureOnTheView:self.returnView];
 	[self getTheBackgroundPlayValue];
 }
@@ -124,6 +128,11 @@
 		
 	}
 	
+	else if ([touch.view isEqual:(UIView *)self.sendMailView]) {
+		
+		[self sendFeedbackEmail];
+	}
+	
 	else if ([touch.view isEqual:(UIView *)self.returnView]) {
 		
 		[self dismissViewControllerAnimated:YES completion:nil];
@@ -135,7 +144,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-	if (touch.view == self.backgroundPlayView || touch.view == self.aboutView || touch.view == self.openSourceView || touch.view == self.returnView) {
+	if (touch.view == self.backgroundPlayView || touch.view == self.aboutView || touch.view == self.openSourceView || touch.view == self.sendMailView || touch.view == self.returnView) {
 		return YES;
 	}
 	return NO;
@@ -154,6 +163,74 @@
 }
 
 
+#pragma mark - 이메일 공유 (MFMailComposeViewController)
+
+- (void)sendFeedbackEmail
+{
+	if ([MFMailComposeViewController canSendMail])
+	{
+		MFMailComposeViewController *mailViewController = [[MFMailComposeViewController alloc] init];
+		mailViewController.mailComposeDelegate = self;
+		
+		NSString *versionString = [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"];
+		NSString *buildNumberString = [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"];
+		NSString *messageSubject = @"ReadToMe iOS Feedback";
+		NSString *messageBody = [NSString stringWithFormat:@"ReadToMe iOS Version %@ (Build %@)\n\n\n", versionString, buildNumberString];
+		
+		[mailViewController setToRecipients:@[@"lovejun.soft@gmail.com"]];
+		[mailViewController setSubject:NSLocalizedString(messageSubject, messageSubject)];
+		[mailViewController setMessageBody:NSLocalizedString(messageBody, messageBody) isHTML:NO];
+		
+		[self setupMailComposeViewModalTransitionStyle:mailViewController];
+		mailViewController.modalPresentationCapturesStatusBarAppearance = YES;
+		
+		[self presentViewController:mailViewController animated:YES completion:^{ }];
+	}
+	
+	else {
+		
+		NSLog(@"This device cannot send email");
+	}
+}
+
+
+#pragma mark 이메일 공유 (Mail ComposeView Modal Transition Style)
+
+- (void)setupMailComposeViewModalTransitionStyle:(MFMailComposeViewController *)mailViewController
+{
+	if (iPad) {
+		mailViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+	} else {
+		mailViewController.modalPresentationStyle = UIModalPresentationPageSheet;
+	}
+}
+
+
+#pragma mark 델리게이트 메소드 (MFMailComposeViewControllerDelegate)
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
+{
+	switch (result)
+	{
+		case MFMailComposeResultCancelled:
+			NSLog(@"mail composer cancelled");
+			break;
+		case MFMailComposeResultSaved:
+			NSLog(@"mail composer saved");
+			break;
+		case MFMailComposeResultSent:
+			NSLog(@"mail composer sent");
+			break;
+		case MFMailComposeResultFailed:
+			NSLog(@"mail composer failed");
+			break;
+	}
+	[controller dismissViewControllerAnimated:YES completion:^{
+		
+	}];
+}
+
+
 #pragma mark - Configure UI
 
 - (void)configureUI
@@ -161,9 +238,16 @@
 	//Corner Radius
 	float cornerRadius = self.aboutView.bounds.size.height/2;
 	
+	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+		cornerRadius = 35;
+	} else {
+		cornerRadius = self.openSourceView.bounds.size.height/2;
+	}
+	
 	self.backgroundPlayView.layer.cornerRadius = cornerRadius;
 	self.aboutView.layer.cornerRadius = cornerRadius;
 	self.openSourceView.layer.cornerRadius = cornerRadius;
+	self.sendMailView.layer.cornerRadius = cornerRadius;
 	self.returnView.layer.cornerRadius = cornerRadius;
 	
 	//Color
@@ -172,6 +256,7 @@
 
 	self.aboutView.backgroundColor = colorNormal1;
 	self.openSourceView.backgroundColor = colorNormal1;
+	self.sendMailView.backgroundColor = colorNormal1;
 	self.returnView.backgroundColor = colorNormal2;
 	
 	//Image View
