@@ -24,7 +24,6 @@
 
 @implementation ListViewController
 
-
 #pragma mark - View life cycle
 
 - (void)viewDidLoad

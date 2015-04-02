@@ -22,7 +22,7 @@
                                 <rect key="frame" x="0.0" y="20" width="600" height="60"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rW-tW-Hkj" userLabel="ListButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="8" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="20" y="8" width="44" height="44"/>
                                         <accessibility key="accessibilityConfiguration" label="ResetButton"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                         <state key="normal" image="menu">
@@ -33,7 +33,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EFJ-j4-3BM" userLabel="SaveButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="60" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="72" y="8" width="44" height="44"/>
                                         <accessibility key="accessibilityConfiguration" label="ResetButton"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="9" maxX="10" maxY="9"/>
                                         <state key="normal" image="save">
@@ -58,7 +58,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="ResetButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="548" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="536" y="8" width="44" height="44"/>
                                         <accessibility key="accessibilityConfiguration" label="ResetButton"/>
                                         <inset key="contentEdgeInsets" minX="9" minY="9" maxX="9" maxY="9"/>
                                         <state key="normal" image="reset">
@@ -81,13 +81,13 @@
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="gGU-LD-ksn" secondAttribute="width" id="PWx-yz-JBk"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="EFJ-j4-3BM" secondAttribute="height" id="btm-AD-9s7"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="EFJ-j4-3BM" secondAttribute="centerY" id="hgS-Kv-jpk"/>
-                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="8" id="iHy-9B-wGg"/>
+                                    <constraint firstItem="6rW-tW-Hkj" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="20" id="iHy-9B-wGg"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="EFJ-j4-3BM" secondAttribute="width" id="nDq-83-3jm"/>
                                     <constraint firstAttribute="centerX" secondItem="djw-qX-P0a" secondAttribute="centerX" id="o8s-wi-Ief"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="6rW-tW-Hkj" secondAttribute="width" id="pOq-Ql-WwV"/>
                                     <constraint firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="sox-Da-HRZ"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="6rW-tW-Hkj" secondAttribute="centerY" id="u3y-Y9-G4M"/>
-                                    <constraint firstAttribute="trailing" secondItem="gGU-LD-ksn" secondAttribute="trailing" constant="8" id="y3A-wm-beO"/>
+                                    <constraint firstAttribute="trailing" secondItem="gGU-LD-ksn" secondAttribute="trailing" constant="20" id="y3A-wm-beO"/>
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
@@ -175,7 +175,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 <rect key="frame" x="0.0" y="540" width="600" height="60"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pn8-Lw-nUq" userLabel="ActionButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="8" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="20" y="8" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="11" minY="8" maxX="11" maxY="8"/>
                                         <state key="normal" image="action">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -185,7 +185,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xtD-FV-k3Q" userLabel="LanguageButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="444" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="432" y="8" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" image="speaker">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -195,7 +195,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UuS-46-ldZ" userLabel="EqualizerButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="496" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="484" y="8" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="8" maxX="10" maxY="8"/>
                                         <state key="normal" image="equalizer">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -205,7 +205,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BhP-KP-gJu" userLabel="SettingsButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="548" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="536" y="8" width="44" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="44" id="4y9-RV-7F7"/>
                                             <constraint firstAttribute="width" secondItem="BhP-KP-gJu" secondAttribute="height" multiplier="1:1" id="cB9-h7-AfS"/>
@@ -225,10 +225,10 @@ When the button in the toolbar is tapped, an activity view controller is present
                                         <variation key="heightClass=compact" constant="20"/>
                                     </constraint>
                                     <constraint firstItem="pn8-Lw-nUq" firstAttribute="centerY" secondItem="xtD-FV-k3Q" secondAttribute="centerY" id="I2s-DN-1F8"/>
-                                    <constraint firstItem="pn8-Lw-nUq" firstAttribute="leading" secondItem="Wws-1S-BRE" secondAttribute="leading" constant="8" id="I5L-J2-U4L"/>
+                                    <constraint firstItem="pn8-Lw-nUq" firstAttribute="leading" secondItem="Wws-1S-BRE" secondAttribute="leading" constant="20" id="I5L-J2-U4L"/>
                                     <constraint firstItem="BhP-KP-gJu" firstAttribute="width" secondItem="UuS-46-ldZ" secondAttribute="width" id="Sif-Cr-ccy"/>
                                     <constraint firstItem="xtD-FV-k3Q" firstAttribute="centerY" secondItem="UuS-46-ldZ" secondAttribute="centerY" id="Zq8-yZ-hh6"/>
-                                    <constraint firstAttribute="trailing" secondItem="BhP-KP-gJu" secondAttribute="trailing" constant="8" id="bZe-MZ-dvj"/>
+                                    <constraint firstAttribute="trailing" secondItem="BhP-KP-gJu" secondAttribute="trailing" constant="20" id="bZe-MZ-dvj"/>
                                     <constraint firstAttribute="height" constant="60" id="del-jg-4jZ"/>
                                     <constraint firstItem="xtD-FV-k3Q" firstAttribute="width" secondItem="UuS-46-ldZ" secondAttribute="width" id="f3f-8v-Z4l"/>
                                     <constraint firstItem="UuS-46-ldZ" firstAttribute="leading" secondItem="xtD-FV-k3Q" secondAttribute="trailing" constant="8" id="f6H-ac-Nhv">
@@ -302,7 +302,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 <rect key="frame" x="0.0" y="20" width="600" height="60"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Sg-hC-mAM" userLabel="ReturnButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="4" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="20" y="8" width="44" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="wym-kn-UPP"/>
                                             <constraint firstAttribute="width" constant="44" id="z90-MN-fPF"/>
@@ -320,7 +320,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                     <constraint firstAttribute="centerY" secondItem="7Sg-hC-mAM" secondAttribute="centerY" id="6Lb-Li-7no"/>
                                     <constraint firstAttribute="height" constant="60" id="PgC-ng-ypC"/>
                                     <constraint firstItem="7Sg-hC-mAM" firstAttribute="top" secondItem="tSl-98-fKN" secondAttribute="top" constant="8" id="kPb-Fe-51H"/>
-                                    <constraint firstItem="7Sg-hC-mAM" firstAttribute="leading" secondItem="tSl-98-fKN" secondAttribute="leading" constant="4" id="sJN-Nc-YkK"/>
+                                    <constraint firstItem="7Sg-hC-mAM" firstAttribute="leading" secondItem="tSl-98-fKN" secondAttribute="leading" constant="20" id="sJN-Nc-YkK"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="t5w-hx-g79">
@@ -776,6 +776,83 @@ When the button in the toolbar is tapped, an activity view controller is present
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W8U-Fe-0Uk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1462" y="460"/>
+        </scene>
+        <!--Open Source Licences View Controller-->
+        <scene sceneID="p0F-N1-K88">
+            <objects>
+                <viewController storyboardIdentifier="OpenSourceLicencesViewController" id="gxj-Hn-obx" customClass="OpenSourceLicencesViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Tnm-2r-cFL"/>
+                        <viewControllerLayoutGuide type="bottom" id="0ru-ch-yEb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="G9D-2K-S7v">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SkX-GQ-h8H" userLabel="MenuView">
+                                <rect key="frame" x="0.0" y="20" width="600" height="60"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1RZ-QE-yrZ" userLabel="ReturnButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="20" y="8" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="iEb-jh-jZ0"/>
+                                            <constraint firstAttribute="height" constant="44" id="nu1-Ye-fAg"/>
+                                        </constraints>
+                                        <state key="normal" image="circle-down">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="returnButtonTapped:" destination="LyB-Dx-MyH" eventType="touchUpInside" id="5mi-82-jYw"/>
+                                            <action selector="returnButtonTapped:" destination="gxj-Hn-obx" eventType="touchUpInside" id="mEH-bw-xTz"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.84303140639999996" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="1RZ-QE-yrZ" firstAttribute="leading" secondItem="SkX-GQ-h8H" secondAttribute="leading" constant="20" id="47F-lQ-2Dg"/>
+                                    <constraint firstItem="1RZ-QE-yrZ" firstAttribute="top" secondItem="SkX-GQ-h8H" secondAttribute="top" constant="8" id="6qj-t3-IKq"/>
+                                    <constraint firstAttribute="height" constant="60" id="K0s-DT-uUu"/>
+                                    <constraint firstAttribute="centerY" secondItem="1RZ-QE-yrZ" secondAttribute="centerY" id="fgt-Km-lUI"/>
+                                </constraints>
+                            </view>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="q7a-N3-UlO">
+                                <rect key="frame" x="20" y="80" width="560" height="520"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
+
+When the button in the toolbar is tapped, an activity view controller is presented and we will be able to invoke our Action extension from within there. Another good reason is that if you wanted to publish your extension on the App Store, it has to be part of a real app and obviously the app has to do something in order for it to be approved.</string>
+                                        <attributes>
+                                            <font key="NSFont" size="20" name="HelveticaNeue-Light"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="q7a-N3-UlO" firstAttribute="top" secondItem="SkX-GQ-h8H" secondAttribute="bottom" id="2C5-yc-KpS"/>
+                            <constraint firstItem="SkX-GQ-h8H" firstAttribute="top" secondItem="Tnm-2r-cFL" secondAttribute="bottom" id="EQ8-F1-A1R"/>
+                            <constraint firstItem="q7a-N3-UlO" firstAttribute="leading" secondItem="G9D-2K-S7v" secondAttribute="leading" constant="20" id="Kiv-ec-k3Y"/>
+                            <constraint firstItem="SkX-GQ-h8H" firstAttribute="centerX" secondItem="q7a-N3-UlO" secondAttribute="centerX" id="Qsx-Lp-oZ8"/>
+                            <constraint firstAttribute="trailing" secondItem="SkX-GQ-h8H" secondAttribute="trailing" id="cf6-H7-Nrh"/>
+                            <constraint firstAttribute="centerX" secondItem="SkX-GQ-h8H" secondAttribute="centerX" id="i2z-bY-2B7"/>
+                            <constraint firstItem="0ru-ch-yEb" firstAttribute="top" secondItem="q7a-N3-UlO" secondAttribute="bottom" id="om7-d2-akD"/>
+                            <constraint firstItem="SkX-GQ-h8H" firstAttribute="leading" secondItem="G9D-2K-S7v" secondAttribute="leading" id="rT3-XZ-c2g"/>
+                            <constraint firstAttribute="trailing" secondItem="q7a-N3-UlO" secondAttribute="trailing" constant="20" id="smk-tu-OzN"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="menuView" destination="SkX-GQ-h8H" id="vYD-sa-74j"/>
+                        <outlet property="textView" destination="q7a-N3-UlO" id="yDa-vG-1dq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vCa-Dz-AR4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1462" y="1106"/>
         </scene>
     </scenes>
     <resources>

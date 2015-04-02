@@ -21,6 +21,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "AboutViewController.h"
 #import <MessageUI/MessageUI.h>
+#import "OpenSourceLicencesViewController.h"
 
 
 @interface SettingsViewController () <UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate>
@@ -125,7 +126,9 @@
 	
 	else if ([touch.view isEqual:(UIView *)self.openSourceView]) {
 	
-		
+		OpenSourceLicencesViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"OpenSourceLicencesViewController"];
+		controller.view.frame = self.view.bounds;
+		[self presentViewController:controller animated:YES completion:^{ }];
 	}
 	
 	else if ([touch.view isEqual:(UIView *)self.sendMailView]) {

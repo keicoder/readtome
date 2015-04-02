@@ -77,6 +77,8 @@
 		C18978F81ACCD74800BFFA61 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978F61ACCD74800BFFA61 /* AboutViewController.m */; };
 		C18978FB1ACCD78A00BFFA61 /* GradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FA1ACCD78A00BFFA61 /* GradientView.m */; };
 		C18978FC1ACCD78A00BFFA61 /* GradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FA1ACCD78A00BFFA61 /* GradientView.m */; };
+		C18978FF1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FE1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m */; };
+		C18979001ACCED5300BFFA61 /* OpenSourceLicencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FE1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m */; };
 		C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */; };
@@ -207,6 +209,8 @@
 		C18978F61ACCD74800BFFA61 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		C18978F91ACCD78A00BFFA61 /* GradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GradientView.h; sourceTree = "<group>"; };
 		C18978FA1ACCD78A00BFFA61 /* GradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GradientView.m; sourceTree = "<group>"; };
+		C18978FD1ACCED5300BFFA61 /* OpenSourceLicencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSourceLicencesViewController.h; sourceTree = "<group>"; };
+		C18978FE1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSourceLicencesViewController.m; sourceTree = "<group>"; };
 		C1FB14DE1AC29B5700F24030 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		C1FB14E21AC2AFD800F24030 /* PopAnimationImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopAnimationImageView.h; sourceTree = "<group>"; };
@@ -436,6 +440,8 @@
 				C18978F61ACCD74800BFFA61 /* AboutViewController.m */,
 				C18978F91ACCD78A00BFFA61 /* GradientView.h */,
 				C18978FA1ACCD78A00BFFA61 /* GradientView.m */,
+				C18978FD1ACCED5300BFFA61 /* OpenSourceLicencesViewController.h */,
+				C18978FE1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -623,6 +629,7 @@
 				C110F2A01AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */,
 				C1FF5C1E1ACA48DE0094FCD1 /* DataManager.m in Sources */,
 				C18978FB1ACCD78A00BFFA61 /* GradientView.m in Sources */,
+				C18978FF1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m in Sources */,
 				C110F2BC1AC12F4000B4E355 /* POPVector.mm in Sources */,
 				C110F2A41AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */,
 				C12245451ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */,
@@ -658,6 +665,7 @@
 				C110F2B91AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */,
 				C167549A1AC3A81E009F4D88 /* PopView.m in Sources */,
 				C110F2BF1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */,
+				C18979001ACCED5300BFFA61 /* OpenSourceLicencesViewController.m in Sources */,
 				C18978FC1ACCD78A00BFFA61 /* GradientView.m in Sources */,
 				C18978F81ACCD74800BFFA61 /* AboutViewController.m in Sources */,
 				C110F2A31AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */,
