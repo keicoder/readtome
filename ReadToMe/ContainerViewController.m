@@ -70,6 +70,7 @@
 
 @implementation ContainerViewController
 {
+	NSString *_textForSpeech;
 	BOOL _paused;
 	BOOL _equalizerViewExpanded;
 	NSUserDefaults *_defaults;
@@ -142,28 +143,47 @@
  */
 - (void)saveCurrentDocumentsForSpeech
 {
-	NSManagedObjectContext *managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+	[self textForSpeech]; //Return text for speech
 	
-	DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:managedObjectContext];
-	
-	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
-	documentsForSpeech.uniqueIdString = uniqueIDString;
-	documentsForSpeech.isNewDocument = [NSNumber numberWithBool:YES];
-	
-	NSDate *now = [NSDate date];
-	if (self.currentDocumentsForSpeech.createdDate == nil) {
-		self.currentDocumentsForSpeech.createdDate = now;
-	}
-	self.currentDocumentsForSpeech.document = self.textView.text;
-	
-	[managedObjectContext performBlock:^{
-		NSError *error = nil;
-		if ([managedObjectContext save:&error]) {
-			NSLog (@"managedObjectContext save: %@\n", managedObjectContext);
+	if (_textForSpeech != nil) {
+		
+		if (![_textForSpeech isEqualToString:[self.pasteBoard string]]) {
+			
+			[self showNoTextToSpeechAlertTitle:@"Alert" withBody:@"Already Saved."];
+			
 		} else {
-			NSLog(@"Error saving context: %@", error);
+			
+			NSManagedObjectContext *managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+			
+			DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:managedObjectContext];
+			
+			NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+			documentsForSpeech.uniqueIdString = uniqueIDString;
+			NSLog (@"documentsForSpeech.savedDocument: %@\n", documentsForSpeech.savedDocument);
+			documentsForSpeech.savedDocument = @"savedDocument";
+			documentsForSpeech.document = _textForSpeech;
+			documentsForSpeech.isNewDocument = [NSNumber numberWithBool:YES];
+			
+			NSDate *now = [NSDate date];
+			if (self.currentDocumentsForSpeech.createdDate == nil) {
+				self.currentDocumentsForSpeech.createdDate = now;
+			}
+			self.currentDocumentsForSpeech.document = self.textView.text;
+			
+			[managedObjectContext performBlock:^{
+				NSError *error = nil;
+				if ([managedObjectContext save:&error]) {
+					NSLog (@"managedObjectContext save: %@\n", managedObjectContext);
+				} else {
+					NSLog(@"Error saving context: %@", error);
+				}
+			}];
 		}
-	}];
+		
+	} else {
+		
+		[self showNoTextToSpeechAlertTitle:@"No text to speech" withBody:@"There are no text to speech."];
+	}
 }
 
 
@@ -209,15 +229,29 @@
 
 #pragma mark - Speech
 
+- (NSString *)textForSpeech
+{
+	_textForSpeech = [self.pasteBoard string];
+	
+	if (![_textForSpeech isEqualToString:@""]) {
+		
+		self.textView.text = _textForSpeech;
+		return _textForSpeech;
+		
+	} else {
+		
+		self.textView.text = @"No Text to speech";
+		return nil;
+	}
+}
+
 - (IBAction)pasteAndSpeechText:(UIPasteboard *)pasteboard
 {
-	[self.textView resignFirstResponder];
+	[self textForSpeech]; //Return text for speech
 	
-	self.textView.text = [self.pasteBoard string];
-	
-	if (![self.textView.text isEqualToString:@""]) {
+	if (_textForSpeech != nil) {
 		
-		self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+		self.utterance = [AVSpeechUtterance speechUtteranceWithString:_textForSpeech];
 		self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
 		self.utterance.rate = _rateSliderValue; //0.07;
 		self.utterance.pitchMultiplier = _pitchSliderValue; //1.0;
@@ -242,19 +276,25 @@
 		
 	} else {
 		
-		NSString *title = @"No Text to speech";
-		NSString *message = @"There are no text to speech.";
-		
-		UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-		[sheet addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
-			NSLog(@"Tapped OK");
-		}]];
-		
-		sheet.popoverPresentationController.sourceView = self.view;
-		sheet.popoverPresentationController.sourceRect = self.view.frame;
-		
-		[self presentViewController:sheet animated:YES completion:nil];
+		[self showNoTextToSpeechAlertTitle:@"No text to speech" withBody:@"There are no text to speech."];
 	}
+}
+
+
+- (void)showNoTextToSpeechAlertTitle:(NSString *)aTitle withBody:(NSString *)aBody
+{
+	NSString *title = aTitle;
+	NSString *message = aBody;
+	
+	UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+	[sheet addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
+		NSLog(@"Tapped OK");
+	}]];
+	
+	sheet.popoverPresentationController.sourceView = self.view;
+	sheet.popoverPresentationController.sourceRect = self.view.frame;
+	
+	[self presentViewController:sheet animated:YES completion:nil];
 }
 
 

@@ -180,11 +180,28 @@
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
 	}
 	
+	[self configureCell:cell atIndexPath:indexPath];
+	
 	DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.textLabel.text = documentsForSpeech.dateString;
 	cell.detailTextLabel.text = documentsForSpeech.uniqueIdString;
 	
 	return cell;
+}
+
+
+#pragma mark 셀 속성
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+	if ([cell respondsToSelector:@selector(setSeparatorInset:)]) { cell.separatorInset = UIEdgeInsetsZero; }
+	cell.backgroundColor = [UIColor whiteColor];
+	cell.accessoryType = UITableViewCellAccessoryNone;
+	
+	cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+	cell.textLabel.textColor = [UIColor darkTextColor];
+	cell.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];;
+	cell.detailTextLabel.textColor = [UIColor lightGrayColor];
 }
 
 
