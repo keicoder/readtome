@@ -122,77 +122,11 @@
 }
 
 
-#pragma mark - Save Current Documents For Speech
-/*
- @property (nonatomic, retain) NSString * documentBody;
- @property (nonatomic, retain) NSDate * createdDate;
- @property (nonatomic, retain) NSString * dateString;
- @property (nonatomic, retain) NSString * dayString;
- @property (nonatomic, retain) NSString * language;
- @property (nonatomic, retain) NSString * monthString;
- @property (nonatomic, retain) NSNumber * pitch;
- @property (nonatomic, retain) NSNumber * rate;
- @property (nonatomic, retain) NSString * section;
- @property (nonatomic, retain) NSNumber * isNewDocument;
- @property (nonatomic, retain) NSString * savedDocument;
- @property (nonatomic, retain) NSString * documentTitle;
- @property (nonatomic, retain) NSString * uniqueIdString;
- @property (nonatomic, retain) NSNumber * volume;
- @property (nonatomic, retain) NSString * yearString;
- @property (nonatomic, retain) NSString * document;
- */
-- (void)saveCurrentDocumentsForSpeech
-{
-	[self textForSpeech]; //Return text for speech
-	
-	if (_textForSpeech != nil) {
-		
-		if (![_textForSpeech isEqualToString:[self.pasteBoard string]]) {
-			
-			[self showNoTextToSpeechAlertTitle:@"Alert" withBody:@"Already Saved."];
-			
-		} else {
-			
-			NSManagedObjectContext *managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-			
-			DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:managedObjectContext];
-			
-			NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
-			documentsForSpeech.uniqueIdString = uniqueIDString;
-			NSLog (@"documentsForSpeech.savedDocument: %@\n", documentsForSpeech.savedDocument);
-			documentsForSpeech.savedDocument = @"savedDocument";
-			documentsForSpeech.document = _textForSpeech;
-			documentsForSpeech.isNewDocument = [NSNumber numberWithBool:YES];
-			
-			NSDate *now = [NSDate date];
-			if (self.currentDocumentsForSpeech.createdDate == nil) {
-				self.currentDocumentsForSpeech.createdDate = now;
-			}
-			self.currentDocumentsForSpeech.document = self.textView.text;
-			
-			[managedObjectContext performBlock:^{
-				NSError *error = nil;
-				if ([managedObjectContext save:&error]) {
-					NSLog (@"managedObjectContext save: %@\n", managedObjectContext);
-				} else {
-					NSLog(@"Error saving context: %@", error);
-				}
-			}];
-		}
-		
-	} else {
-		
-		[self showNoTextToSpeechAlertTitle:@"No text to speech" withBody:@"There are no text to speech."];
-	}
-}
-
-
 #pragma mark - State Restoration
 
 - (NSString *)selectedLanguage
 {
     _selectedLanguage = [_defaults objectForKey:kSelectedLanguage];
-	NSLog (@"_selectedLanguage: %@\n", _selectedLanguage);
 	return _selectedLanguage;
 }
 
@@ -200,9 +134,7 @@
 - (CGFloat)volumeSliderValue
 {
 	_volumeSliderValue = [_defaults floatForKey:kVolumeSliderValue];
-	
 	self.volumeSlider.value = _volumeSliderValue;
-	NSLog (@"_volumeSliderValue: %f\n", _volumeSliderValue);
 	return _volumeSliderValue;
 }
 
@@ -210,9 +142,7 @@
 - (CGFloat)pitchSliderValue
 {
 	_pitchSliderValue = [_defaults floatForKey:kPitchSliderValue];
-	
 	self.pitchSlider.value = _pitchSliderValue;
-	NSLog (@"_pitchSliderValue: %f\n", _pitchSliderValue);
 	return _pitchSliderValue;
 }
 
@@ -220,30 +150,12 @@
 - (CGFloat)rateSliderValue
 {
 	_rateSliderValue = [_defaults floatForKey:kRateSliderValue];
-	
 	self.rateSlider.value = _rateSliderValue;
-	NSLog (@"_rateSliderValue: %f\n", _rateSliderValue);
 	return _rateSliderValue;
 }
 
 
 #pragma mark - Speech
-
-- (NSString *)textForSpeech
-{
-	_textForSpeech = [self.pasteBoard string];
-	
-	if (![_textForSpeech isEqualToString:@""]) {
-		
-		self.textView.text = _textForSpeech;
-		return _textForSpeech;
-		
-	} else {
-		
-		self.textView.text = @"No Text to speech";
-		return nil;
-	}
-}
 
 - (IBAction)pasteAndSpeechText:(UIPasteboard *)pasteboard
 {
@@ -281,6 +193,62 @@
 }
 
 
+- (NSString *)textForSpeech
+{
+	_textForSpeech = [self.pasteBoard string];
+	
+	if (_textForSpeech == nil || [_textForSpeech isEqualToString:@""]) {
+		
+		self.textView.text = @"No Text to speech";
+		return nil;
+		
+	} else if ([_textForSpeech isEqualToString:self.textView.text]) {
+		
+		return nil;
+		
+	} else {
+		
+		[self saveCurrentDocumentToCoreDataStack];
+		self.textView.text = _textForSpeech;
+		return _textForSpeech;
+	}
+}
+
+
+#pragma mark - Save Current Documents For Speech
+
+- (void)saveCurrentDocumentToCoreDataStack
+{
+	NSManagedObjectContext *managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+	
+	DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:managedObjectContext];
+	
+	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+	documentsForSpeech.uniqueIdString = uniqueIDString;
+	NSLog (@"documentsForSpeech.savedDocument: %@\n", documentsForSpeech.savedDocument);
+	documentsForSpeech.savedDocument = @"savedDocument";
+	documentsForSpeech.document = _textForSpeech;
+	documentsForSpeech.isNewDocument = [NSNumber numberWithBool:YES];
+	
+	NSDate *now = [NSDate date];
+	if (self.currentDocumentsForSpeech.createdDate == nil) {
+		self.currentDocumentsForSpeech.createdDate = now;
+	}
+	self.currentDocumentsForSpeech.document = self.textView.text;
+	
+	[managedObjectContext performBlock:^{
+		NSError *error = nil;
+		if ([managedObjectContext save:&error]) {
+			NSLog (@"managedObjectContext save: %@\n", managedObjectContext);
+		} else {
+			NSLog(@"Error saving context: %@", error);
+		}
+	}];
+}
+
+
+#pragma mark - Show no text to speech alert
+
 - (void)showNoTextToSpeechAlertTitle:(NSString *)aTitle withBody:(NSString *)aBody
 {
 	NSString *title = aTitle;
@@ -312,7 +280,7 @@
 
 - (IBAction)saveButtonTapped:(id)sender
 {
-	[self saveCurrentDocumentsForSpeech]; //코더데이터 저장
+	NSLog(@"Save Button Tapped");
 }
 
 
