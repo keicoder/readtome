@@ -36,7 +36,7 @@
 
 - (void)updateLabel
 {
-	self.aboutLabel.text = @"App Name: ReadToMe\n\nReadToMe app can make your iPhone or iPad read aloud copied text. Enjoy it.\n\nTwitter: @hyun2012\nEmail: lovejun.soft@gmail.com\n\nKeiCoder 2015";
+	self.aboutLabel.text = @"ReadToMe\n\nReadToMe app can make your iPhone or iPad read aloud document. Enjoy it.\n\nTwitter: @hyun2012\nEmail: lovejun.soft@gmail.com\n\nKeiCoder 2015";
 }
 
 
