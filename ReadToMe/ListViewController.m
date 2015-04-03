@@ -190,8 +190,6 @@
 }
 
 
-#pragma mark 셀 속성
-
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	if ([cell respondsToSelector:@selector(setSeparatorInset:)]) { cell.separatorInset = UIEdgeInsetsZero; }
@@ -205,29 +203,49 @@
 }
 
 
+#pragma mark - Table View Delegate
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	return 60;
 }
 
 
--(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (section == 0) {
-		NSUInteger count = [[self.fetchedResultsController sections][section] numberOfObjects];
-		NSString *documentsCount = [NSString stringWithFormat:@"%lu Documents for Speech", (unsigned long)count];
-		return documentsCount;
-	}
-	return nil;
+	return YES;
 }
 
 
-#pragma mark - Table View Delegate
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (editingStyle == UITableViewCellEditingStyleDelete)
+	{
+		[self deleteCoreDataDocumentObject:indexPath];
+	}
+}
+
+
+- (void)deleteCoreDataDocumentObject:(NSIndexPath *)indexPath
+{
+	NSManagedObjectContext *managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+	NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	[managedObjectContext deleteObject:managedObject];
+	NSError *error = nil;
+	[managedObjectContext save:&error];
+}
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSLog(@"Did Select Row!");
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return NO;
 }
 
 
