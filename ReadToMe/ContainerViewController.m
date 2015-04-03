@@ -47,7 +47,6 @@
 
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 
-@property (weak, nonatomic) IBOutlet UIButton *saveButton;
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 @property (weak, nonatomic) IBOutlet UIButton *actionButton;
@@ -116,6 +115,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+	[self pasteTextForSpeech];
 	[self selectedLanguage];
 	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
 	NSLog (@"kBackgroundPlayValue: %@\n", [_defaults objectForKey:kBackgroundPlayValue]);
@@ -157,49 +157,41 @@
 
 #pragma mark - Speech
 
-- (IBAction)pasteAndSpeechText:(UIPasteboard *)pasteboard
+- (IBAction)speechText
 {
-	[self textForSpeech]; //Return text for speech
+	self.utterance = [AVSpeechUtterance speechUtteranceWithString:_textForSpeech];
+	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
+	self.utterance.rate = _rateSliderValue; //0.07;
+	self.utterance.pitchMultiplier = _pitchSliderValue; //1.0;
+	self.utterance.volume = _volumeSliderValue; //0.5;
+	self.utterance.preUtteranceDelay = 0.3f;
+	self.utterance.postUtteranceDelay = 0.3f;
 	
-	if (_textForSpeech != nil) {
-		
-		self.utterance = [AVSpeechUtterance speechUtteranceWithString:_textForSpeech];
-		self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
-		self.utterance.rate = _rateSliderValue; //0.07;
-		self.utterance.pitchMultiplier = _pitchSliderValue; //1.0;
-		self.utterance.volume = _volumeSliderValue; //0.5;
-		self.utterance.preUtteranceDelay = 0.3f;
-		self.utterance.postUtteranceDelay = 0.3f;
-		
-		if (_paused == YES) {
-			[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-			[self.synthesizer continueSpeaking];
-			_paused = NO;
-		} else {
-			[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-			_paused = YES;
-		}
-		
-		if (self.synthesizer.isSpeaking == NO) {
-			[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
-			[self.synthesizer speakUtterance:self.utterance];
-		}
-		
+	if (_paused == YES) {
+		[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+		[self.synthesizer continueSpeaking];
+		_paused = NO;
 	} else {
-		
-		[self showNoTextToSpeechAlertTitle:@"No text to speech" withBody:@"There are no text to speech."];
+		[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+		[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+		_paused = YES;
+	}
+	
+	if (self.synthesizer.isSpeaking == NO) {
+		[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
+		[self.synthesizer speakUtterance:self.utterance];
 	}
 }
 
 
-- (NSString *)textForSpeech
+- (NSString *)pasteTextForSpeech
 {
 	_textForSpeech = [self.pasteBoard string];
 	
 	if (_textForSpeech == nil || [_textForSpeech isEqualToString:@""]) {
 		
 		self.textView.text = @"No Text to speech";
+		[self showNoTextToSpeechAlertTitle:@"No text to speech" withBody:@"There are no text to speech."];
 		return nil;
 		
 	} else if ([_textForSpeech isEqualToString:self.textView.text]) {
@@ -278,16 +270,10 @@
 }
 
 
-- (IBAction)saveButtonTapped:(id)sender
-{
-	NSLog(@"Save Button Tapped");
-}
-
-
 - (IBAction)resetButtonTapped:(id)sender
 {
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self pasteAndSpeechText:self.pasteBoard];
+	[self speechText];
 }
 
 

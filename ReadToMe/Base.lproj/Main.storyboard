@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D127a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D130a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -32,17 +32,6 @@
                                             <action selector="listButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="L0P-Lb-O0Z"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EFJ-j4-3BM" userLabel="SaveButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="72" y="8" width="44" height="44"/>
-                                        <accessibility key="accessibilityConfiguration" label="ResetButton"/>
-                                        <inset key="contentEdgeInsets" minX="10" minY="9" maxX="10" maxY="9"/>
-                                        <state key="normal" image="save">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="saveButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="GiB-Yr-5sg"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djw-qX-P0a" userLabel="PlayPauseButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="278" y="8" width="44" height="44"/>
                                         <constraints>
@@ -54,7 +43,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="pasteAndSpeechText:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CnT-gK-VfD"/>
+                                            <action selector="speechText" destination="BYZ-38-t0r" eventType="touchUpInside" id="GZ6-nb-saS"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="ResetButton" customClass="PopAnimationClearButton">
@@ -75,14 +64,8 @@
                                     <constraint firstAttribute="height" constant="60" id="4mi-Pe-nfX"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="gGU-LD-ksn" secondAttribute="centerY" id="9Wl-MO-Bk6"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="gGU-LD-ksn" secondAttribute="height" id="E0k-DI-JVQ"/>
-                                    <constraint firstItem="EFJ-j4-3BM" firstAttribute="leading" secondItem="6rW-tW-Hkj" secondAttribute="trailing" constant="8" id="O7f-zS-if0">
-                                        <variation key="heightClass=compact" constant="20"/>
-                                    </constraint>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="gGU-LD-ksn" secondAttribute="width" id="PWx-yz-JBk"/>
-                                    <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="EFJ-j4-3BM" secondAttribute="height" id="btm-AD-9s7"/>
-                                    <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="EFJ-j4-3BM" secondAttribute="centerY" id="hgS-Kv-jpk"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="20" id="iHy-9B-wGg"/>
-                                    <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="EFJ-j4-3BM" secondAttribute="width" id="nDq-83-3jm"/>
                                     <constraint firstAttribute="centerX" secondItem="djw-qX-P0a" secondAttribute="centerX" id="o8s-wi-Ief"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="6rW-tW-Hkj" secondAttribute="width" id="pOq-Ql-WwV"/>
                                     <constraint firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="sox-Da-HRZ"/>
@@ -276,7 +259,6 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <outlet property="rateLabel" destination="Skf-hE-fIQ" id="bei-Lv-jda"/>
                         <outlet property="rateSlider" destination="Kur-ii-tqL" id="31K-fQ-Cqb"/>
                         <outlet property="resetButton" destination="gGU-LD-ksn" id="yg3-KX-RbJ"/>
-                        <outlet property="saveButton" destination="EFJ-j4-3BM" id="uai-i4-NaE"/>
                         <outlet property="textView" destination="VWj-si-BKE" id="TKZ-9Q-pKe"/>
                         <outlet property="volumeLabel" destination="Bak-fz-q7P" id="UcD-a3-3yM"/>
                         <outlet property="volumeSlider" destination="ypv-Nl-rZa" id="Uct-dq-Nbm"/>
@@ -868,7 +850,6 @@ When the button in the toolbar is tapped, an activity view controller is present
         <image name="openSource" width="44" height="44"/>
         <image name="pause" width="18" height="32"/>
         <image name="reset" width="45" height="44"/>
-        <image name="save" width="44" height="44"/>
         <image name="settings" width="46" height="47"/>
         <image name="speaker" width="32" height="31"/>
     </resources>
