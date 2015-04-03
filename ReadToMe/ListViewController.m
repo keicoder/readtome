@@ -10,6 +10,7 @@
 #import "DataManager.h"
 #import "DocumentsForSpeech.h"
 #import "ContainerViewController.h"
+#import "ListTableViewCell.h"
 
 
 @interface ListViewController () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
@@ -174,23 +175,25 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString * cellIdentifier = @"Cell";
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+	ListTableViewCell *cell = (ListTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 	
 	if (cell == nil) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+		cell = (ListTableViewCell *)[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
 	}
 	
 	[self configureCell:cell atIndexPath:indexPath];
 	
 	DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = documentsForSpeech.dateString;
-	cell.detailTextLabel.text = documentsForSpeech.uniqueIdString;
+	cell.titleLabel.text = documentsForSpeech.documentTitle;
+	cell.dayLabel.text = documentsForSpeech.dayString;
+	cell.dateLabel.text = documentsForSpeech.dateString;
+	cell.monthAndYearLabel.text = documentsForSpeech.monthAndYearString;
 	
 	return cell;
 }
 
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(ListTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	if ([cell respondsToSelector:@selector(setSeparatorInset:)]) { cell.separatorInset = UIEdgeInsetsZero; }
 	cell.backgroundColor = [UIColor whiteColor];
@@ -207,7 +210,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 60;
+	return 88;
 }
 
 

@@ -226,7 +226,11 @@
 	if (self.currentDocumentsForSpeech.createdDate == nil) {
 		self.currentDocumentsForSpeech.createdDate = now;
 	}
-	self.currentDocumentsForSpeech.document = self.textView.text;
+	self.currentDocumentsForSpeech.document = _textForSpeech;
+	
+	NSString *firstLine = [self getFirstLineOfStringForTitle:_textForSpeech];
+	NSLog (@"firstLine: %@\n", firstLine);
+	documentsForSpeech.documentTitle = firstLine;
 	
 	[managedObjectContext performBlock:^{
 		NSError *error = nil;
@@ -236,6 +240,35 @@
 			NSLog(@"Error saving context: %@", error);
 		}
 	}];
+}
+
+
+#pragma mark - 첫째 라인만 가져오기
+
+- (NSString *)getFirstLineOfStringForTitle:(NSString *)aString
+{
+	NSString *trimmedString = nil;
+	NSCharacterSet *charSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];    //공백 문자와 라인 피드문자 삭제
+	trimmedString = [aString stringByTrimmingCharactersInSet:charSet];
+	
+	__block NSString *firstLine = nil;
+	NSString *wholeText = trimmedString;
+	[wholeText enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+		firstLine = [line copy];
+		*stop = YES;
+	}];
+	
+	if (firstLine.length == 0)
+	{
+		firstLine = @"No Title";
+	}
+	
+	if (firstLine.length > 0)
+	{
+		__block NSString *trimmedTitle = nil;
+		[firstLine enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {trimmedTitle = line; *stop = YES;}];
+	}
+	return firstLine;
 }
 
 

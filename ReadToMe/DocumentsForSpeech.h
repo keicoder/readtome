@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSString * dayString;
 @property (nonatomic, retain) NSString * language;
 @property (nonatomic, retain) NSString * monthString;
+@property (nonatomic, retain) NSString * monthAndYearString;
 @property (nonatomic, retain) NSNumber * pitch;
 @property (nonatomic, retain) NSNumber * rate;
 @property (nonatomic, retain) NSString * section;

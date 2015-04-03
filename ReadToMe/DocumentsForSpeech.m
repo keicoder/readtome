@@ -24,6 +24,7 @@
 @dynamic dayString;
 @dynamic language;
 @dynamic monthString;
+@dynamic monthAndYearString;
 @dynamic pitch;
 @dynamic rate;
 @dynamic section;
@@ -88,13 +89,18 @@
 	self.dayString = stringDay;
 	self.dateString = stringdaysOfTheWeek;
 	
+	[self.formatter setDateFormat:@"MMM yyyy"];
+	NSString *monthAndYearString = [self.formatter stringFromDate:now];
+	self.monthAndYearString = monthAndYearString;
+	
 	self.section = stringYear;
 	
-	NSLog (@"self.yearString: %@\n", self.yearString);
-	NSLog (@"self.monthString: %@\n", self.monthString);
-	NSLog (@"self.dayString: %@\n", self.dayString);
-	NSLog (@"self.dateString: %@\n", self.dateString);
-	NSLog (@"self.section: %@\n", self.section);
+//	NSLog (@"self.yearString: %@\n", self.yearString);
+//	NSLog (@"self.monthString: %@\n", self.monthString);
+//	NSLog (@"self.dayString: %@\n", self.dayString);
+//	NSLog (@"self.dateString: %@\n", self.dateString);
+//	NSLog (@"self.monthAndYearString: %@\n", self.monthAndYearString);
+//	NSLog (@"self.section: %@\n", self.section);
 }
 
 
