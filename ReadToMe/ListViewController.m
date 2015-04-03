@@ -33,6 +33,7 @@
 	[self configureUI];
 	self.tableView.dataSource = self;
 	self.tableView.delegate = self;
+	[self addApplicationsStateObserver];
 }
 
 
@@ -61,7 +62,7 @@
 	{
 		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DocumentsForSpeech"];
 		
-		NSSortDescriptor *noteModifiedDateSort = [[NSSortDescriptor alloc] initWithKey:@"document" ascending:YES];
+		NSSortDescriptor *noteModifiedDateSort = [[NSSortDescriptor alloc] initWithKey:@"createdDate" ascending:NO];
 		[fetchRequest setSortDescriptors: @[noteModifiedDateSort]];
 		
 		_fetchedResultsController = [[NSFetchedResultsController alloc]
@@ -243,6 +244,12 @@
 {
 	NSLog(@"Did Select Row!");
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+	pasteboard.string = documentsForSpeech.document;
+	
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -265,6 +272,44 @@
 - (void)configureUI
 {
 	self.menuView.backgroundColor = [UIColor colorWithRed:0.204 green:0.596 blue:0.859 alpha:1];
+}
+
+
+#pragma mark - Add Observer
+
+- (void)addApplicationsStateObserver
+{
+	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+	[center addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
+	[center addObserver:self selector:@selector(applicationDidBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
+	[center addObserver:self selector:@selector(applicationDidEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+	[center addObserver:self selector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+
+#pragma mark - Application's State
+
+- (void)applicationWillResignActive
+{
+	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+}
+
+
+- (void)applicationDidBecomeActive
+{
+	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+}
+
+
+- (void)applicationDidEnterBackground
+{
+	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+}
+
+
+- (void)applicationWillEnterForeground
+{
+	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
 }
 
 

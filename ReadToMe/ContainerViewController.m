@@ -93,7 +93,7 @@
 	self.synthesizer.delegate = self;
 	self.pasteBoard = [UIPasteboard generalPasteboard];
 	self.pasteBoard.persistent = YES;
-	self.textView.text = @"Hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
+	self.textView.text = @"Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
 	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
 	
 	_defaults = [NSUserDefaults standardUserDefaults];
@@ -107,7 +107,8 @@
 	NSString *backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
 	NSLog (@"backgroundPlayValue: %@\n", backgroundPlayValue);
 	
-	[self addNotificationObserver];
+	[self addPickedLanguageObserver];
+	[self addApplicationsStateObserver];
 }
 
 
@@ -157,7 +158,7 @@
 
 #pragma mark - Speech
 
-- (IBAction)speechText
+- (IBAction)speechText:(id)sender
 {
 	self.utterance = [AVSpeechUtterance speechUtteranceWithString:_textForSpeech];
 	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
@@ -190,8 +191,7 @@
 	
 	if (_textForSpeech == nil || [_textForSpeech isEqualToString:@""]) {
 		
-		self.textView.text = @"No Text to speech";
-		[self showNoTextToSpeechAlertTitle:@"No text to speech" withBody:@"There are no text to speech."];
+		self.textView.text = @"There are no text to speech. Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
 		return nil;
 		
 	} else if ([_textForSpeech isEqualToString:self.textView.text]) {
@@ -200,7 +200,6 @@
 		
 	} else {
 		
-		[self saveCurrentDocumentToCoreDataStack];
 		self.textView.text = _textForSpeech;
 		return _textForSpeech;
 	}
@@ -208,7 +207,25 @@
 
 
 #pragma mark - Save Current Documents For Speech
-
+/*
+ @property (nonatomic, retain) NSString * documentBody;
+ @property (nonatomic, retain) NSDate * createdDate;
+ @property (nonatomic, retain) NSString * dateString;
+ @property (nonatomic, retain) NSString * dayString;
+ @property (nonatomic, retain) NSString * language;
+ @property (nonatomic, retain) NSString * monthString;
+ @property (nonatomic, retain) NSString * monthAndYearString;
+ @property (nonatomic, retain) NSNumber * pitch;
+ @property (nonatomic, retain) NSNumber * rate;
+ @property (nonatomic, retain) NSString * section;
+ @property (nonatomic, retain) NSNumber * isNewDocument;
+ @property (nonatomic, retain) NSString * savedDocument;
+ @property (nonatomic, retain) NSString * documentTitle;
+ @property (nonatomic, retain) NSString * uniqueIdString;
+ @property (nonatomic, retain) NSNumber * volume;
+ @property (nonatomic, retain) NSString * yearString;
+ @property (nonatomic, retain) NSString * document;
+ */
 - (void)saveCurrentDocumentToCoreDataStack
 {
 	NSManagedObjectContext *managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
@@ -221,11 +238,15 @@
 	documentsForSpeech.savedDocument = @"savedDocument";
 	documentsForSpeech.document = _textForSpeech;
 	documentsForSpeech.isNewDocument = [NSNumber numberWithBool:YES];
+	documentsForSpeech.language = _selectedLanguage;
+	documentsForSpeech.pitch = [NSNumber numberWithFloat:_pitchSliderValue];
+	documentsForSpeech.rate = [NSNumber numberWithFloat:_rateSliderValue];
 	
-	NSDate *now = [NSDate date];
-	if (self.currentDocumentsForSpeech.createdDate == nil) {
-		self.currentDocumentsForSpeech.createdDate = now;
-	}
+	
+//	NSDate *now = [NSDate date];
+//	if (self.currentDocumentsForSpeech.createdDate == nil) {
+//		self.currentDocumentsForSpeech.createdDate = now;
+//	}
 	self.currentDocumentsForSpeech.document = _textForSpeech;
 	
 	NSString *firstLine = [self getFirstLineOfStringForTitle:_textForSpeech];
@@ -306,7 +327,7 @@
 - (IBAction)resetButtonTapped:(id)sender
 {
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self speechText];
+	[self speechText:sender];
 }
 
 
@@ -453,21 +474,6 @@
 }
 
 
-#pragma mark - Listening Notification
-
-- (void)addNotificationObserver
-{
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPickedLanguageNotification:) name:@"DidPickedLanguageNotification" object:nil];
-}
-
-
-- (void)didPickedLanguageNotification:(NSNotification *)notification
-{
-	NSLog(@"DidPickedLanguageNotification Recieved");
-	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
-}
-
-
 #pragma mark - 앱 처음 실행인지 체크 > Volume, Pitch, Rate 기본값 적용
 
 - (void)checkHasLaunchedOnce
@@ -549,6 +555,60 @@
 	self.volumeSlider.alpha = 0.0;
 	self.pitchSlider.alpha = 0.0;
 	self.rateSlider.alpha = 0.0;
+}
+
+
+#pragma mark - Listening Notification
+
+- (void)addPickedLanguageObserver
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPickedLanguageNotification:) name:@"DidPickedLanguageNotification" object:nil];
+}
+
+
+- (void)didPickedLanguageNotification:(NSNotification *)notification
+{
+	NSLog(@"DidPickedLanguageNotification Recieved");
+	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
+}
+
+
+#pragma mark - Add Observer
+
+- (void)addApplicationsStateObserver
+{
+	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+	[center addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
+	[center addObserver:self selector:@selector(applicationDidBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
+	[center addObserver:self selector:@selector(applicationDidEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+	[center addObserver:self selector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+
+#pragma mark - Application's State
+
+- (void)applicationWillResignActive
+{
+	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+}
+
+
+- (void)applicationDidBecomeActive
+{
+	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+}
+
+
+- (void)applicationDidEnterBackground
+{
+	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+}
+
+
+- (void)applicationWillEnterForeground
+{
+	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+	[self pasteTextForSpeech];
 }
 
 

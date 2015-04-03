@@ -43,7 +43,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="speechText" destination="BYZ-38-t0r" eventType="touchUpInside" id="GZ6-nb-saS"/>
+                                            <action selector="speechText:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WAH-J0-5zm"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="ResetButton" customClass="PopAnimationClearButton">

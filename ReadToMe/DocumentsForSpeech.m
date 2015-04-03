@@ -84,6 +84,7 @@
 	NSString *stringDate = [self.formatter stringFromDate:now];
 	NSString *stringdaysOfTheWeek = [[stringDate substringToIndex:3] uppercaseString];
 	
+	self.createdDate = now;
 	self.yearString = stringYear;
 	self.monthString = stringMonth;
 	self.dayString = stringDay;
