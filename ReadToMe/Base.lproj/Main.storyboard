@@ -24,12 +24,22 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rW-tW-Hkj" userLabel="ListButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="20" y="8" width="44" height="44"/>
                                         <accessibility key="accessibilityConfiguration" label="ResetButton"/>
-                                        <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="8"/>
                                         <state key="normal" image="menu">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="listButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="L0P-Lb-O0Z"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8pi-Cu-ToX" userLabel="ArchiveButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="72" y="8" width="44" height="44"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="9" maxX="10" maxY="8"/>
+                                        <state key="normal" image="save">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="saveCurrentDocumentToCoreDataStack:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bWh-LQ-bai"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djw-qX-P0a" userLabel="PlayPauseButton" customClass="PopAnimationClearButton">
@@ -62,12 +72,16 @@
                                 <constraints>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="6rW-tW-Hkj" secondAttribute="height" id="3R9-RV-EU8"/>
                                     <constraint firstAttribute="height" constant="60" id="4mi-Pe-nfX"/>
+                                    <constraint firstItem="8pi-Cu-ToX" firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="8fc-Ed-n5q"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="gGU-LD-ksn" secondAttribute="centerY" id="9Wl-MO-Bk6"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="gGU-LD-ksn" secondAttribute="height" id="E0k-DI-JVQ"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="gGU-LD-ksn" secondAttribute="width" id="PWx-yz-JBk"/>
+                                    <constraint firstItem="8pi-Cu-ToX" firstAttribute="height" secondItem="djw-qX-P0a" secondAttribute="height" id="ggR-M6-4ms"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="20" id="iHy-9B-wGg"/>
+                                    <constraint firstItem="8pi-Cu-ToX" firstAttribute="leading" secondItem="6rW-tW-Hkj" secondAttribute="trailing" constant="8" id="kqc-PH-Iqd"/>
                                     <constraint firstAttribute="centerX" secondItem="djw-qX-P0a" secondAttribute="centerX" id="o8s-wi-Ief"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="6rW-tW-Hkj" secondAttribute="width" id="pOq-Ql-WwV"/>
+                                    <constraint firstItem="8pi-Cu-ToX" firstAttribute="width" secondItem="djw-qX-P0a" secondAttribute="width" id="qdE-Mb-uTE"/>
                                     <constraint firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="sox-Da-HRZ"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="6rW-tW-Hkj" secondAttribute="centerY" id="u3y-Y9-G4M"/>
                                     <constraint firstAttribute="trailing" secondItem="gGU-LD-ksn" secondAttribute="trailing" constant="20" id="y3A-wm-beO"/>
@@ -890,6 +904,7 @@ When the button in the toolbar is tapped, an activity view controller is present
         <image name="openSource" width="44" height="44"/>
         <image name="pause" width="18" height="32"/>
         <image name="reset" width="45" height="44"/>
+        <image name="save" width="44" height="44"/>
         <image name="settings" width="46" height="47"/>
         <image name="speaker" width="32" height="31"/>
     </resources>

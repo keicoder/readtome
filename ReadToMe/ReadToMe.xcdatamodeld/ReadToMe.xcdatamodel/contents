@@ -5,7 +5,6 @@
         <attribute name="dateString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dayString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="document" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="documentBody" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="documentTitle" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isNewDocument" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="language" optional="YES" attributeType="String" syncable="YES"/>
@@ -20,6 +19,6 @@
         <attribute name="yearString" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="DocumentsForSpeech" positionX="-63" positionY="-18" width="128" height="300"/>
+        <element name="DocumentsForSpeech" positionX="-63" positionY="-18" width="128" height="285"/>
     </elements>
 </model>

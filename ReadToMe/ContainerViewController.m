@@ -76,18 +76,15 @@
 	CGFloat _volumeSliderValue;
 	CGFloat _pitchSliderValue;
 	CGFloat _rateSliderValue;
+	NSString *_backgroundPlayValue;
 }
 
 
 #pragma mark - View life cycle
 
-- (void)viewDidLoad
+- (void)setInitialData
 {
-	[super viewDidLoad];
-	
-	[self configureUI];
-	_equalizerViewExpanded = YES;
-	[self adjustEqualizerViewHeight];
+	self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
 	
 	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
 	self.synthesizer.delegate = self;
@@ -98,17 +95,23 @@
 	
 	_defaults = [NSUserDefaults standardUserDefaults];
 	_paused = YES;
+	_backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
 	
+	_equalizerViewExpanded = YES;
+}
+
+
+- (void)viewDidLoad
+{
+	[super viewDidLoad];
+	
+	[self configureUI];
+	[self setInitialData]; //순서 바꾸지 말 것
+	[self adjustEqualizerViewHeight];
     [self checkHasLaunchedOnce];
-	[self selectedLanguage];
-	[self volumeSliderValue];
-	[self pitchSliderValue];
-	[self rateSliderValue];
-	NSString *backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
-	NSLog (@"backgroundPlayValue: %@\n", backgroundPlayValue);
-	
 	[self addPickedLanguageObserver];
 	[self addApplicationsStateObserver];
+	[self addDidSelectDocumentForSpeechFromListViewObserver];
 }
 
 
@@ -116,10 +119,16 @@
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-	[self pasteTextForSpeech];
 	[self selectedLanguage];
-	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
-	NSLog (@"kBackgroundPlayValue: %@\n", [_defaults objectForKey:kBackgroundPlayValue]);
+	[self volumeSliderValue];
+	[self pitchSliderValue];
+	[self rateSliderValue];
+}
+
+
+-(void)viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
 }
 
 
@@ -160,11 +169,11 @@
 
 - (IBAction)speechText:(id)sender
 {
-	self.utterance = [AVSpeechUtterance speechUtteranceWithString:_textForSpeech];
-	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
-	self.utterance.rate = _rateSliderValue; //0.07;
-	self.utterance.pitchMultiplier = _pitchSliderValue; //1.0;
-	self.utterance.volume = _volumeSliderValue; //0.5;
+	self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.currentDocumentsForSpeech.document];
+	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocumentsForSpeech.language];
+	self.utterance.volume = [self.currentDocumentsForSpeech.volume floatValue]; //0.5;
+	self.utterance.pitchMultiplier = [self.currentDocumentsForSpeech.pitch floatValue]; //1.0;
+	self.utterance.rate = [self.currentDocumentsForSpeech.rate floatValue]; //0.07;
 	self.utterance.preUtteranceDelay = 0.3f;
 	self.utterance.postUtteranceDelay = 0.3f;
 	
@@ -179,84 +188,81 @@
 	}
 	
 	if (self.synthesizer.isSpeaking == NO) {
+		[self.playPauseButton setImage:kPause forState:UIControlStateNormal];
 		[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
 		[self.synthesizer speakUtterance:self.utterance];
 	}
 }
 
 
-- (NSString *)pasteTextForSpeech
+- (NSString *)pasteTextForSpeech:(NSNotification *)notification
 {
-	_textForSpeech = [self.pasteBoard string];
-	
-	if (_textForSpeech == nil || [_textForSpeech isEqualToString:@""]) {
-		
-		self.textView.text = @"There are no text to speech. Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
-		return nil;
-		
-	} else if ([_textForSpeech isEqualToString:self.textView.text]) {
-		
-		return nil;
-		
-	} else {
-		
-		self.textView.text = _textForSpeech;
-		return _textForSpeech;
-	}
+	self.textView.text = [self.pasteBoard string];
+	return [self.pasteBoard string];
+//	if (self.currentDocumentsForSpeech.document)
+//	{
+//		self.textView.text = self.currentDocumentsForSpeech.document;
+//		return self.currentDocumentsForSpeech.document;
+//		
+//	} else {
+//		
+//		self.currentDocumentsForSpeech.document = [self.pasteBoard string];
+//		
+//		if ([self.pasteBoard string] == nil || [self.currentDocumentsForSpeech.document isEqualToString:@""]) {
+//			
+//			self.textView.text = @"There are no text to speech. Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
+//			return nil;
+//			
+//		} else if ([self.currentDocumentsForSpeech.document isEqualToString:self.textView.text]) {
+//			
+//			return nil;
+//			
+//		} else {
+//			
+//			self.textView.text = self.currentDocumentsForSpeech.document;
+//			return self.currentDocumentsForSpeech.document;
+//		}
+//	}
 }
 
 
 #pragma mark - Save Current Documents For Speech
 /*
- @property (nonatomic, retain) NSString * documentBody;
- @property (nonatomic, retain) NSDate * createdDate;
- @property (nonatomic, retain) NSString * dateString;
- @property (nonatomic, retain) NSString * dayString;
+ @property (nonatomic, retain) NSDate * createdDate;			//Auto
+ @property (nonatomic, retain) NSString * dateString;			//Auto
+ @property (nonatomic, retain) NSString * dayString;			//Auto
+ @property (nonatomic, retain) NSString * monthString;			//Auto
+ @property (nonatomic, retain) NSString * yearString;			//Auto
+ @property (nonatomic, retain) NSString * monthAndYearString;	//Auto
+ @property (nonatomic, retain) NSString * section;				//Auto
+ @property (nonatomic, retain) NSString * uniqueIdString;		//Auto
+ @property (nonatomic, retain) NSNumber * isNewDocument;		//Auto
+ @property (nonatomic, retain) NSString * savedDocument;		//Auto
  @property (nonatomic, retain) NSString * language;
- @property (nonatomic, retain) NSString * monthString;
- @property (nonatomic, retain) NSString * monthAndYearString;
+ @property (nonatomic, retain) NSNumber * volume;
  @property (nonatomic, retain) NSNumber * pitch;
  @property (nonatomic, retain) NSNumber * rate;
- @property (nonatomic, retain) NSString * section;
- @property (nonatomic, retain) NSNumber * isNewDocument;
- @property (nonatomic, retain) NSString * savedDocument;
- @property (nonatomic, retain) NSString * documentTitle;
- @property (nonatomic, retain) NSString * uniqueIdString;
- @property (nonatomic, retain) NSNumber * volume;
- @property (nonatomic, retain) NSString * yearString;
  @property (nonatomic, retain) NSString * document;
+ @property (nonatomic, retain) NSString * documentTitle;
  */
-- (void)saveCurrentDocumentToCoreDataStack
+- (IBAction)saveCurrentDocumentToCoreDataStack:(id)sender
 {
-	NSManagedObjectContext *managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+	DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
 	
-	DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:managedObjectContext];
-	
-	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
-	documentsForSpeech.uniqueIdString = uniqueIDString;
-	NSLog (@"documentsForSpeech.savedDocument: %@\n", documentsForSpeech.savedDocument);
-	documentsForSpeech.savedDocument = @"savedDocument";
-	documentsForSpeech.document = _textForSpeech;
-	documentsForSpeech.isNewDocument = [NSNumber numberWithBool:YES];
 	documentsForSpeech.language = _selectedLanguage;
+	documentsForSpeech.volume = [NSNumber numberWithFloat:_volumeSliderValue];;
 	documentsForSpeech.pitch = [NSNumber numberWithFloat:_pitchSliderValue];
 	documentsForSpeech.rate = [NSNumber numberWithFloat:_rateSliderValue];
 	
+	documentsForSpeech.document = self.textView.text;
 	
-//	NSDate *now = [NSDate date];
-//	if (self.currentDocumentsForSpeech.createdDate == nil) {
-//		self.currentDocumentsForSpeech.createdDate = now;
-//	}
-	self.currentDocumentsForSpeech.document = _textForSpeech;
+	NSString *firstLineForTitle = [self getFirstLineOfStringForTitle:documentsForSpeech.document];
+	documentsForSpeech.documentTitle = firstLineForTitle;
 	
-	NSString *firstLine = [self getFirstLineOfStringForTitle:_textForSpeech];
-	NSLog (@"firstLine: %@\n", firstLine);
-	documentsForSpeech.documentTitle = firstLine;
-	
-	[managedObjectContext performBlock:^{
+	[self.managedObjectContext performBlock:^{
 		NSError *error = nil;
-		if ([managedObjectContext save:&error]) {
-			NSLog (@"managedObjectContext save: %@\n", managedObjectContext);
+		if ([self.managedObjectContext save:&error]) {
+			NSLog (@"Save succeed");
 		} else {
 			NSLog(@"Error saving context: %@", error);
 		}
@@ -316,9 +322,21 @@
 
 - (IBAction)listButtonTapped:(id)sender
 {
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	
+	if (_equalizerViewExpanded == YES) {
+		[self adjustEqualizerViewHeight];
+		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.35];
+	} else {
+		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.0];
+	}
+}
+
+
+- (void)showListView:(id)sender
+{
 	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
 	[self presentViewController:controller animated:YES completion:^{ }];
 }
@@ -333,28 +351,37 @@
 
 - (IBAction)actionButtonTapped:(id)sender
 {
-	NSLog(@"Action Button Tapped");
+	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	_paused = YES;
+	
 	if (_equalizerViewExpanded == YES) {
 		[self adjustEqualizerViewHeight];
-		
+		[self performSelector:@selector(action:) withObject:nil afterDelay:0.35];
 	} else {
-		
+		[self performSelector:@selector(action:) withObject:nil afterDelay:0.0];
 	}
+}
+
+
+- (void)action:(id)sender
+{
+	NSLog(@"Action");
 }
 
 
 - (IBAction)languageButtonTapped:(id)sender
 {
+	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+	_paused = YES;
+	
 	if (_equalizerViewExpanded == YES) {
 		[self adjustEqualizerViewHeight];
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.0];
 	}
-	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	_paused = YES;
-	
 }
 
 
@@ -439,7 +466,6 @@
 
 - (IBAction)volumeSliderValueChanged:(UISlider *)sender
 {
-	NSLog (@"self.volumeSlider.value: %f\n", sender.value);
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	_paused = YES;
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -452,7 +478,6 @@
 
 - (IBAction)pitchSliderValueChanged:(UISlider *)sender
 {
-	NSLog (@"self.pitchSlider.value: %f\n", sender.value);
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	_paused = YES;
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -464,7 +489,6 @@
 
 - (IBAction)rateSliderValueChanged:(UISlider *)sender
 {
-	NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	_paused = YES;
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -479,11 +503,11 @@
 - (void)checkHasLaunchedOnce
 {
     if ([_defaults boolForKey:kHasLaunchedOnce] == YES) {
-        NSLog(@"App has aleady launched");
+		
         NSLog (@"HasLaunchedOnce: %@\n", [_defaults boolForKey:kHasLaunchedOnce] ? @"YES" : @"NO");
-    }
-    else {
-        NSLog(@"It's first time launching");
+		
+    } else {
+		
         NSLog (@"HasLaunchedOnce: %@\n", [_defaults boolForKey:kHasLaunchedOnce] ? @"YES" : @"NO");
         [_defaults setBool:YES forKey:kHasLaunchedOnce];
         _selectedLanguage = @"en-US";
@@ -560,6 +584,50 @@
 
 #pragma mark - Listening Notification
 
+- (void)addDidSelectDocumentForSpeechFromListViewObserver
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivedSelectDocumentsForSpeechNotification:) name:@"DidSelectDocumentsForSpeechNotification" object:nil];
+}
+
+
+- (void)didReceivedSelectDocumentsForSpeechNotification:(NSNotification *)notification
+{
+	if ([[notification name] isEqualToString:@"DidSelectDocumentsForSpeechNotification"])
+	{
+		NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
+		NSDictionary *userInfo = notification.userInfo;
+		DocumentsForSpeech *receivedDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
+		NSLog (@"receivedDocument: %@\n", receivedDocument);
+		self.currentDocumentsForSpeech = receivedDocument;
+		
+		self.textView.text = self.currentDocumentsForSpeech.document;
+		_selectedLanguage = self.currentDocumentsForSpeech.language;
+		_volumeSliderValue = [self.currentDocumentsForSpeech.volume floatValue];
+		_pitchSliderValue = [self.currentDocumentsForSpeech.pitch floatValue];
+		_rateSliderValue = [self.currentDocumentsForSpeech.rate floatValue];
+		
+		NSLog (@"self.currentDocumentsForSpeech.createdDate: %@\n", self.currentDocumentsForSpeech.createdDate);
+		NSLog (@"self.currentDocumentsForSpeech.language: %@\n", self.currentDocumentsForSpeech.language);
+		NSLog (@"self.currentDocumentsForSpeech.volume: %f\n", [self.currentDocumentsForSpeech.volume floatValue]);
+		NSLog (@"self.currentDocumentsForSpeech.pitch: %f\n", [self.currentDocumentsForSpeech.pitch floatValue]);
+		NSLog (@"self.currentDocumentsForSpeech.rate: %f\n", [self.currentDocumentsForSpeech.rate floatValue]);
+		
+		NSLog (@"self.currentDocumentsForSpeech.isNewDocument: %@\n", self.currentDocumentsForSpeech.isNewDocument ? @"Yes" : @"No");
+		NSLog (@"self.currentDocumentsForSpeech.savedDocument: %@\n", self.currentDocumentsForSpeech.savedDocument);
+		NSLog (@"self.currentDocumentsForSpeech.dateString: %@\n", self.currentDocumentsForSpeech.dateString);
+		NSLog (@"self.currentDocumentsForSpeech.dayString: %@\n", self.currentDocumentsForSpeech.dayString);
+		NSLog (@"self.currentDocumentsForSpeech.monthString: %@\n", self.currentDocumentsForSpeech.monthString);
+		NSLog (@"self.currentDocumentsForSpeech.yearString: %@\n", self.currentDocumentsForSpeech.yearString);
+		NSLog (@"self.currentDocumentsForSpeech.monthAndYearString: %@\n", self.currentDocumentsForSpeech.monthAndYearString);
+		NSLog (@"self.currentDocumentsForSpeech.section: %@\n", self.currentDocumentsForSpeech.section);
+		NSLog (@"self.currentDocumentsForSpeech.uniqueIdString: %@\n", self.currentDocumentsForSpeech.uniqueIdString);
+		
+//		NSLog (@"self.currentDocumentsForSpeech.documentTitle: %@\n", self.currentDocumentsForSpeech.documentTitle);
+//		NSLog (@"self.currentDocumentsForSpeech.document: %@\n", self.currentDocumentsForSpeech.document);
+	}
+}
+
+
 - (void)addPickedLanguageObserver
 {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPickedLanguageNotification:) name:@"DidPickedLanguageNotification" object:nil];
@@ -608,7 +676,8 @@
 - (void)applicationWillEnterForeground
 {
 	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
-	[self pasteTextForSpeech];
+	NSNotification *notification = [NSNotification notificationWithName:@"DidSelectDocumentsForSpeechNotification" object:nil];
+	[self pasteTextForSpeech:notification];
 }
 
 

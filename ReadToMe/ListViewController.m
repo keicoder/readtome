@@ -242,13 +242,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSLog(@"Did Select Row!");
-	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
 	DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-	pasteboard.string = documentsForSpeech.document;
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:documentsForSpeech forKey:@"DidSelectDocumentsForSpeechNotificationKey"];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"DidSelectDocumentsForSpeechNotification" object:nil userInfo:userInfo];
 	
+	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 

@@ -18,7 +18,6 @@
 
 @implementation DocumentsForSpeech
 
-@dynamic documentBody;
 @dynamic createdDate;
 @dynamic dateString;
 @dynamic dayString;
@@ -60,6 +59,7 @@
 	
 	[super awakeFromInsert];
 	[self updateDateValue];
+	[self updateOtherValue];
 }
 
 
@@ -94,14 +94,16 @@
 	NSString *monthAndYearString = [self.formatter stringFromDate:now];
 	self.monthAndYearString = monthAndYearString;
 	
-	self.section = stringYear;
-	
-//	NSLog (@"self.yearString: %@\n", self.yearString);
-//	NSLog (@"self.monthString: %@\n", self.monthString);
-//	NSLog (@"self.dayString: %@\n", self.dayString);
-//	NSLog (@"self.dateString: %@\n", self.dateString);
-//	NSLog (@"self.monthAndYearString: %@\n", self.monthAndYearString);
-//	NSLog (@"self.section: %@\n", self.section);
+	self.section = monthAndYearString;
+}
+
+
+- (void)updateOtherValue
+{
+	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+	self.uniqueIdString = uniqueIDString;
+	self.isNewDocument = [NSNumber numberWithBool:NO];
+	self.savedDocument = @"savedDocument";
 }
 
 

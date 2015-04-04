@@ -14,6 +14,5 @@
 @property (nonatomic, strong) NSString *selectedLanguage;
 @property (strong, nonatomic) DocumentsForSpeech *currentDocumentsForSpeech;
 
-
 @end
 

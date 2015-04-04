@@ -77,7 +77,6 @@
 		self.backgroundPlayView.backgroundColorNormal = kIsOffColor;
 	}
 	
-	NSLog (@"_backgroundPlayValue: %@\n", _backgroundPlayValue);
 	self.backgroundPlayValueLabel.text = _backgroundPlayValue;
 }
 
@@ -112,7 +111,6 @@
 			[self playSound];
 		}
 		
-		NSLog (@"_backgroundPlayValue: %@\n", _backgroundPlayValue);
 		self.backgroundPlayValueLabel.text = _backgroundPlayValue;
 		[_defaults setObject:_backgroundPlayValue forKey:kBackgroundPlayValue];
 		[_defaults synchronize];

@@ -12,7 +12,6 @@
 
 @interface DocumentsForSpeech : NSManagedObject
 
-@property (nonatomic, retain) NSString * documentBody;
 @property (nonatomic, retain) NSDate * createdDate;
 @property (nonatomic, retain) NSString * dateString;
 @property (nonatomic, retain) NSString * dayString;
