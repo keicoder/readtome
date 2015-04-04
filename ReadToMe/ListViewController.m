@@ -246,6 +246,10 @@
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:documentsForSpeech forKey:@"DidSelectDocumentsForSpeechNotificationKey"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DidSelectDocumentsForSpeechNotification" object:nil userInfo:userInfo];
 	
+	UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+	pasteBoard.persistent = YES;
+	pasteBoard.string = documentsForSpeech.document;
+	
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	[self dismissViewControllerAnimated:YES completion:nil];
 }

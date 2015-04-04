@@ -35,7 +35,13 @@
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate>
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *saveAlertViewHeightConstraint;
+
 @property (weak, nonatomic) IBOutlet UIView *menuView;
+@property (weak, nonatomic) IBOutlet UIView *saveAlertView;
+@property (weak, nonatomic) IBOutlet UILabel *saveAlertLabel;
+
+@property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (weak, nonatomic) IBOutlet UIView *equalizerView;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
@@ -44,8 +50,6 @@
 @property (weak, nonatomic) IBOutlet UISlider *volumeSlider;
 @property (weak, nonatomic) IBOutlet UISlider *pitchSlider;
 @property (weak, nonatomic) IBOutlet UISlider *rateSlider;
-
-@property (nonatomic, weak) IBOutlet UITextView *textView;
 
 @property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
@@ -69,8 +73,9 @@
 
 @implementation ContainerViewController
 {
-	NSString *_textForSpeech;
+	DocumentsForSpeech *_receivedDocument;
 	BOOL _paused;
+	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
 	NSUserDefaults *_defaults;
 	CGFloat _volumeSliderValue;
@@ -97,7 +102,9 @@
 	_paused = YES;
 	_backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
 	
-	_equalizerViewExpanded = YES;
+	_saveAlertViewExpanded = NO;
+	self.saveAlertLabel.alpha = 0.0;
+	_equalizerViewExpanded = NO;
 }
 
 
@@ -107,7 +114,6 @@
 	
 	[self configureUI];
 	[self setInitialData]; //순서 바꾸지 말 것
-	[self adjustEqualizerViewHeight];
     [self checkHasLaunchedOnce];
 	[self addPickedLanguageObserver];
 	[self addApplicationsStateObserver];
@@ -123,6 +129,7 @@
 	[self volumeSliderValue];
 	[self pitchSliderValue];
 	[self rateSliderValue];
+	[self pasteText];
 }
 
 
@@ -171,7 +178,7 @@
 {
 	self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.currentDocumentsForSpeech.document];
 	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocumentsForSpeech.language];
-	self.utterance.volume = [self.currentDocumentsForSpeech.volume floatValue]; //0.5;
+	self.utterance.volume = [self.currentDocumentsForSpeech.volume floatValue]; //1.0;
 	self.utterance.pitchMultiplier = [self.currentDocumentsForSpeech.pitch floatValue]; //1.0;
 	self.utterance.rate = [self.currentDocumentsForSpeech.rate floatValue]; //0.07;
 	self.utterance.preUtteranceDelay = 0.3f;
@@ -195,56 +202,15 @@
 }
 
 
-- (NSString *)pasteTextForSpeech:(NSNotification *)notification
+- (NSString *)pasteText
 {
 	self.textView.text = [self.pasteBoard string];
-	return [self.pasteBoard string];
-//	if (self.currentDocumentsForSpeech.document)
-//	{
-//		self.textView.text = self.currentDocumentsForSpeech.document;
-//		return self.currentDocumentsForSpeech.document;
-//		
-//	} else {
-//		
-//		self.currentDocumentsForSpeech.document = [self.pasteBoard string];
-//		
-//		if ([self.pasteBoard string] == nil || [self.currentDocumentsForSpeech.document isEqualToString:@""]) {
-//			
-//			self.textView.text = @"There are no text to speech. Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
-//			return nil;
-//			
-//		} else if ([self.currentDocumentsForSpeech.document isEqualToString:self.textView.text]) {
-//			
-//			return nil;
-//			
-//		} else {
-//			
-//			self.textView.text = self.currentDocumentsForSpeech.document;
-//			return self.currentDocumentsForSpeech.document;
-//		}
-//	}
+	return self.textView.text;
 }
 
 
 #pragma mark - Save Current Documents For Speech
-/*
- @property (nonatomic, retain) NSDate * createdDate;			//Auto
- @property (nonatomic, retain) NSString * dateString;			//Auto
- @property (nonatomic, retain) NSString * dayString;			//Auto
- @property (nonatomic, retain) NSString * monthString;			//Auto
- @property (nonatomic, retain) NSString * yearString;			//Auto
- @property (nonatomic, retain) NSString * monthAndYearString;	//Auto
- @property (nonatomic, retain) NSString * section;				//Auto
- @property (nonatomic, retain) NSString * uniqueIdString;		//Auto
- @property (nonatomic, retain) NSNumber * isNewDocument;		//Auto
- @property (nonatomic, retain) NSString * savedDocument;		//Auto
- @property (nonatomic, retain) NSString * language;
- @property (nonatomic, retain) NSNumber * volume;
- @property (nonatomic, retain) NSNumber * pitch;
- @property (nonatomic, retain) NSNumber * rate;
- @property (nonatomic, retain) NSString * document;
- @property (nonatomic, retain) NSString * documentTitle;
- */
+
 - (IBAction)saveCurrentDocumentToCoreDataStack:(id)sender
 {
 	DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
@@ -267,6 +233,8 @@
 			NSLog(@"Error saving context: %@", error);
 		}
 	}];
+	
+	[self adjustSaveAlertViewHeight];
 }
 
 
@@ -521,6 +489,35 @@
 }
 
 
+#pragma mark - Show saveAlertView view when user touches archive button
+
+- (void)adjustSaveAlertViewHeight
+{
+	CGFloat duration = 0.2f;
+	CGFloat delay = 0.0f;
+	
+	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+		
+		_saveAlertViewExpanded = YES;
+		self.saveAlertViewHeightConstraint.constant = 40.0;
+		[self.view layoutIfNeeded];
+		self.saveAlertLabel.alpha = 1.0;
+		self.saveAlertLabel.text = @"Saved";
+		
+	} completion:^(BOOL finished) {
+		
+		[UIView animateWithDuration:duration delay:0.5 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+			
+			_saveAlertViewExpanded = NO;
+			self.saveAlertViewHeightConstraint.constant = 0.0;
+			[self.view layoutIfNeeded];
+			self.saveAlertLabel.alpha = 0.0;
+			
+		} completion:nil];
+	}];
+}
+
+
 #pragma mark - Show equalizer view when user touches equalizer button
 
 - (void)adjustEqualizerViewHeight
@@ -596,15 +593,20 @@
 	{
 		NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
 		NSDictionary *userInfo = notification.userInfo;
-		DocumentsForSpeech *receivedDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
-		NSLog (@"receivedDocument: %@\n", receivedDocument);
-		self.currentDocumentsForSpeech = receivedDocument;
+		_receivedDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
+		NSLog (@"_receivedDocument: %@\n", _receivedDocument);
+		self.currentDocumentsForSpeech = _receivedDocument;
 		
 		self.textView.text = self.currentDocumentsForSpeech.document;
 		_selectedLanguage = self.currentDocumentsForSpeech.language;
 		_volumeSliderValue = [self.currentDocumentsForSpeech.volume floatValue];
 		_pitchSliderValue = [self.currentDocumentsForSpeech.pitch floatValue];
 		_rateSliderValue = [self.currentDocumentsForSpeech.rate floatValue];
+		
+		//Slider Value
+		self.volumeSlider.value = [self.currentDocumentsForSpeech.volume floatValue];
+		self.pitchSlider.value = [self.currentDocumentsForSpeech.pitch floatValue];
+		self.rateSlider.value = [self.currentDocumentsForSpeech.rate floatValue];
 		
 		NSLog (@"self.currentDocumentsForSpeech.createdDate: %@\n", self.currentDocumentsForSpeech.createdDate);
 		NSLog (@"self.currentDocumentsForSpeech.language: %@\n", self.currentDocumentsForSpeech.language);
@@ -676,8 +678,7 @@
 - (void)applicationWillEnterForeground
 {
 	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
-	NSNotification *notification = [NSNotification notificationWithName:@"DidSelectDocumentsForSpeechNotification" object:nil];
-	[self pasteTextForSpeech:notification];
+	[self pasteText];
 }
 
 

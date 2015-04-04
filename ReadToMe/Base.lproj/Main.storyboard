@@ -87,8 +87,24 @@
                                     <constraint firstAttribute="trailing" secondItem="gGU-LD-ksn" secondAttribute="trailing" constant="20" id="y3A-wm-beO"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EqM-jD-gG9" userLabel="SaveAlertView">
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saved" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ja-D3-AWW" userLabel="SaveAlertLabel">
+                                        <rect key="frame" x="271" y="-12" width="59" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.19215686274509805" green="0.66666666666666663" blue="0.22352941176470589" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="centerY" secondItem="9ja-D3-AWW" secondAttribute="centerY" id="6Io-bH-ZW5"/>
+                                    <constraint firstAttribute="centerX" secondItem="9ja-D3-AWW" secondAttribute="centerX" id="DQW-Eh-vTH"/>
+                                    <constraint firstAttribute="height" id="npb-29-jMO"/>
+                                </constraints>
+                            </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
-                                <rect key="frame" x="20" y="80" width="560" height="310"/>
+                                <rect key="frame" x="20" y="80" width="560" height="460"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
@@ -104,42 +120,41 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ofM-O5-Xtc" userLabel="EqualizerView">
-                                <rect key="frame" x="0.0" y="390" width="600" height="150"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Volume" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bak-fz-q7P">
-                                        <rect key="frame" x="28" y="19" width="64" height="24"/>
+                                        <rect key="frame" x="28" y="-56" width="64" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="ypv-Nl-rZa" userLabel="VolumeSlider">
-                                        <rect key="frame" x="116" y="16" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="-59" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="volumeSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="eBE-0R-iEk"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pitch" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OwE-xb-ztj">
-                                        <rect key="frame" x="28" y="63" width="44" height="24"/>
+                                        <rect key="frame" x="28" y="-12" width="44" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.5" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="PDz-gG-Mvc" userLabel="PitchSlider">
-                                        <rect key="frame" x="116" y="60" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="-15" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="pitchSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="KGA-Fs-9zi"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Skf-hE-fIQ">
-                                        <rect key="frame" x="28" y="107" width="41" height="24"/>
+                                        <rect key="frame" x="28" y="32" width="41" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.070000000000000007" minValue="0.0" maxValue="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Kur-ii-tqL" userLabel="RateSlider">
-                                        <rect key="frame" x="116" y="104" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="29" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="rateSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="ZB5-MQ-ilR"/>
@@ -162,7 +177,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                     <constraint firstItem="OwE-xb-ztj" firstAttribute="centerY" secondItem="PDz-gG-Mvc" secondAttribute="centerY" id="fh8-ND-pLL"/>
                                     <constraint firstItem="PDz-gG-Mvc" firstAttribute="leading" secondItem="ypv-Nl-rZa" secondAttribute="leading" id="nP8-89-NJY"/>
                                     <constraint firstItem="PDz-gG-Mvc" firstAttribute="height" secondItem="ypv-Nl-rZa" secondAttribute="height" id="oXL-bf-Due"/>
-                                    <constraint firstAttribute="height" constant="150" id="obj-XC-AMD"/>
+                                    <constraint firstAttribute="height" id="obj-XC-AMD"/>
                                     <constraint firstItem="PDz-gG-Mvc" firstAttribute="leading" secondItem="OwE-xb-ztj" secondAttribute="trailing" constant="46" id="pTz-ro-O4d"/>
                                     <constraint firstItem="Skf-hE-fIQ" firstAttribute="leading" secondItem="OwE-xb-ztj" secondAttribute="leading" id="qVE-sg-wI8"/>
                                     <constraint firstItem="OwE-xb-ztj" firstAttribute="leading" secondItem="ofM-O5-Xtc" secondAttribute="leading" constant="28" id="rcN-uD-dj5"/>
@@ -243,20 +258,22 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Wws-1S-BRE" firstAttribute="top" secondItem="ofM-O5-Xtc" secondAttribute="bottom" id="6ce-Bk-3cm"/>
-                            <constraint firstItem="VWj-si-BKE" firstAttribute="top" secondItem="U9H-OM-Fxj" secondAttribute="bottom" id="Ea0-bK-rI1"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="top" secondItem="VWj-si-BKE" secondAttribute="bottom" id="Euq-nb-64a"/>
-                            <constraint firstItem="ofM-O5-Xtc" firstAttribute="top" secondItem="VWj-si-BKE" secondAttribute="bottom" id="ItU-cq-UQz"/>
-                            <constraint firstItem="U9H-OM-Fxj" firstAttribute="centerX" secondItem="VWj-si-BKE" secondAttribute="centerX" id="KYD-SW-sc0"/>
                             <constraint firstAttribute="trailing" secondItem="ofM-O5-Xtc" secondAttribute="trailing" id="SD7-8q-EfJ"/>
                             <constraint firstItem="VWj-si-BKE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="VQs-zH-cqK"/>
+                            <constraint firstItem="EqM-jD-gG9" firstAttribute="top" secondItem="U9H-OM-Fxj" secondAttribute="bottom" id="XZo-kC-KeP"/>
                             <constraint firstAttribute="centerX" secondItem="U9H-OM-Fxj" secondAttribute="centerX" id="Yd7-9X-1Qg"/>
                             <constraint firstItem="U9H-OM-Fxj" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Zp3-x1-6KE"/>
                             <constraint firstAttribute="trailing" secondItem="U9H-OM-Fxj" secondAttribute="trailing" id="afN-Hm-tih"/>
+                            <constraint firstItem="VWj-si-BKE" firstAttribute="centerX" secondItem="EqM-jD-gG9" secondAttribute="centerX" id="b8X-wn-sZM"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="centerX" secondItem="VWj-si-BKE" secondAttribute="centerX" id="f8O-rB-XGB"/>
                             <constraint firstItem="U9H-OM-Fxj" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="gXP-uu-Z7y"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Wws-1S-BRE" secondAttribute="bottom" id="gih-Rt-fXt"/>
                             <constraint firstItem="Wws-1S-BRE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ivy-fO-u87"/>
+                            <constraint firstItem="EqM-jD-gG9" firstAttribute="width" secondItem="U9H-OM-Fxj" secondAttribute="width" id="j1H-75-zyd"/>
                             <constraint firstAttribute="trailing" secondItem="VWj-si-BKE" secondAttribute="trailing" constant="20" id="jbw-yu-czq"/>
+                            <constraint firstItem="VWj-si-BKE" firstAttribute="top" secondItem="EqM-jD-gG9" secondAttribute="bottom" id="kpU-5r-Lg3"/>
+                            <constraint firstItem="EqM-jD-gG9" firstAttribute="centerX" secondItem="U9H-OM-Fxj" secondAttribute="centerX" id="ncy-u1-hbL"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pP0-hC-9TR"/>
                             <constraint firstAttribute="trailing" secondItem="Wws-1S-BRE" secondAttribute="trailing" id="qW3-oK-nqN"/>
                         </constraints>
@@ -273,6 +290,9 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <outlet property="rateLabel" destination="Skf-hE-fIQ" id="bei-Lv-jda"/>
                         <outlet property="rateSlider" destination="Kur-ii-tqL" id="31K-fQ-Cqb"/>
                         <outlet property="resetButton" destination="gGU-LD-ksn" id="yg3-KX-RbJ"/>
+                        <outlet property="saveAlertLabel" destination="9ja-D3-AWW" id="cX9-Zw-Sao"/>
+                        <outlet property="saveAlertView" destination="EqM-jD-gG9" id="jFJ-cr-VFr"/>
+                        <outlet property="saveAlertViewHeightConstraint" destination="npb-29-jMO" id="wwL-La-Gai"/>
                         <outlet property="textView" destination="VWj-si-BKE" id="TKZ-9Q-pKe"/>
                         <outlet property="volumeLabel" destination="Bak-fz-q7P" id="UcD-a3-3yM"/>
                         <outlet property="volumeSlider" destination="ypv-Nl-rZa" id="Uct-dq-Nbm"/>
