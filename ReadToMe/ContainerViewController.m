@@ -176,11 +176,40 @@
 
 - (IBAction)speechText:(id)sender
 {
-	self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.currentDocumentsForSpeech.document];
-	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocumentsForSpeech.language];
-	self.utterance.volume = [self.currentDocumentsForSpeech.volume floatValue]; //1.0;
-	self.utterance.pitchMultiplier = [self.currentDocumentsForSpeech.pitch floatValue]; //1.0;
-	self.utterance.rate = [self.currentDocumentsForSpeech.rate floatValue]; //0.07;
+	self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+	
+	if (self.currentDocumentsForSpeech.language) {
+		self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocumentsForSpeech.language];
+		NSLog (@"self.currentDocumentsForSpeech.language: %@\n", self.currentDocumentsForSpeech.language);
+	} else {
+		self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.selectedLanguage];
+		NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
+	}
+	
+	if ([self.currentDocumentsForSpeech.volume floatValue]) {
+		self.utterance.volume = [self.currentDocumentsForSpeech.volume floatValue]; //1.0;
+		NSLog (@"[self.currentDocumentsForSpeech.volume floatValue]: %f\n", [self.currentDocumentsForSpeech.volume floatValue]);
+	} else {
+		self.utterance.volume = _volumeSliderValue; //1.0;
+		NSLog (@"_volumeSliderValue: %f\n", _volumeSliderValue);
+	}
+	
+	if ([self.currentDocumentsForSpeech.pitch floatValue]) {
+		self.utterance.pitchMultiplier = [self.currentDocumentsForSpeech.pitch floatValue]; //1.0;
+		NSLog (@"[self.currentDocumentsForSpeech.pitch floatValue]: %f\n", [self.currentDocumentsForSpeech.pitch floatValue]);
+	} else {
+		self.utterance.pitchMultiplier = _pitchSliderValue; //1.0;
+		NSLog (@"_pitchSliderValue: %f\n", _pitchSliderValue);
+	}
+	
+	if ([self.currentDocumentsForSpeech.rate floatValue]) {
+		self.utterance.rate = [self.currentDocumentsForSpeech.rate floatValue]; //0.07;
+		NSLog (@"[self.currentDocumentsForSpeech.rate floatValue]: %f\n", [self.currentDocumentsForSpeech.rate floatValue]);
+	} else {
+		self.utterance.rate = _rateSliderValue; //0.07;
+		NSLog (@"_rateSliderValue: %f\n", _rateSliderValue);
+	}
+	
 	self.utterance.preUtteranceDelay = 0.3f;
 	self.utterance.postUtteranceDelay = 0.3f;
 	
