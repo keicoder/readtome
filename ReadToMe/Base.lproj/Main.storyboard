@@ -88,9 +88,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EqM-jD-gG9" userLabel="SaveAlertView">
+                                <rect key="frame" x="0.0" y="80" width="600" height="40"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saved" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ja-D3-AWW" userLabel="SaveAlertLabel">
-                                        <rect key="frame" x="271" y="-12" width="59" height="24"/>
+                                        <rect key="frame" x="271" y="8" width="59" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -100,11 +101,11 @@
                                 <constraints>
                                     <constraint firstAttribute="centerY" secondItem="9ja-D3-AWW" secondAttribute="centerY" id="6Io-bH-ZW5"/>
                                     <constraint firstAttribute="centerX" secondItem="9ja-D3-AWW" secondAttribute="centerX" id="DQW-Eh-vTH"/>
-                                    <constraint firstAttribute="height" id="npb-29-jMO"/>
+                                    <constraint firstAttribute="height" constant="40" id="npb-29-jMO"/>
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
-                                <rect key="frame" x="20" y="80" width="560" height="460"/>
+                                <rect key="frame" x="20" y="120" width="560" height="270"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
@@ -120,41 +121,42 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ofM-O5-Xtc" userLabel="EqualizerView">
+                                <rect key="frame" x="0.0" y="390" width="600" height="150"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Volume" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bak-fz-q7P">
-                                        <rect key="frame" x="28" y="-56" width="64" height="24"/>
+                                        <rect key="frame" x="28" y="19" width="64" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="ypv-Nl-rZa" userLabel="VolumeSlider">
-                                        <rect key="frame" x="116" y="-59" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="16" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="volumeSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="eBE-0R-iEk"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pitch" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OwE-xb-ztj">
-                                        <rect key="frame" x="28" y="-12" width="44" height="24"/>
+                                        <rect key="frame" x="28" y="63" width="44" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.5" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="PDz-gG-Mvc" userLabel="PitchSlider">
-                                        <rect key="frame" x="116" y="-15" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="60" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="pitchSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="KGA-Fs-9zi"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Skf-hE-fIQ">
-                                        <rect key="frame" x="28" y="32" width="41" height="24"/>
+                                        <rect key="frame" x="28" y="107" width="41" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.070000000000000007" minValue="0.0" maxValue="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Kur-ii-tqL" userLabel="RateSlider">
-                                        <rect key="frame" x="116" y="29" width="453" height="31"/>
+                                        <rect key="frame" x="116" y="104" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="rateSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="ZB5-MQ-ilR"/>
@@ -177,7 +179,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                     <constraint firstItem="OwE-xb-ztj" firstAttribute="centerY" secondItem="PDz-gG-Mvc" secondAttribute="centerY" id="fh8-ND-pLL"/>
                                     <constraint firstItem="PDz-gG-Mvc" firstAttribute="leading" secondItem="ypv-Nl-rZa" secondAttribute="leading" id="nP8-89-NJY"/>
                                     <constraint firstItem="PDz-gG-Mvc" firstAttribute="height" secondItem="ypv-Nl-rZa" secondAttribute="height" id="oXL-bf-Due"/>
-                                    <constraint firstAttribute="height" id="obj-XC-AMD"/>
+                                    <constraint firstAttribute="height" constant="150" id="obj-XC-AMD"/>
                                     <constraint firstItem="PDz-gG-Mvc" firstAttribute="leading" secondItem="OwE-xb-ztj" secondAttribute="trailing" constant="46" id="pTz-ro-O4d"/>
                                     <constraint firstItem="Skf-hE-fIQ" firstAttribute="leading" secondItem="OwE-xb-ztj" secondAttribute="leading" id="qVE-sg-wI8"/>
                                     <constraint firstItem="OwE-xb-ztj" firstAttribute="leading" secondItem="ofM-O5-Xtc" secondAttribute="leading" constant="28" id="rcN-uD-dj5"/>
@@ -280,6 +282,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                     </view>
                     <connections>
                         <outlet property="actionButton" destination="pn8-Lw-nUq" id="boN-N5-OxI"/>
+                        <outlet property="archiveButton" destination="8pi-Cu-ToX" id="MCT-rL-mw9"/>
                         <outlet property="bottomView" destination="Wws-1S-BRE" id="fjh-w7-D5G"/>
                         <outlet property="equalizerView" destination="ofM-O5-Xtc" id="7sj-mZ-m5G"/>
                         <outlet property="equalizerViewHeightConstraint" destination="obj-XC-AMD" id="0Jo-8k-N3d"/>
@@ -355,7 +358,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                                         <constraint firstAttribute="width" constant="50" id="Tmk-fn-iBU"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="40"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="tkA-bE-Reg">
@@ -370,7 +373,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                                         <constraint firstAttribute="height" constant="40" id="Xh5-LX-F1p"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Month and Year" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="JrZ-iM-5Ja">

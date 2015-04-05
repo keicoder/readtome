@@ -32,16 +32,22 @@
 #import "DataManager.h"
 
 
-@interface ContainerViewController () <AVSpeechSynthesizerDelegate>
+@interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate>
+
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
+
+@property (nonatomic, strong) UIPasteboard *pasteBoard;
+@property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
+@property (nonatomic, strong) AVSpeechUtterance *utterance;
+@property (strong, nonatomic) NSDictionary *paragraphAttributes;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *saveAlertViewHeightConstraint;
-
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIView *saveAlertView;
 @property (weak, nonatomic) IBOutlet UILabel *saveAlertLabel;
-
-@property (nonatomic, weak) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
 @property (weak, nonatomic) IBOutlet UIView *equalizerView;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
@@ -50,30 +56,16 @@
 @property (weak, nonatomic) IBOutlet UISlider *volumeSlider;
 @property (weak, nonatomic) IBOutlet UISlider *pitchSlider;
 @property (weak, nonatomic) IBOutlet UISlider *rateSlider;
-
-@property (nonatomic, weak) IBOutlet UIButton *playPauseButton;
+@property (weak, nonatomic) IBOutlet UIButton *archiveButton;
+@property (weak, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 @property (weak, nonatomic) IBOutlet UIButton *actionButton;
-
-@property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
-@property (nonatomic, strong) AVSpeechUtterance *utterance;
-@property (nonatomic, strong) NSString *utteranceString;
-
-@property (nonatomic, strong) NSArray *languageCodes;
-@property (nonatomic, strong) NSDictionary *languageDictionary;
-
-@property (strong, nonatomic) NSDictionary *paragraphAttributes;
-
-@property (nonatomic, strong) UIPasteboard *pasteBoard;
-
-@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 @end
 
 
 @implementation ContainerViewController
 {
-	DocumentsForSpeech *_receivedDocument;
 	BOOL _paused;
 	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
@@ -82,6 +74,10 @@
 	CGFloat _pitchSliderValue;
 	CGFloat _rateSliderValue;
 	NSString *_backgroundPlayValue;
+	
+	NSArray *_sections;
+	
+	NSString *_tmpSavedString;
 }
 
 
@@ -95,16 +91,33 @@
 	self.synthesizer.delegate = self;
 	self.pasteBoard = [UIPasteboard generalPasteboard];
 	self.pasteBoard.persistent = YES;
-	self.textView.text = @"Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
-	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
 	
 	_defaults = [NSUserDefaults standardUserDefaults];
 	_paused = YES;
 	_backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
 	
-	_saveAlertViewExpanded = NO;
-	self.saveAlertLabel.alpha = 0.0;
-	_equalizerViewExpanded = NO;
+	self.textView.text = @"Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
+	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
+	
+	[UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+		_saveAlertViewExpanded = NO;
+		self.saveAlertViewHeightConstraint.constant = 0.0;
+		[self.view layoutIfNeeded];
+		self.archiveButton.enabled = YES;
+		self.saveAlertLabel.alpha = 0.0;
+	} completion:nil];
+	
+	[UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+		_equalizerViewExpanded = NO;
+		self.equalizerViewHeightConstraint.constant = 0.0;
+		[self.view layoutIfNeeded];
+		self.volumeLabel.alpha = 0.0;
+		self.pitchLabel.alpha = 0.0;
+		self.rateLabel.alpha = 0.0;
+		self.volumeSlider.alpha = 0.0;
+		self.pitchSlider.alpha = 0.0;
+		self.rateSlider.alpha = 0.0;
+	} completion:nil];
 }
 
 
@@ -121,7 +134,6 @@
 }
 
 
-
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
@@ -133,9 +145,10 @@
 }
 
 
--(void)viewDidAppear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-	[super viewDidAppear:animated];
+	[super viewWillDisappear:YES];
+	_fetchedResultsController = nil;
 }
 
 
@@ -178,7 +191,7 @@
 {
 	self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
 	
-	if (self.currentDocumentsForSpeech.language) {
+	if (self.currentDocumentsForSpeech.language != nil) {
 		self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocumentsForSpeech.language];
 		NSLog (@"self.currentDocumentsForSpeech.language: %@\n", self.currentDocumentsForSpeech.language);
 	} else {
@@ -242,28 +255,39 @@
 
 - (IBAction)saveCurrentDocumentToCoreDataStack:(id)sender
 {
-	DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-	
-	documentsForSpeech.language = _selectedLanguage;
-	documentsForSpeech.volume = [NSNumber numberWithFloat:_volumeSliderValue];;
-	documentsForSpeech.pitch = [NSNumber numberWithFloat:_pitchSliderValue];
-	documentsForSpeech.rate = [NSNumber numberWithFloat:_rateSliderValue];
-	
-	documentsForSpeech.document = self.textView.text;
-	
-	NSString *firstLineForTitle = [self getFirstLineOfStringForTitle:documentsForSpeech.document];
-	documentsForSpeech.documentTitle = firstLineForTitle;
-	
-	[self.managedObjectContext performBlock:^{
-		NSError *error = nil;
-		if ([self.managedObjectContext save:&error]) {
-			NSLog (@"Save succeed");
-		} else {
-			NSLog(@"Error saving context: %@", error);
-		}
-	}];
-	
-	[self adjustSaveAlertViewHeight];
+	if ([[self.pasteBoard string] isEqualToString:_tmpSavedString]) {
+		
+		[self adjustSaveAlertViewHeightWithTitle:@"Already Saved"];
+		
+	} else {
+		
+		DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
+		
+		documentsForSpeech.language = _selectedLanguage;
+		documentsForSpeech.volume = [NSNumber numberWithFloat:_volumeSliderValue];;
+		documentsForSpeech.pitch = [NSNumber numberWithFloat:_pitchSliderValue];
+		documentsForSpeech.rate = [NSNumber numberWithFloat:_rateSliderValue];
+		
+		documentsForSpeech.document = self.textView.text;
+		_tmpSavedString = self.textView.text;
+		
+		NSString *firstLineForTitle = [self getFirstLineOfStringForTitle:documentsForSpeech.document];
+		documentsForSpeech.documentTitle = firstLineForTitle;
+		
+		[self.managedObjectContext performBlock:^{
+			NSError *error = nil;
+			if ([self.managedObjectContext save:&error]) {
+				
+				NSLog (@"Save succeed");
+				[self adjustSaveAlertViewHeightWithTitle:@"Saved"];
+				[self executePerformFetch];
+				
+			} else {
+				
+				NSLog(@"Error saving context: %@", error);
+			}
+		}];
+	}
 }
 
 
@@ -520,7 +544,7 @@
 
 #pragma mark - Show saveAlertView view when user touches archive button
 
-- (void)adjustSaveAlertViewHeight
+- (void)adjustSaveAlertViewHeightWithTitle:(NSString *)string
 {
 	CGFloat duration = 0.2f;
 	CGFloat delay = 0.0f;
@@ -530,16 +554,18 @@
 		_saveAlertViewExpanded = YES;
 		self.saveAlertViewHeightConstraint.constant = 40.0;
 		[self.view layoutIfNeeded];
+		self.archiveButton.enabled = NO;
 		self.saveAlertLabel.alpha = 1.0;
-		self.saveAlertLabel.text = @"Saved";
+		self.saveAlertLabel.text = string;
 		
 	} completion:^(BOOL finished) {
 		
-		[UIView animateWithDuration:duration delay:0.5 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+		[UIView animateWithDuration:duration delay:0.4 options: UIViewAnimationOptionCurveEaseInOut animations:^{
 			
 			_saveAlertViewExpanded = NO;
 			self.saveAlertViewHeightConstraint.constant = 0.0;
 			[self.view layoutIfNeeded];
+			self.archiveButton.enabled = YES;
 			self.saveAlertLabel.alpha = 0.0;
 			
 		} completion:nil];
@@ -621,10 +647,9 @@
 	if ([[notification name] isEqualToString:@"DidSelectDocumentsForSpeechNotification"])
 	{
 		NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
+		
 		NSDictionary *userInfo = notification.userInfo;
-		_receivedDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
-		NSLog (@"_receivedDocument: %@\n", _receivedDocument);
-		self.currentDocumentsForSpeech = _receivedDocument;
+		self.currentDocumentsForSpeech = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
 		
 		self.textView.text = self.currentDocumentsForSpeech.document;
 		_selectedLanguage = self.currentDocumentsForSpeech.language;
@@ -708,6 +733,59 @@
 {
 	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
 	[self pasteText];
+}
+
+
+#pragma mark - Fetched Results Controller
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+	if (_fetchedResultsController != nil) {
+		return _fetchedResultsController;
+	}
+	else if (_fetchedResultsController == nil)
+	{
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DocumentsForSpeech"];
+		
+		NSSortDescriptor *createdDateSort = [[NSSortDescriptor alloc] initWithKey:@"createdDate" ascending:NO];
+		[fetchRequest setSortDescriptors: @[createdDateSort]];
+		
+		_fetchedResultsController = [[NSFetchedResultsController alloc]
+									 initWithFetchRequest:fetchRequest
+									 managedObjectContext:[DataManager sharedDataManager].managedObjectContext
+									 sectionNameKeyPath:nil cacheName:nil];
+		[fetchRequest setFetchBatchSize:20];
+		_fetchedResultsController.delegate = self;
+	}
+	return _fetchedResultsController;
+}
+
+
+#pragma mark Perform Fetch
+
+- (void)executePerformFetch
+{
+	NSError *error = nil;
+	
+	if (![[self fetchedResultsController] performFetch:&error])
+	{
+		NSLog(@"Unable to perform fetch.");
+		NSLog(@"%@, %@", error, error.localizedDescription);
+		//abort();
+		
+	} else {
+		
+		_sections = [self.fetchedResultsController sections];
+		id<NSFetchedResultsSectionInfo> sectionInfo = [_sections objectAtIndex:0];
+		NSUInteger number = [sectionInfo numberOfObjects];
+		
+		NSLog (@"self.fetchedResultsController: %@\n", self.fetchedResultsController);
+		NSLog (@"[self.fetchedResultsController sections]: %@\n", [self.fetchedResultsController sections]);
+		NSLog (@"sectionInfo: %@\n", sectionInfo);
+		NSLog (@"[sectionInfo numberOfObjects]: %lu\n", (unsigned long)number);
+		
+		
+	}
 }
 
 
