@@ -61,6 +61,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 @property (weak, nonatomic) IBOutlet UIButton *actionButton;
 
+@property (nonatomic, assign) BOOL isReceivedDocument;
+
 @end
 
 
@@ -96,7 +98,10 @@
 	_paused = YES;
 	_backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
 	
-	self.textView.text = @"Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
+    if ([UIPasteboard generalPasteboard].string == nil || [[UIPasteboard generalPasteboard].string  isEqualToString: @""]) {
+        self.textView.text = @"Just copy text whatever you want, and hit the play button above to start your text. Pause it at any time. Resume it at any time. Stop it at any time.";
+    }
+	
 	self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
 	
 	[UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -141,7 +146,7 @@
 	[self volumeSliderValue];
 	[self pitchSliderValue];
 	[self rateSliderValue];
-	[self pasteText];
+	[self checkToPasteText];
 }
 
 
@@ -244,50 +249,91 @@
 }
 
 
-- (NSString *)pasteText
+- (void)checkToPasteText
 {
-	self.textView.text = [self.pasteBoard string];
-	return self.textView.text;
+    if ([[self.pasteBoard string] isEqualToString:self.textView.text]) {
+        NSLog(@"[[self.pasteBoard string] isEqualToString:self.textView.text] are equal");
+        _tmpSavedString = nil;
+    } else {
+        NSLog(@"[[self.pasteBoard string] isEqualToString:self.textView.text] are not equal");
+        self.isReceivedDocument = NO;
+        self.textView.text = [self.pasteBoard string];
+        _tmpSavedString = [self.pasteBoard string];
+    }
 }
 
 
 #pragma mark - Save Current Documents For Speech
-
+/*
+ if (clipboard != tempDocument) {
+ 
+ (new document)
+ [self save]
+ tempDocument = clipboard (user default saving)
+ [self showSavedAlert:@"Saved"]
+ 
+ } else  if (receivedObject.document != textview.text ||  receivedObject.volume != _volumeSlideValue || receivedObject.pitch != _pitchSliderValue || receivedObject. rate != _rateSliderValue) {
+ 
+ (saved document changed)
+ [self updateReceivedObject]
+ [self showSavedAlert:@"Saved"]
+ 
+ } else {
+ 
+ [self showSavedAlert:@"Already Saved"]
+ }
+ */
 - (IBAction)saveCurrentDocumentToCoreDataStack:(id)sender
 {
-	if ([[self.pasteBoard string] isEqualToString:_tmpSavedString]) {
-		
-		[self adjustSaveAlertViewHeightWithTitle:@"Already Saved"];
-		
-	} else {
-		
-		DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-		
-		documentsForSpeech.language = _selectedLanguage;
-		documentsForSpeech.volume = [NSNumber numberWithFloat:_volumeSliderValue];;
-		documentsForSpeech.pitch = [NSNumber numberWithFloat:_pitchSliderValue];
-		documentsForSpeech.rate = [NSNumber numberWithFloat:_rateSliderValue];
-		
-		documentsForSpeech.document = self.textView.text;
-		_tmpSavedString = self.textView.text;
-		
-		NSString *firstLineForTitle = [self getFirstLineOfStringForTitle:documentsForSpeech.document];
-		documentsForSpeech.documentTitle = firstLineForTitle;
-		
-		[self.managedObjectContext performBlock:^{
-			NSError *error = nil;
-			if ([self.managedObjectContext save:&error]) {
-				
-				NSLog (@"Save succeed");
-				[self adjustSaveAlertViewHeightWithTitle:@"Saved"];
-				[self executePerformFetch];
-				
-			} else {
-				
-				NSLog(@"Error saving context: %@", error);
-			}
-		}];
-	}
+    if (_tmpSavedString != nil) {
+        
+        DocumentsForSpeech *documentsForSpeech = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
+        [self save:documentsForSpeech];
+        [self adjustSaveAlertViewHeightWithTitle:@"Saved"];
+        _tmpSavedString = nil;
+        _isReceivedDocument = NO;
+        
+    } else if (_isReceivedDocument == YES) {
+        
+        if (self.currentDocumentsForSpeech.document != self.textView.text || [self.currentDocumentsForSpeech.volume floatValue] != _volumeSliderValue || [self.currentDocumentsForSpeech.pitch floatValue] != _pitchSliderValue || [self.currentDocumentsForSpeech.rate floatValue] != _rateSliderValue) {
+            
+            [self save:self.currentDocumentsForSpeech];
+            [self adjustSaveAlertViewHeightWithTitle:@"Updated"];
+        }
+        
+    } else {
+        
+        [self adjustSaveAlertViewHeightWithTitle:@"Already Saved"];
+    }
+    
+}
+
+
+- (void)save:(DocumentsForSpeech *)documentForSpeech
+{
+    documentForSpeech.language = _selectedLanguage;
+    documentForSpeech.volume = [NSNumber numberWithFloat:_volumeSliderValue];;
+    documentForSpeech.pitch = [NSNumber numberWithFloat:_pitchSliderValue];
+    documentForSpeech.rate = [NSNumber numberWithFloat:_rateSliderValue];
+    
+    documentForSpeech.document = self.textView.text;
+    
+    NSString *firstLineForTitle = [self getFirstLineOfStringForTitle:documentForSpeech.document];
+    documentForSpeech.documentTitle = firstLineForTitle;
+    
+    [self.managedObjectContext performBlock:^{
+        NSError *error = nil;
+        if ([self.managedObjectContext save:&error]) {
+            
+            NSLog (@"Save succeed");
+            
+            [self executePerformFetch];
+            
+        } else {
+            
+            NSLog(@"Error saving context: %@", error);
+        }
+    }];
 }
 
 
@@ -346,7 +392,7 @@
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-	
+    
 	if (_equalizerViewExpanded == YES) {
 		[self adjustEqualizerViewHeight];
 		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.35];
@@ -642,6 +688,7 @@
 }
 
 
+/* receivedObject.document - clipboard - textview.text - tempDocument(user default saving) */
 - (void)didReceivedSelectDocumentsForSpeechNotification:(NSNotification *)notification
 {
 	if ([[notification name] isEqualToString:@"DidSelectDocumentsForSpeechNotification"])
@@ -651,6 +698,10 @@
 		NSDictionary *userInfo = notification.userInfo;
 		self.currentDocumentsForSpeech = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
 		
+        self.pasteBoard.string = self.currentDocumentsForSpeech.document;
+        NSLog (@"[self.pasteBoard.string isEqualToString:self.currentDocumentsForSpeech.document] ? : %@\n", [self.pasteBoard.string isEqualToString:self.currentDocumentsForSpeech.document] ? @"YES" : @"NO");
+        
+        self.isReceivedDocument = YES;
 		self.textView.text = self.currentDocumentsForSpeech.document;
 		_selectedLanguage = self.currentDocumentsForSpeech.language;
 		_volumeSliderValue = [self.currentDocumentsForSpeech.volume floatValue];
@@ -662,21 +713,21 @@
 		self.pitchSlider.value = [self.currentDocumentsForSpeech.pitch floatValue];
 		self.rateSlider.value = [self.currentDocumentsForSpeech.rate floatValue];
 		
-		NSLog (@"self.currentDocumentsForSpeech.createdDate: %@\n", self.currentDocumentsForSpeech.createdDate);
-		NSLog (@"self.currentDocumentsForSpeech.language: %@\n", self.currentDocumentsForSpeech.language);
-		NSLog (@"self.currentDocumentsForSpeech.volume: %f\n", [self.currentDocumentsForSpeech.volume floatValue]);
-		NSLog (@"self.currentDocumentsForSpeech.pitch: %f\n", [self.currentDocumentsForSpeech.pitch floatValue]);
-		NSLog (@"self.currentDocumentsForSpeech.rate: %f\n", [self.currentDocumentsForSpeech.rate floatValue]);
-		
-		NSLog (@"self.currentDocumentsForSpeech.isNewDocument: %@\n", self.currentDocumentsForSpeech.isNewDocument ? @"Yes" : @"No");
-		NSLog (@"self.currentDocumentsForSpeech.savedDocument: %@\n", self.currentDocumentsForSpeech.savedDocument);
-		NSLog (@"self.currentDocumentsForSpeech.dateString: %@\n", self.currentDocumentsForSpeech.dateString);
-		NSLog (@"self.currentDocumentsForSpeech.dayString: %@\n", self.currentDocumentsForSpeech.dayString);
-		NSLog (@"self.currentDocumentsForSpeech.monthString: %@\n", self.currentDocumentsForSpeech.monthString);
-		NSLog (@"self.currentDocumentsForSpeech.yearString: %@\n", self.currentDocumentsForSpeech.yearString);
-		NSLog (@"self.currentDocumentsForSpeech.monthAndYearString: %@\n", self.currentDocumentsForSpeech.monthAndYearString);
-		NSLog (@"self.currentDocumentsForSpeech.section: %@\n", self.currentDocumentsForSpeech.section);
-		NSLog (@"self.currentDocumentsForSpeech.uniqueIdString: %@\n", self.currentDocumentsForSpeech.uniqueIdString);
+//		NSLog (@"self.currentDocumentsForSpeech.createdDate: %@\n", self.currentDocumentsForSpeech.createdDate);
+//		NSLog (@"self.currentDocumentsForSpeech.language: %@\n", self.currentDocumentsForSpeech.language);
+//		NSLog (@"self.currentDocumentsForSpeech.volume: %f\n", [self.currentDocumentsForSpeech.volume floatValue]);
+//		NSLog (@"self.currentDocumentsForSpeech.pitch: %f\n", [self.currentDocumentsForSpeech.pitch floatValue]);
+//		NSLog (@"self.currentDocumentsForSpeech.rate: %f\n", [self.currentDocumentsForSpeech.rate floatValue]);
+//		
+//		NSLog (@"self.currentDocumentsForSpeech.isNewDocument: %@\n", self.currentDocumentsForSpeech.isNewDocument ? @"Yes" : @"No");
+//		NSLog (@"self.currentDocumentsForSpeech.savedDocument: %@\n", self.currentDocumentsForSpeech.savedDocument);
+//		NSLog (@"self.currentDocumentsForSpeech.dateString: %@\n", self.currentDocumentsForSpeech.dateString);
+//		NSLog (@"self.currentDocumentsForSpeech.dayString: %@\n", self.currentDocumentsForSpeech.dayString);
+//		NSLog (@"self.currentDocumentsForSpeech.monthString: %@\n", self.currentDocumentsForSpeech.monthString);
+//		NSLog (@"self.currentDocumentsForSpeech.yearString: %@\n", self.currentDocumentsForSpeech.yearString);
+//		NSLog (@"self.currentDocumentsForSpeech.monthAndYearString: %@\n", self.currentDocumentsForSpeech.monthAndYearString);
+//		NSLog (@"self.currentDocumentsForSpeech.section: %@\n", self.currentDocumentsForSpeech.section);
+//		NSLog (@"self.currentDocumentsForSpeech.uniqueIdString: %@\n", self.currentDocumentsForSpeech.uniqueIdString);
 		
 //		NSLog (@"self.currentDocumentsForSpeech.documentTitle: %@\n", self.currentDocumentsForSpeech.documentTitle);
 //		NSLog (@"self.currentDocumentsForSpeech.document: %@\n", self.currentDocumentsForSpeech.document);
@@ -732,7 +783,7 @@
 - (void)applicationWillEnterForeground
 {
 	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
-	[self pasteText];
+	[self checkToPasteText];
 }
 
 
