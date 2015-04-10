@@ -534,6 +534,10 @@
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.resetButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
 }
 
 
