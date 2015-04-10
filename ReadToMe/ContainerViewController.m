@@ -90,6 +90,9 @@
 	BOOL _paused;
 	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
+    NSRange _previousSelectedRange;
+    int _totalTextLength;
+    int _spokenTextLengths;
 }
 
 
@@ -109,9 +112,9 @@
     
 	self.backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
 	
-    self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
-	
     _paused = YES;
+    _totalTextLength = 0;
+    _spokenTextLengths = 0;
     
     [self hideSaveAlertViewAndEqualizerViewWithNoAnimation]; //화면에 보여주지 않기
 }
@@ -123,6 +126,7 @@
 	
 	[self configureUI];
 	[self setInitialData]; //순서 바꾸지 말 것
+    [self setInitialTextAttributes];
     [self checkHasLaunchedOnce];
 	[self addPickedLanguageObserver];
 	[self addApplicationsStateObserver];
@@ -197,7 +201,7 @@
 
 - (IBAction)volumeSliderValueChanged:(UISlider *)sender
 {
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryWord];
+    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     _paused = YES;
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     self.volume = sender.value;
@@ -209,7 +213,7 @@
 
 - (IBAction)pitchSliderValueChanged:(UISlider *)sender
 {
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryWord];
+    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     _paused = YES;
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     self.pitch = sender.value;
@@ -220,53 +224,12 @@
 
 - (IBAction)rateSliderValueChanged:(UISlider *)sender
 {
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryWord];
+    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     _paused = YES;
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     self.rate = sender.value;
     [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
     [self.defaults synchronize];
-}
-
-
-#pragma mark - Speech
-
-- (IBAction)speechText:(id)sender
-{
-    CGFloat time;
-    if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight];
-        time = 0.35;
-    } else {
-        time = 0.0;
-    }
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-        
-        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
-        self.utterance.volume = self.volume;
-        self.utterance.pitchMultiplier = self.pitch;
-        self.utterance.rate = self.rate;
-        self.utterance.preUtteranceDelay = 0.3f;
-        self.utterance.postUtteranceDelay = 0.3f;
-        
-        if (_paused == YES) {
-            [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-            [self.synthesizer continueSpeaking];
-            _paused = NO;
-        } else {
-            [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-            [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
-            _paused = YES;
-        }
-        
-        if (self.synthesizer.isSpeaking == NO) {
-            [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-            [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
-            [self.synthesizer speakUtterance:self.utterance];
-        }
-    });
 }
 
 
@@ -379,6 +342,58 @@
 }
 
 
+#pragma mark - Speech
+
+- (IBAction)speechText:(id)sender
+{
+    CGFloat time;
+    if (_equalizerViewExpanded == YES) {
+        [self adjustEqualizerViewHeight];
+        time = 0.35;
+    } else {
+        time = 0.0;
+    }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        
+        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
+        self.utterance.volume = self.volume;
+        self.utterance.pitchMultiplier = self.pitch;
+        self.utterance.rate = self.rate;
+        self.utterance.preUtteranceDelay = 0.3f;
+        self.utterance.postUtteranceDelay = 0.3f;
+        
+        CGFloat duration = 0.25f;
+        
+        if (_paused == YES) {
+            [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+            [self.synthesizer continueSpeaking];
+            _paused = NO;
+            [UIView animateWithDuration:duration animations:^{
+                self.resetButton.alpha = 1.0;
+            }completion:^(BOOL finished) { }];
+        } else {
+            [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+            [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+            _paused = YES;
+            [UIView animateWithDuration:duration animations:^{
+                self.resetButton.alpha = 0.0;
+            }completion:^(BOOL finished) { }];
+        }
+        
+        if (self.synthesizer.isSpeaking == NO) {
+            [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+            [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+            [self.synthesizer speakUtterance:self.utterance];
+            [UIView animateWithDuration:duration animations:^{
+                self.resetButton.alpha = 1.0;
+            }completion:^(BOOL finished) { }];
+        }
+    });
+}
+
+
 #pragma mark - Button Action Methods
 
 - (IBAction)listButtonTapped:(id)sender
@@ -405,17 +420,15 @@
 
 - (IBAction)resetButtonTapped:(id)sender
 {
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.resetButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
+    
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     
-    if (_paused == YES) {
-        _paused = NO;
-        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-        [self speechText:sender];
-    } else {
-        _paused = YES;
-        [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    }
-	
+    _paused = YES;
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 }
 
 
@@ -504,6 +517,10 @@
 	self.utterance.volume = self.volume;
 	self.utterance.pitchMultiplier = self.pitch;
 	self.utterance.rate = self.rate;
+    
+    NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
+    self.textView.selectedRange = rangeInTotalText;
+    NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
 }
 
 
@@ -515,6 +532,20 @@
 
 
 #pragma mark - NSAttributedString
+
+- (void)setInitialTextAttributes
+{
+    self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
+    
+    NSRange rangeOfWholeText = NSMakeRange(0, self.textView.text.length);
+    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
+    [attributedText addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Light" size:22] range:rangeOfWholeText];
+    
+    [self.textView.textStorage beginEditing];
+    [self.textView.textStorage replaceCharactersInRange:rangeOfWholeText withAttributedString:attributedText];
+    [self.textView.textStorage endEditing];
+}
+
 
 - (NSDictionary *)paragraphAttributes
 {
@@ -528,7 +559,9 @@
 		paragraphStyle.paragraphSpacing = 10.0f;
 		paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 		
-		_paragraphAttributes = @{ NSFontAttributeName: font, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [UIColor darkTextColor] };
+        UIColor *color = [UIColor darkTextColor];
+        
+        _paragraphAttributes = @{ NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle, NSForegroundColorAttributeName:color };
 	}
 	
 	return _paragraphAttributes;
@@ -829,6 +862,10 @@
     self.listButton.alpha = 0.0;
     self.archiveButton.enabled = NO;
     self.archiveButton.alpha = 0.0;
+    self.actionButton.enabled = NO;
+    self.actionButton.alpha = 0.0;
+    
+    self.resetButton.alpha = 0.0;
 }
 
 
