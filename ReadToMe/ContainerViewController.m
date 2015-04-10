@@ -389,6 +389,7 @@
         }
         
         if (self.synthesizer.isSpeaking == NO) {
+            [self selectWord];
             [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
             [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
             [self.synthesizer speakUtterance:self.utterance];
@@ -514,6 +515,26 @@
 	[self presentViewController:controller animated:YES completion:^{ }];
 }
 
+
+- (void)selectWord
+{
+    NSRange selectedRange = NSMakeRange(0, 0);//self.textView.selectedRange;
+    
+    if (![self.textView hasText])
+    {
+        [self.textView select:self];
+    }
+    else if ([self.textView hasText] && selectedRange.length == 0)
+    {
+        [self.textView select:self];
+    }
+    else if ([self.textView hasText] && selectedRange.length > 0)
+    {
+        selectedRange.location = selectedRange.location + selectedRange.length;
+        selectedRange.length = 0;
+        self.textView.selectedRange = selectedRange;
+    }
+}
 
 #pragma mark - AVSpeechSynthesizerDelegate
 
