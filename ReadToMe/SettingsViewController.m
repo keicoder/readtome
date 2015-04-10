@@ -34,12 +34,13 @@
 @property (weak, nonatomic) IBOutlet PopView *sendMailView;
 @property (weak, nonatomic) IBOutlet PopView *returnView;
 
+@property (nonatomic, strong) NSUserDefaults *defaults;
+
 @end
 
 
 @implementation SettingsViewController
 {
-	NSUserDefaults *_defaults;
 	NSString *_backgroundPlayValue;
 }
 
@@ -49,7 +50,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	_defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (self.defaults == nil) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+	
 	[self configureUI];
 	[self addTapGestureOnTheView:self.backgroundPlayView];
 	[self addTapGestureOnTheView:self.aboutView];
@@ -64,7 +69,7 @@
 
 - (void)getTheBackgroundPlayValue
 {
-	_backgroundPlayValue = [_defaults objectForKey:kBackgroundPlayValue];
+	_backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
 	
 	if ([_backgroundPlayValue isEqualToString:kBackgroundOn]) {
 		
@@ -102,6 +107,17 @@
 			_backgroundPlayValue = kBackgroundOff;
 			self.backgroundPlayView.backgroundColor = kIsOffColor;
 			self.backgroundPlayView.backgroundColorNormal = kIsOffColor;
+            
+            NSError *error = NULL;
+            AVAudioSession *session = [AVAudioSession sharedInstance];
+            [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+            if(error) {
+                NSLog(@"Speech in background mode error occurred.");
+            }
+            [session setActive:NO error:&error];
+            if (error) {
+                NSLog(@"Speech in background mode error occurred.");
+            }
 			
 		} else {
 			
@@ -109,6 +125,17 @@
 			self.backgroundPlayView.backgroundColor = kIsOnColor;
 			self.backgroundPlayView.backgroundColorNormal = kIsOnColor;
 			[self playSound];
+            
+            NSError *error = NULL;
+            AVAudioSession *session = [AVAudioSession sharedInstance];
+            [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+            if(error) {
+                NSLog(@"Speech in background mode error occurred.");
+            }
+            [session setActive:YES error:&error];
+            if (error) {
+                NSLog(@"Speech in background mode error occurred.");
+            }
 		}
 		
 		self.backgroundPlayValueLabel.text = _backgroundPlayValue;

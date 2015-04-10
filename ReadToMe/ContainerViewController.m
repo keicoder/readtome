@@ -520,7 +520,7 @@
     
     NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
     self.textView.selectedRange = rangeInTotalText;
-    NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
+//    NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
 }
 
 
@@ -841,10 +841,10 @@
 
 - (void)configureUI
 {
-    UIColor *viewColor = [UIColor colorWithRed:0.161 green:0.502 blue:0.725 alpha:1];
-    self.menuView.backgroundColor = viewColor;
-    self.bottomView.backgroundColor = viewColor;
-    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.204 green:0.596 blue:0.859 alpha:1];
+    //UIColor *viewColor = [UIColor colorWithRed:0.161 green:0.502 blue:0.725 alpha:1];
+    self.menuView.backgroundColor = [UIColor colorWithRed:0.149 green:0.604 blue:0.949 alpha:1];
+    self.bottomView.backgroundColor = [UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
+    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
     
     //Image View
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
