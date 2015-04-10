@@ -11,8 +11,8 @@
 
 @interface ContainerViewController : UIViewController
 
-@property (nonatomic, strong) NSString *selectedLanguage;
-@property (strong, nonatomic) DocumentsForSpeech *currentDocumentsForSpeech;
+@property (strong, nonatomic) DocumentsForSpeech *currentDocument;
+@property (nonatomic, strong) NSString *language;
 
 @end
 

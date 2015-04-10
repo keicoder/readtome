@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		326B58E71AD7704C003E4DF1 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07821ABF88FD0039EA89 /* ContainerViewController.m */; };
 		C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C12F07871ABF88FD0039EA89 /* Images.xcassets */; };
 		C110F2981AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
 		C110F2991AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
@@ -691,6 +692,7 @@
 				C110F2B11AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
 				C110F29D1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */,
 				C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */,
+				326B58E71AD7704C003E4DF1 /* ContainerViewController.m in Sources */,
 				C110F2CD1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */,
 				C12F07AA1ABFB00A0039EA89 /* ActionViewController.m in Sources */,
 				C1FB14E51AC2AFD800F24030 /* PopAnimationImageView.m in Sources */,

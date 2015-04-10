@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6751" systemVersion="14D130a" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D131" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="DocumentsForSpeech" representedClassName="DocumentsForSpeech" syncable="YES">
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateString" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,6 +8,7 @@
         <attribute name="documentTitle" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isNewDocument" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="language" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="modifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="monthAndYearString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="monthString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pitch" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
@@ -19,6 +20,6 @@
         <attribute name="yearString" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="DocumentsForSpeech" positionX="-63" positionY="-18" width="128" height="285"/>
+        <element name="DocumentsForSpeech" positionX="-63" positionY="-18" width="128" height="300"/>
     </elements>
 </model>

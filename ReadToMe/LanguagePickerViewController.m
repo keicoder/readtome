@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
-#define kSelectedLanguage @"kSelectedLanguage"
+#define kLanguage               @"kLanguage"
 
 
 #import "LanguagePickerViewController.h"
@@ -16,6 +16,7 @@
 
 @interface LanguagePickerViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
 
+@property (nonatomic, strong) NSUserDefaults *defaults;
 @property (weak, nonatomic) IBOutlet UIButton *returnButton;
 
 @end
@@ -33,7 +34,7 @@
 	
 	[self restoreUserPreferences];
 	
-	NSUInteger index = [self.languageCodes indexOfObject:self.selectedLanguage];
+	NSUInteger index = [self.languageCodes indexOfObject:self.currentLanguage];
 	if (index != NSNotFound)
 	{
 		[self.languagePickerView selectRow:index inComponent:0 animated:NO];
@@ -47,14 +48,21 @@
 
 - (void)restoreUserPreferences
 {
-	NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
+    if (self.defaults == nil) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
 	
-	NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
-	NSDictionary *defaults = @{ kSelectedLanguage:currentLanguageCode };
-	[preferences registerDefaults:defaults];
-	
-	self.selectedLanguage = [preferences stringForKey:kSelectedLanguage];
-	NSLog (@"self.selectedLanguage: %@\n", self.selectedLanguage);
+    if (self.currentLanguage == nil) {
+        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
+        NSDictionary *currentLanguage = @{ kLanguage:currentLanguageCode };
+        [self.defaults registerDefaults:currentLanguage];
+        self.currentLanguage = [self.defaults stringForKey:kLanguage];
+        NSLog (@"self.currentLanguage: %@\n", self.currentLanguage);
+        
+    } else {
+        
+        NSLog (@"self.currentLanguage: %@\n", self.currentLanguage);
+    }
 }
 
 
@@ -105,16 +113,16 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-	self.selectedLanguage = [self.languageCodes objectAtIndex:row];
+	self.currentLanguage = [self.languageCodes objectAtIndex:row];
 	NSUserDefaults *defults = [NSUserDefaults standardUserDefaults];
-	[defults setObject:self.selectedLanguage forKey:kSelectedLanguage];
+	[defults setObject:self.currentLanguage forKey:kLanguage];
 	[defults synchronize];
 	
 	//Post a notification when picked
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DidPickedLanguageNotification" object:nil userInfo:nil];
 	
 	ContainerViewController *controller = (ContainerViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
-	controller.selectedLanguage = self.selectedLanguage;
+	controller.language = self.currentLanguage;
 }
 
 

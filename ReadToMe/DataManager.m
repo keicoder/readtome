@@ -63,28 +63,25 @@
     NSURL *applicationDocumentsDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     //NSLog (@"NSFile Manager > Application Documents Directory:\n %@\n", applicationDocumentsDirectory);
     
-    //노트 영구 저장소
+    NSURL *storeURL = [applicationDocumentsDirectory URLByAppendingPathComponent:@"ReadToMe.sqlite"];
+    //NSLog (@"NoteDataManager > Persistent Store URL: %@\n", storeURL);
+    
+    NSError *error = nil;
+    
+    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    
+    //lightweight migrations
+    NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption : @(YES),
+                               NSInferMappingModelAutomaticallyOption : @(YES)};
+    
+    if ([_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                  configuration:nil
+                                                            URL:storeURL
+                                                        options:options
+                                                          error:&error] == NO)
     {
-        NSURL *storeURL = [applicationDocumentsDirectory URLByAppendingPathComponent:@"ReadToMe.sqlite"];
-        //NSLog (@"NoteDataManager > Persistent Store URL: %@\n", storeURL);
-        
-        NSError *error = nil;
-        
-        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-        
-        //lightweight migrations
-        NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption : @(YES),
-                                   NSInferMappingModelAutomaticallyOption : @(YES)};
-        
-        if ([_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                       configuration:nil
-                                                                 URL:storeURL
-                                                             options:options
-                                                               error:&error] == NO)
-        {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
     }
     
     return _persistentStoreCoordinator;

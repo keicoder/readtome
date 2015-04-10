@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D130a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -32,14 +32,13 @@
                                             <action selector="listButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="L0P-Lb-O0Z"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8pi-Cu-ToX" userLabel="ArchiveButton" customClass="PopAnimationClearButton">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8pi-Cu-ToX" userLabel="ArchiveButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="72" y="8" width="44" height="44"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="9" maxX="10" maxY="8"/>
-                                        <state key="normal" image="save">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
+                                        <state key="normal" image="save"/>
                                         <connections>
-                                            <action selector="saveCurrentDocumentToCoreDataStack:" destination="BYZ-38-t0r" eventType="touchUpInside" id="V4u-YG-Rxj"/>
+                                            <action selector="saveCurrentDocument:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BMl-E1-hUL"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djw-qX-P0a" userLabel="PlayPauseButton" customClass="PopAnimationClearButton">
@@ -53,7 +52,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="speechText:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WAH-J0-5zm"/>
+                                            <action selector="speechText:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9FP-Ab-cUp"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="ResetButton" customClass="PopAnimationClearButton">
@@ -284,8 +283,11 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <outlet property="actionButton" destination="pn8-Lw-nUq" id="boN-N5-OxI"/>
                         <outlet property="archiveButton" destination="8pi-Cu-ToX" id="MCT-rL-mw9"/>
                         <outlet property="bottomView" destination="Wws-1S-BRE" id="fjh-w7-D5G"/>
+                        <outlet property="equalizerButton" destination="UuS-46-ldZ" id="UlX-Wi-kb0"/>
                         <outlet property="equalizerView" destination="ofM-O5-Xtc" id="7sj-mZ-m5G"/>
                         <outlet property="equalizerViewHeightConstraint" destination="obj-XC-AMD" id="0Jo-8k-N3d"/>
+                        <outlet property="languageButton" destination="xtD-FV-k3Q" id="rcL-Vr-d3H"/>
+                        <outlet property="listButton" destination="6rW-tW-Hkj" id="evV-nU-ao9"/>
                         <outlet property="menuView" destination="U9H-OM-Fxj" id="SLX-Bo-y7O"/>
                         <outlet property="pitchLabel" destination="OwE-xb-ztj" id="itK-un-8IC"/>
                         <outlet property="pitchSlider" destination="PDz-gG-Mvc" id="Lye-RR-NeI"/>
@@ -296,6 +298,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <outlet property="saveAlertLabel" destination="9ja-D3-AWW" id="cX9-Zw-Sao"/>
                         <outlet property="saveAlertView" destination="EqM-jD-gG9" id="jFJ-cr-VFr"/>
                         <outlet property="saveAlertViewHeightConstraint" destination="npb-29-jMO" id="wwL-La-Gai"/>
+                        <outlet property="settingsButton" destination="BhP-KP-gJu" id="aay-xx-vIw"/>
                         <outlet property="textView" destination="VWj-si-BKE" id="TKZ-9Q-pKe"/>
                         <outlet property="volumeLabel" destination="Bak-fz-q7P" id="UcD-a3-3yM"/>
                         <outlet property="volumeSlider" destination="ypv-Nl-rZa" id="Uct-dq-Nbm"/>

@@ -19,6 +19,7 @@
 @implementation DocumentsForSpeech
 
 @dynamic createdDate;
+@dynamic modifiedDate;
 @dynamic dateString;
 @dynamic dayString;
 @dynamic language;
@@ -42,7 +43,7 @@
 
 - (NSDateFormatter *)formatter
 {
-	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+	//if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
 	
 	if (!_formatter) {
 		_formatter = [[NSDateFormatter alloc] init];
@@ -84,7 +85,14 @@
 	NSString *stringDate = [self.formatter stringFromDate:now];
 	NSString *stringdaysOfTheWeek = [[stringDate substringToIndex:3] uppercaseString];
 	
-	self.createdDate = now;
+    if (self.createdDate == nil) {
+        self.createdDate = now;
+    }
+	
+    if (self.modifiedDate == nil) {
+        self.modifiedDate = now;
+    }
+    
 	self.yearString = stringYear;
 	self.monthString = stringMonth;
 	self.dayString = stringDay;
@@ -103,6 +111,8 @@
 
 - (void)updateOtherValue
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
 	self.isNewDocument = [NSNumber numberWithBool:NO];
 	self.savedDocument = @"savedDocument";
 }
