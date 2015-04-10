@@ -251,6 +251,12 @@
         self.textView.text = self.pasteBoard.string;
         NSLog(@"paste done");
         
+        if (self.synthesizer != nil) {
+            [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+            NSLog(@"Because paste new text, avspeech synthsizer stoped speaking. New Start will began.");
+            _paused = YES;
+            [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+        }
     }
 }
 
@@ -520,7 +526,7 @@
     
     NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
     self.textView.selectedRange = rangeInTotalText;
-//    NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
+    NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
 }
 
 
@@ -538,11 +544,12 @@
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
     
     NSRange rangeOfWholeText = NSMakeRange(0, self.textView.text.length);
-    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-    [attributedText addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Light" size:22] range:rangeOfWholeText];
+//    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
+//    [attributedText addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Light" size:22] range:rangeOfWholeText];
     
     [self.textView.textStorage beginEditing];
-    [self.textView.textStorage replaceCharactersInRange:rangeOfWholeText withAttributedString:attributedText];
+//    [self.textView.textStorage replaceCharactersInRange:rangeOfWholeText withAttributedString:attributedText];
+    [self.textView.textStorage replaceCharactersInRange:rangeOfWholeText withAttributedString:self.textView.attributedText];
     [self.textView.textStorage endEditing];
 }
 
@@ -551,7 +558,7 @@
 {
 	if ( _paragraphAttributes == nil) {
 		
-		UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+		UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:22];
 		
 		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 		paragraphStyle.firstLineHeadIndent = 0.0f;
@@ -603,9 +610,19 @@
         [self.defaults setFloat:1.0 forKey:kVolumeValue];
         [self.defaults setFloat:1.0 forKey:kPitchValue];
         [self.defaults setFloat:0.07 forKey:kRateValue];
+        
         [self.defaults setObject:kBackgroundOn forKey:kBackgroundPlayValue];
+        NSError *error = NULL;
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+        if(error) { NSLog(@"Speech in background mode error occurred."); }
+        [session setActive:YES error:&error];
+        if (error) { NSLog(@"Speech in background mode setActive error occurred."); }
         
         [self.defaults synchronize];
+        
+        NSString *backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
+        NSLog (@"backgroundPlayValue: %@\n", backgroundPlayValue);
     }
 }
 
@@ -841,7 +858,6 @@
 
 - (void)configureUI
 {
-    //UIColor *viewColor = [UIColor colorWithRed:0.161 green:0.502 blue:0.725 alpha:1];
     self.menuView.backgroundColor = [UIColor colorWithRed:0.149 green:0.604 blue:0.949 alpha:1];
     self.bottomView.backgroundColor = [UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
     self.equalizerView.backgroundColor = [UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];

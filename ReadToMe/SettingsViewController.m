@@ -35,6 +35,7 @@
 @property (weak, nonatomic) IBOutlet PopView *returnView;
 
 @property (nonatomic, strong) NSUserDefaults *defaults;
+@property (nonatomic, strong) AVAudioSession *audioSession;
 
 @end
 
@@ -55,13 +56,17 @@
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
 	
+    if (self.audioSession == nil) {
+        self.audioSession = [AVAudioSession sharedInstance];
+    }
+    
 	[self configureUI];
+    [self getTheBackgroundPlayValue];
 	[self addTapGestureOnTheView:self.backgroundPlayView];
 	[self addTapGestureOnTheView:self.aboutView];
 	[self addTapGestureOnTheView:self.openSourceView];
 	[self addTapGestureOnTheView:self.sendMailView];
 	[self addTapGestureOnTheView:self.returnView];
-	[self getTheBackgroundPlayValue];
 }
 
 
@@ -70,7 +75,8 @@
 - (void)getTheBackgroundPlayValue
 {
 	_backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
-	
+	NSLog (@"_backgroundPlayValue: %@\n", _backgroundPlayValue);
+    
 	if ([_backgroundPlayValue isEqualToString:kBackgroundOn]) {
 		
 		self.backgroundPlayView.backgroundColor = kIsOnColor;
@@ -102,19 +108,21 @@
 {
 	if ([touch.view isEqual:(UIView *)self.backgroundPlayView]) {
 		
+        NSError *error = NULL;
+        
 		if ([_backgroundPlayValue isEqualToString:kBackgroundOn]) {
 			
 			_backgroundPlayValue = kBackgroundOff;
+            
 			self.backgroundPlayView.backgroundColor = kIsOffColor;
 			self.backgroundPlayView.backgroundColorNormal = kIsOffColor;
             
-            NSError *error = NULL;
-            AVAudioSession *session = [AVAudioSession sharedInstance];
-            [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+            [self.audioSession setCategory:AVAudioSessionCategoryPlayback error:&error];
             if(error) {
                 NSLog(@"Speech in background mode error occurred.");
             }
-            [session setActive:NO error:&error];
+            [self.audioSession setActive:NO error:&error];
+            NSLog(@"self.audioSession setActive No");
             if (error) {
                 NSLog(@"Speech in background mode error occurred.");
             }
@@ -122,25 +130,21 @@
 		} else {
 			
 			_backgroundPlayValue = kBackgroundOn;
+            
 			self.backgroundPlayView.backgroundColor = kIsOnColor;
 			self.backgroundPlayView.backgroundColorNormal = kIsOnColor;
 			[self playSound];
             
-            NSError *error = NULL;
-            AVAudioSession *session = [AVAudioSession sharedInstance];
-            [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-            if(error) {
-                NSLog(@"Speech in background mode error occurred.");
-            }
-            [session setActive:YES error:&error];
-            if (error) {
-                NSLog(@"Speech in background mode error occurred.");
-            }
+            [self.audioSession setCategory:AVAudioSessionCategoryPlayback error:&error];
+            if(error) { NSLog(@"Speech in background mode error occurred."); }
+            [self.audioSession setActive:YES error:&error];
+            NSLog(@"self.audioSession setActive YES");
+            if (error) { NSLog(@"Speech in background mode setActive error occurred."); }
 		}
 		
 		self.backgroundPlayValueLabel.text = _backgroundPlayValue;
-		[_defaults setObject:_backgroundPlayValue forKey:kBackgroundPlayValue];
-		[_defaults synchronize];
+		[self.defaults setObject:_backgroundPlayValue forKey:kBackgroundPlayValue];
+		[self.defaults synchronize];
 		
 	} else if ([touch.view isEqual:(UIView *)self.aboutView]) {
 		
