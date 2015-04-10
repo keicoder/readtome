@@ -526,7 +526,7 @@
     
     NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
     self.textView.selectedRange = rangeInTotalText;
-    NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
+    //NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
 }
 
 
