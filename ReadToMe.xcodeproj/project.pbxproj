@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32281F521AD8AA7600584E4A /* ReadToMeKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 32281F511AD8AA7600584E4A /* ReadToMeKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		32281F581AD8AA7600584E4A /* ReadToMeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32281F4D1AD8AA7600584E4A /* ReadToMeKit.framework */; };
+		32281F611AD8AA7600584E4A /* ReadToMeKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 32281F601AD8AA7600584E4A /* ReadToMeKitTests.m */; };
+		32281F641AD8AA7600584E4A /* ReadToMeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32281F4D1AD8AA7600584E4A /* ReadToMeKit.framework */; };
+		32281F651AD8AA7600584E4A /* ReadToMeKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 32281F4D1AD8AA7600584E4A /* ReadToMeKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		32281F771AD8B0AB00584E4A /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32281F761AD8B0AB00584E4A /* ShareViewController.m */; };
+		32281F791AD8B0AB00584E4A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32281F781AD8B0AB00584E4A /* MainInterface.storyboard */; };
+		32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		326B58E71AD7704C003E4DF1 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07821ABF88FD0039EA89 /* ContainerViewController.m */; };
 		C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C12F07871ABF88FD0039EA89 /* Images.xcassets */; };
 		C110F2981AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
@@ -91,6 +99,34 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		32281F591AD8AA7600584E4A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 32281F4C1AD8AA7600584E4A;
+			remoteInfo = ReadToMeKit;
+		};
+		32281F5B1AD8AA7600584E4A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C12F07731ABF88FD0039EA89;
+			remoteInfo = ReadToMe;
+		};
+		32281F621AD8AA7600584E4A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 32281F4C1AD8AA7600584E4A;
+			remoteInfo = ReadToMeKit;
+		};
+		32281F7A1AD8B0AB00584E4A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 32281F701AD8B0AB00584E4A;
+			remoteInfo = ReadToMeShareExtension;
+		};
 		C12F07911ABF88FD0039EA89 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
@@ -108,6 +144,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		32281F6B1AD8AA7600584E4A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				32281F651AD8AA7600584E4A /* ReadToMeKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C12F07B31ABFB00A0039EA89 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +162,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				C12F07AF1ABFB00A0039EA89 /* ReadToMeAction.appex in Embed App Extensions */,
+				32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,6 +170,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		32281F4D1AD8AA7600584E4A /* ReadToMeKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReadToMeKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		32281F501AD8AA7600584E4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32281F511AD8AA7600584E4A /* ReadToMeKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReadToMeKit.h; sourceTree = "<group>"; };
+		32281F571AD8AA7600584E4A /* ReadToMeKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReadToMeKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		32281F5F1AD8AA7600584E4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32281F601AD8AA7600584E4A /* ReadToMeKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReadToMeKitTests.m; sourceTree = "<group>"; };
+		32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReadToMeShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		32281F741AD8B0AB00584E4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32281F751AD8B0AB00584E4A /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
+		32281F761AD8B0AB00584E4A /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
+		32281F781AD8B0AB00584E4A /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		32281F801AD8BC2F00584E4A /* ReadToMe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMe.entitlements; sourceTree = "<group>"; };
+		32281F811AD8BCB900584E4A /* ReadToMeAction.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeAction.entitlements; sourceTree = "<group>"; };
+		32281F821AD8BCEE00584E4A /* ReadToMeShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeShareExtension.entitlements; sourceTree = "<group>"; };
 		C110F2611AC12F4000B4E355 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C110F2621AC12F4000B4E355 /* pop-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "pop-Info.plist"; sourceTree = "<group>"; };
 		C110F2631AC12F4000B4E355 /* pop-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pop-Prefix.pch"; sourceTree = "<group>"; };
@@ -225,10 +287,33 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		32281F491AD8AA7600584E4A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32281F541AD8AA7600584E4A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32281F581AD8AA7600584E4A /* ReadToMeKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32281F6E1AD8B0AB00584E4A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C12F07711ABF88FD0039EA89 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32281F641AD8AA7600584E4A /* ReadToMeKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +334,60 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		32281F4E1AD8AA7600584E4A /* ReadToMeKit */ = {
+			isa = PBXGroup;
+			children = (
+				32281F511AD8AA7600584E4A /* ReadToMeKit.h */,
+				32281F4F1AD8AA7600584E4A /* Supporting Files */,
+			);
+			path = ReadToMeKit;
+			sourceTree = "<group>";
+		};
+		32281F4F1AD8AA7600584E4A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				32281F501AD8AA7600584E4A /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		32281F5D1AD8AA7600584E4A /* ReadToMeKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				32281F601AD8AA7600584E4A /* ReadToMeKitTests.m */,
+				32281F5E1AD8AA7600584E4A /* Supporting Files */,
+			);
+			path = ReadToMeKitTests;
+			sourceTree = "<group>";
+		};
+		32281F5E1AD8AA7600584E4A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				32281F5F1AD8AA7600584E4A /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		32281F721AD8B0AB00584E4A /* ReadToMeShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				32281F821AD8BCEE00584E4A /* ReadToMeShareExtension.entitlements */,
+				32281F751AD8B0AB00584E4A /* ShareViewController.h */,
+				32281F761AD8B0AB00584E4A /* ShareViewController.m */,
+				32281F781AD8B0AB00584E4A /* MainInterface.storyboard */,
+				32281F731AD8B0AB00584E4A /* Supporting Files */,
+			);
+			path = ReadToMeShareExtension;
+			sourceTree = "<group>";
+		};
+		32281F731AD8B0AB00584E4A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				32281F741AD8B0AB00584E4A /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		C110F25F1AC12F4000B4E355 /* pop */ = {
 			isa = PBXGroup;
 			children = (
@@ -343,9 +482,12 @@
 		C12F076B1ABF88FD0039EA89 = {
 			isa = PBXGroup;
 			children = (
+				32281F4E1AD8AA7600584E4A /* ReadToMeKit */,
+				32281F721AD8B0AB00584E4A /* ReadToMeShareExtension */,
 				C12F07A51ABFB00A0039EA89 /* ReadToMeAction */,
 				C12F07761ABF88FD0039EA89 /* ReadToMe */,
 				C12F07931ABF88FD0039EA89 /* ReadToMeTests */,
+				32281F5D1AD8AA7600584E4A /* ReadToMeKitTests */,
 				C12F07751ABF88FD0039EA89 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -356,6 +498,9 @@
 				C12F07741ABF88FD0039EA89 /* ReadToMe.app */,
 				C12F07901ABF88FD0039EA89 /* ReadToMeTests.xctest */,
 				C12F07A41ABFB00A0039EA89 /* ReadToMeAction.appex */,
+				32281F4D1AD8AA7600584E4A /* ReadToMeKit.framework */,
+				32281F571AD8AA7600584E4A /* ReadToMeKitTests.xctest */,
+				32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -363,6 +508,7 @@
 		C12F07761ABF88FD0039EA89 /* ReadToMe */ = {
 			isa = PBXGroup;
 			children = (
+				32281F801AD8BC2F00584E4A /* ReadToMe.entitlements */,
 				C18978F11ACCC27400BFFA61 /* Sound */,
 				C1FB14DD1AC29B2200F24030 /* Data */,
 				C1FB14DC1AC29B0B00F24030 /* UI */,
@@ -404,6 +550,7 @@
 		C12F07A51ABFB00A0039EA89 /* ReadToMeAction */ = {
 			isa = PBXGroup;
 			children = (
+				32281F811AD8BCB900584E4A /* ReadToMeAction.entitlements */,
 				C12F07A81ABFB00A0039EA89 /* ActionViewController.h */,
 				C12F07A91ABFB00A0039EA89 /* ActionViewController.m */,
 				C12F07AB1ABFB00A0039EA89 /* MainInterface.storyboard */,
@@ -477,7 +624,72 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		32281F4A1AD8AA7600584E4A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32281F521AD8AA7600584E4A /* ReadToMeKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		32281F4C1AD8AA7600584E4A /* ReadToMeKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 32281F6A1AD8AA7600584E4A /* Build configuration list for PBXNativeTarget "ReadToMeKit" */;
+			buildPhases = (
+				32281F481AD8AA7600584E4A /* Sources */,
+				32281F491AD8AA7600584E4A /* Frameworks */,
+				32281F4A1AD8AA7600584E4A /* Headers */,
+				32281F4B1AD8AA7600584E4A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReadToMeKit;
+			productName = ReadToMeKit;
+			productReference = 32281F4D1AD8AA7600584E4A /* ReadToMeKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		32281F561AD8AA7600584E4A /* ReadToMeKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 32281F6C1AD8AA7600584E4A /* Build configuration list for PBXNativeTarget "ReadToMeKitTests" */;
+			buildPhases = (
+				32281F531AD8AA7600584E4A /* Sources */,
+				32281F541AD8AA7600584E4A /* Frameworks */,
+				32281F551AD8AA7600584E4A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				32281F5A1AD8AA7600584E4A /* PBXTargetDependency */,
+				32281F5C1AD8AA7600584E4A /* PBXTargetDependency */,
+			);
+			name = ReadToMeKitTests;
+			productName = ReadToMeKitTests;
+			productReference = 32281F571AD8AA7600584E4A /* ReadToMeKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		32281F701AD8B0AB00584E4A /* ReadToMeShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 32281F7D1AD8B0AB00584E4A /* Build configuration list for PBXNativeTarget "ReadToMeShareExtension" */;
+			buildPhases = (
+				32281F6D1AD8B0AB00584E4A /* Sources */,
+				32281F6E1AD8B0AB00584E4A /* Frameworks */,
+				32281F6F1AD8B0AB00584E4A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReadToMeShareExtension;
+			productName = ReadToMeShareExtension;
+			productReference = 32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		C12F07731ABF88FD0039EA89 /* ReadToMe */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C12F079A1ABF88FD0039EA89 /* Build configuration list for PBXNativeTarget "ReadToMe" */;
@@ -486,11 +698,14 @@
 				C12F07711ABF88FD0039EA89 /* Frameworks */,
 				C12F07721ABF88FD0039EA89 /* Resources */,
 				C12F07B31ABFB00A0039EA89 /* Embed App Extensions */,
+				32281F6B1AD8AA7600584E4A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				C12F07AE1ABFB00A0039EA89 /* PBXTargetDependency */,
+				32281F631AD8AA7600584E4A /* PBXTargetDependency */,
+				32281F7B1AD8B0AB00584E4A /* PBXTargetDependency */,
 			);
 			name = ReadToMe;
 			productName = ReadToMe;
@@ -541,8 +756,30 @@
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = keicoder;
 				TargetAttributes = {
+					32281F4C1AD8AA7600584E4A = {
+						CreatedOnToolsVersion = 6.3;
+					};
+					32281F561AD8AA7600584E4A = {
+						CreatedOnToolsVersion = 6.3;
+						TestTargetID = C12F07731ABF88FD0039EA89;
+					};
+					32281F701AD8B0AB00584E4A = {
+						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = 9DHQ6GLLC9;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
 					C12F07731ABF88FD0039EA89 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 9DHQ6GLLC9;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					C12F078F1ABF88FD0039EA89 = {
 						CreatedOnToolsVersion = 6.2;
@@ -550,6 +787,12 @@
 					};
 					C12F07A31ABFB00A0039EA89 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 9DHQ6GLLC9;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -569,11 +812,36 @@
 				C12F07731ABF88FD0039EA89 /* ReadToMe */,
 				C12F078F1ABF88FD0039EA89 /* ReadToMeTests */,
 				C12F07A31ABFB00A0039EA89 /* ReadToMeAction */,
+				32281F4C1AD8AA7600584E4A /* ReadToMeKit */,
+				32281F561AD8AA7600584E4A /* ReadToMeKitTests */,
+				32281F701AD8B0AB00584E4A /* ReadToMeShareExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		32281F4B1AD8AA7600584E4A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32281F551AD8AA7600584E4A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32281F6F1AD8B0AB00584E4A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32281F791AD8B0AB00584E4A /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C12F07721ABF88FD0039EA89 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -609,6 +877,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		32281F481AD8AA7600584E4A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32281F531AD8AA7600584E4A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32281F611AD8AA7600584E4A /* ReadToMeKitTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32281F6D1AD8B0AB00584E4A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32281F771AD8B0AB00584E4A /* ShareViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C12F07701ABF88FD0039EA89 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -702,6 +993,26 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		32281F5A1AD8AA7600584E4A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 32281F4C1AD8AA7600584E4A /* ReadToMeKit */;
+			targetProxy = 32281F591AD8AA7600584E4A /* PBXContainerItemProxy */;
+		};
+		32281F5C1AD8AA7600584E4A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C12F07731ABF88FD0039EA89 /* ReadToMe */;
+			targetProxy = 32281F5B1AD8AA7600584E4A /* PBXContainerItemProxy */;
+		};
+		32281F631AD8AA7600584E4A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 32281F4C1AD8AA7600584E4A /* ReadToMeKit */;
+			targetProxy = 32281F621AD8AA7600584E4A /* PBXContainerItemProxy */;
+		};
+		32281F7B1AD8B0AB00584E4A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 32281F701AD8B0AB00584E4A /* ReadToMeShareExtension */;
+			targetProxy = 32281F7A1AD8B0AB00584E4A /* PBXContainerItemProxy */;
+		};
 		C12F07921ABF88FD0039EA89 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C12F07731ABF88FD0039EA89 /* ReadToMe */;
@@ -742,6 +1053,130 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		32281F661AD8AA7600584E4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ReadToMeKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		32281F671AD8AA7600584E4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ReadToMeKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		32281F681AD8AA7600584E4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ReadToMeKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReadToMe.app/ReadToMe";
+			};
+			name = Debug;
+		};
+		32281F691AD8AA7600584E4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ReadToMeKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReadToMe.app/ReadToMe";
+			};
+			name = Release;
+		};
+		32281F7E1AD8B0AB00584E4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ReadToMeShareExtension/ReadToMeShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ReadToMeShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		32281F7F1AD8B0AB00584E4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ReadToMeShareExtension/ReadToMeShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ReadToMeShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		C12F07981ABF88FD0039EA89 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -776,7 +1211,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -812,7 +1247,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -824,10 +1259,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = ReadToMe/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -835,10 +1274,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = ReadToMe/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -881,14 +1324,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = ReadToMeAction/ReadToMeAction.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ReadToMeAction/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -898,10 +1345,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = ReadToMeAction/ReadToMeAction.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = ReadToMeAction/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -909,6 +1360,30 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		32281F6A1AD8AA7600584E4A /* Build configuration list for PBXNativeTarget "ReadToMeKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				32281F661AD8AA7600584E4A /* Debug */,
+				32281F671AD8AA7600584E4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		32281F6C1AD8AA7600584E4A /* Build configuration list for PBXNativeTarget "ReadToMeKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				32281F681AD8AA7600584E4A /* Debug */,
+				32281F691AD8AA7600584E4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		32281F7D1AD8B0AB00584E4A /* Build configuration list for PBXNativeTarget "ReadToMeShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				32281F7E1AD8B0AB00584E4A /* Debug */,
+				32281F7F1AD8B0AB00584E4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		C12F076F1ABF88FD0039EA89 /* Build configuration list for PBXProject "ReadToMe" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -22,6 +22,8 @@
 #define kBackgroundPlayValue	@"kBackgroundPlayValue"
 #define kBackgroundOn			@"Background On"
 
+#define kSharedDocument         @"kSharedDocument" //Shared Extension item
+
 
 #import "ContainerViewController.h"
 #import <AVFoundation/AVFoundation.h>
@@ -103,7 +105,7 @@
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
 	self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-	
+    
 	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
 	self.synthesizer.delegate = self;
 	self.pasteBoard = [UIPasteboard generalPasteboard];
@@ -258,6 +260,11 @@
             [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
         }
     }
+    
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.keicoder.demo.readtome"];
+    NSString *sharedDocument = [sharedDefaults objectForKey:kSharedDocument];
+    NSLog (@"sharedDocument: %@\n", sharedDocument);
+    
 }
 
 
@@ -516,9 +523,11 @@
 }
 
 
+#pragma mark - Select Word
+
 - (void)selectWord
 {
-    NSRange selectedRange = NSMakeRange(0, 0);//self.textView.selectedRange;
+    NSRange selectedRange; //= NSMakeRange(0, 0);
     
     if (![self.textView hasText])
     {
@@ -555,6 +564,8 @@
 {
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
+    [self selectWord];
+    
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
         self.resetButton.alpha = 0.0;
@@ -583,12 +594,12 @@
 {
 	if ( _paragraphAttributes == nil) {
 		
-		UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:22];
+		UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
 		
 		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 		paragraphStyle.firstLineHeadIndent = 0.0f;
-		paragraphStyle.lineSpacing = 5.0f;
-		paragraphStyle.paragraphSpacing = 10.0f;
+		paragraphStyle.lineSpacing = 2.0f;
+		paragraphStyle.paragraphSpacing = 4.0f;
 		paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 		
         UIColor *color = [UIColor darkTextColor];
@@ -874,7 +885,7 @@
 		
 	} else {
 		
-		NSLog (@"[self.fetchedResultsController fetchedObjects].count: %lu\n", [self.fetchedResultsController fetchedObjects].count);
+		NSLog (@"[self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
 	}
 }
 

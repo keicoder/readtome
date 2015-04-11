@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0620"
+   LastUpgradeVersion = "0630"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C12F07A31ABFB00A0039EA89"
-               BuildableName = "ReadToMeAction.appex"
-               BlueprintName = "ReadToMeAction"
+               BlueprintIdentifier = "32281F701AD8B0AB00584E4A"
+               BuildableName = "ReadToMeShareExtension.appex"
+               BlueprintName = "ReadToMeShareExtension"
                ReferencedContainer = "container:ReadToMe.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -35,20 +35,6 @@
                ReferencedContainer = "container:ReadToMe.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "32281F561AD8AA7600584E4A"
-               BuildableName = "ReadToMeKitTests.xctest"
-               BlueprintName = "ReadToMeKitTests"
-               ReferencedContainer = "container:ReadToMe.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -57,23 +43,13 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "32281F561AD8AA7600584E4A"
-               BuildableName = "ReadToMeKitTests.xctest"
-               BlueprintName = "ReadToMeKitTests"
-               ReferencedContainer = "container:ReadToMe.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C12F07731ABF88FD0039EA89"
-            BuildableName = "ReadToMe.app"
-            BlueprintName = "ReadToMe"
+            BlueprintIdentifier = "32281F701AD8B0AB00584E4A"
+            BuildableName = "ReadToMeShareExtension.appex"
+            BlueprintName = "ReadToMeShareExtension"
             ReferencedContainer = "container:ReadToMe.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
