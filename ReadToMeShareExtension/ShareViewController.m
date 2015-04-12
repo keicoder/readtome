@@ -36,7 +36,9 @@
 //    [sharedDefaults synchronize];
     
     //PasteBoard
-    self.pasteBoard = [UIPasteboard generalPasteboard];
+    if (self.pasteBoard == nil) {
+        self.pasteBoard = [UIPasteboard generalPasteboard];
+    }
     self.pasteBoard.persistent = YES;
     [self.pasteBoard setString:self.contentText];
     

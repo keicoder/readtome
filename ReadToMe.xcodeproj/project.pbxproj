@@ -16,6 +16,10 @@
 		32281F791AD8B0AB00584E4A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32281F781AD8B0AB00584E4A /* MainInterface.storyboard */; };
 		32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		326B58E71AD7704C003E4DF1 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07821ABF88FD0039EA89 /* ContainerViewController.m */; };
+		32D651701ADA050200B16DCE /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D6516F1ADA050200B16DCE /* NotificationCenter.framework */; };
+		32D651761ADA050200B16DCE /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D651751ADA050200B16DCE /* TodayViewController.m */; };
+		32D651781ADA050200B16DCE /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32D651771ADA050200B16DCE /* MainInterface.storyboard */; };
+		32D6517B1ADA050200B16DCE /* ReadToMeTodayExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C12F07871ABF88FD0039EA89 /* Images.xcassets */; };
 		C110F2981AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
 		C110F2991AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
@@ -127,6 +131,13 @@
 			remoteGlobalIDString = 32281F701AD8B0AB00584E4A;
 			remoteInfo = ReadToMeShareExtension;
 		};
+		32D651791ADA050200B16DCE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 32D6516C1ADA050100B16DCE;
+			remoteInfo = ReadToMeTodayExtension;
+		};
 		C12F07911ABF88FD0039EA89 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
@@ -161,6 +172,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				32D6517B1ADA050200B16DCE /* ReadToMeTodayExtension.appex in Embed App Extensions */,
 				C12F07AF1ABFB00A0039EA89 /* ReadToMeAction.appex in Embed App Extensions */,
 				32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */,
 			);
@@ -184,6 +196,13 @@
 		32281F801AD8BC2F00584E4A /* ReadToMe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMe.entitlements; sourceTree = "<group>"; };
 		32281F811AD8BCB900584E4A /* ReadToMeAction.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeAction.entitlements; sourceTree = "<group>"; };
 		32281F821AD8BCEE00584E4A /* ReadToMeShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeShareExtension.entitlements; sourceTree = "<group>"; };
+		32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReadToMeTodayExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		32D6516F1ADA050200B16DCE /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		32D651731ADA050200B16DCE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32D651741ADA050200B16DCE /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
+		32D651751ADA050200B16DCE /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
+		32D651771ADA050200B16DCE /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		32D6517F1ADA056100B16DCE /* ReadToMeTodayExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeTodayExtension.entitlements; sourceTree = "<group>"; };
 		C110F2611AC12F4000B4E355 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C110F2621AC12F4000B4E355 /* pop-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "pop-Info.plist"; sourceTree = "<group>"; };
 		C110F2631AC12F4000B4E355 /* pop-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pop-Prefix.pch"; sourceTree = "<group>"; };
@@ -309,6 +328,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		32D6516A1ADA050100B16DCE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32D651701ADA050200B16DCE /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C12F07711ABF88FD0039EA89 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -384,6 +411,34 @@
 			isa = PBXGroup;
 			children = (
 				32281F741AD8B0AB00584E4A /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		32D6516E1ADA050200B16DCE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				32D6516F1ADA050200B16DCE /* NotificationCenter.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		32D651711ADA050200B16DCE /* ReadToMeTodayExtension */ = {
+			isa = PBXGroup;
+			children = (
+				32D6517F1ADA056100B16DCE /* ReadToMeTodayExtension.entitlements */,
+				32D651741ADA050200B16DCE /* TodayViewController.h */,
+				32D651751ADA050200B16DCE /* TodayViewController.m */,
+				32D651771ADA050200B16DCE /* MainInterface.storyboard */,
+				32D651721ADA050200B16DCE /* Supporting Files */,
+			);
+			path = ReadToMeTodayExtension;
+			sourceTree = "<group>";
+		};
+		32D651721ADA050200B16DCE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				32D651731ADA050200B16DCE /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -482,12 +537,14 @@
 		C12F076B1ABF88FD0039EA89 = {
 			isa = PBXGroup;
 			children = (
-				32281F4E1AD8AA7600584E4A /* ReadToMeKit */,
+				32D651711ADA050200B16DCE /* ReadToMeTodayExtension */,
 				32281F721AD8B0AB00584E4A /* ReadToMeShareExtension */,
 				C12F07A51ABFB00A0039EA89 /* ReadToMeAction */,
 				C12F07761ABF88FD0039EA89 /* ReadToMe */,
+				32281F4E1AD8AA7600584E4A /* ReadToMeKit */,
 				C12F07931ABF88FD0039EA89 /* ReadToMeTests */,
 				32281F5D1AD8AA7600584E4A /* ReadToMeKitTests */,
+				32D6516E1ADA050200B16DCE /* Frameworks */,
 				C12F07751ABF88FD0039EA89 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -501,6 +558,7 @@
 				32281F4D1AD8AA7600584E4A /* ReadToMeKit.framework */,
 				32281F571AD8AA7600584E4A /* ReadToMeKitTests.xctest */,
 				32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */,
+				32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -690,6 +748,23 @@
 			productReference = 32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		32D6516C1ADA050100B16DCE /* ReadToMeTodayExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 32D6517E1ADA050200B16DCE /* Build configuration list for PBXNativeTarget "ReadToMeTodayExtension" */;
+			buildPhases = (
+				32D651691ADA050100B16DCE /* Sources */,
+				32D6516A1ADA050100B16DCE /* Frameworks */,
+				32D6516B1ADA050100B16DCE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReadToMeTodayExtension;
+			productName = ReadToMeTodayExtension;
+			productReference = 32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		C12F07731ABF88FD0039EA89 /* ReadToMe */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C12F079A1ABF88FD0039EA89 /* Build configuration list for PBXNativeTarget "ReadToMe" */;
@@ -706,6 +781,7 @@
 				C12F07AE1ABFB00A0039EA89 /* PBXTargetDependency */,
 				32281F631AD8AA7600584E4A /* PBXTargetDependency */,
 				32281F7B1AD8B0AB00584E4A /* PBXTargetDependency */,
+				32D6517A1ADA050200B16DCE /* PBXTargetDependency */,
 			);
 			name = ReadToMe;
 			productName = ReadToMe;
@@ -772,6 +848,15 @@
 							};
 						};
 					};
+					32D6516C1ADA050100B16DCE = {
+						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = 9DHQ6GLLC9;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
 					C12F07731ABF88FD0039EA89 = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = 9DHQ6GLLC9;
@@ -815,6 +900,7 @@
 				32281F4C1AD8AA7600584E4A /* ReadToMeKit */,
 				32281F561AD8AA7600584E4A /* ReadToMeKitTests */,
 				32281F701AD8B0AB00584E4A /* ReadToMeShareExtension */,
+				32D6516C1ADA050100B16DCE /* ReadToMeTodayExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -839,6 +925,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				32281F791AD8B0AB00584E4A /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32D6516B1ADA050100B16DCE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32D651781ADA050200B16DCE /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -897,6 +991,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				32281F771AD8B0AB00584E4A /* ShareViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32D651691ADA050100B16DCE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32D651761ADA050200B16DCE /* TodayViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1012,6 +1114,11 @@
 			isa = PBXTargetDependency;
 			target = 32281F701AD8B0AB00584E4A /* ReadToMeShareExtension */;
 			targetProxy = 32281F7A1AD8B0AB00584E4A /* PBXContainerItemProxy */;
+		};
+		32D6517A1ADA050200B16DCE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 32D6516C1ADA050100B16DCE /* ReadToMeTodayExtension */;
+			targetProxy = 32D651791ADA050200B16DCE /* PBXContainerItemProxy */;
 		};
 		C12F07921ABF88FD0039EA89 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1170,6 +1277,44 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = ReadToMeShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		32D6517C1ADA050200B16DCE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ReadToMeTodayExtension/ReadToMeTodayExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ReadToMeTodayExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		32D6517D1ADA050200B16DCE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ReadToMeTodayExtension/ReadToMeTodayExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ReadToMeTodayExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1367,6 +1512,7 @@
 				32281F671AD8AA7600584E4A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		32281F6C1AD8AA7600584E4A /* Build configuration list for PBXNativeTarget "ReadToMeKitTests" */ = {
 			isa = XCConfigurationList;
@@ -1375,12 +1521,22 @@
 				32281F691AD8AA7600584E4A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		32281F7D1AD8B0AB00584E4A /* Build configuration list for PBXNativeTarget "ReadToMeShareExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				32281F7E1AD8B0AB00584E4A /* Debug */,
 				32281F7F1AD8B0AB00584E4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		32D6517E1ADA050200B16DCE /* Build configuration list for PBXNativeTarget "ReadToMeTodayExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				32D6517C1ADA050200B16DCE /* Debug */,
+				32D6517D1ADA050200B16DCE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

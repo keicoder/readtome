@@ -24,6 +24,11 @@
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
+		<key>ReadToMeTodayExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -38,6 +43,11 @@
 			<true/>
 		</dict>
 		<key>32281F701AD8B0AB00584E4A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>32D6516C1ADA050100B16DCE</key>
 		<dict>
 			<key>primary</key>
 			<true/>
