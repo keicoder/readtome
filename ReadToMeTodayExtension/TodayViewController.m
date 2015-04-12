@@ -14,6 +14,7 @@
 @interface TodayViewController () <NCWidgetProviding>
 
 @property (nonatomic, strong) UIPasteboard *pasteBoard;
+@property (weak, nonatomic) IBOutlet UIButton *readToMeButton;
 @property (weak, nonatomic) IBOutlet UILabel *readToMeLabel;
 
 @end
@@ -21,27 +22,52 @@
 
 @implementation TodayViewController
 
+- (IBAction)readToMeButtonTapped:(id)sender
+{
+    //Open URL
+    UIResponder* responder = self;
+    while ((responder = [responder nextResponder]) != nil)
+    {
+        NSLog(@"responder = %@", responder);
+        if([responder respondsToSelector:@selector(openURL:)] == YES)
+        {
+            [responder performSelector:@selector(openURL:) withObject:[NSURL URLWithString:@"readtome://"]];
+        }
+    }
+}
+
+
 - (void)viewDidLoad {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     [super viewWillAppear:animated];
+    
     //PasteBoard
     if (self.pasteBoard == nil) {
+        NSLog (@"self.pasteBoard is nil: %@\n", self.pasteBoard);
         self.pasteBoard = [UIPasteboard generalPasteboard];
+        NSLog (@"self.pasteBoard is not nil: %@\n", self.pasteBoard);
     }
     self.pasteBoard.persistent = YES;
     [self checkToPasteText];
+    [self.view layoutIfNeeded];
 }
 
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     [super viewDidAppear:animated];
-    [self checkToPasteText];
+    
+    //[self checkToPasteText];
 }
 
 
@@ -70,8 +96,8 @@
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     // Perform any setup necessary in order to update the view.
     
-    [self checkToPasteText];
-    [self.view layoutIfNeeded];
+    //[self checkToPasteText];
+    //[self.view layoutIfNeeded];
     
     // If an error is encountered, use NCUpdateResultFailed
     // If there's no update required, use NCUpdateResultNoData

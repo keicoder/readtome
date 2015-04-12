@@ -1,44 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="M4Y-Lb-cyx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="VR3-jx-u4K">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
     <scenes>
         <!--Today View Controller-->
-        <scene sceneID="cwh-vc-ff4">
+        <scene sceneID="VFn-cm-i4T">
             <objects>
-                <viewController id="M4Y-Lb-cyx" customClass="TodayViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TodayViewController" id="VR3-jx-u4K" customClass="TodayViewController" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Ft6-oW-KC0"/>
-                        <viewControllerLayoutGuide type="bottom" id="FKl-LY-JtV"/>
+                        <viewControllerLayoutGuide type="top" id="6ud-mY-TmR"/>
+                        <viewControllerLayoutGuide type="bottom" id="WBi-ck-0hh"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" simulatedAppContext="notificationCenter" id="S3S-Oj-5AN">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <view key="view" contentMode="scaleToFill" simulatedAppContext="notificationCenter" id="dHc-FE-BUK">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="37"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ReadToMe" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GcN-lo-r42">
-                                <rect key="frame" x="259" y="289" width="83" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kbz-If-ByH" userLabel="ReadToMeButton">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="37"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                <state key="normal">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="readToMeButtonTapped:" destination="VR3-jx-u4K" eventType="touchUpInside" id="M4v-Mq-QE5"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello World" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="300" translatesAutoresizingMaskIntoConstraints="NO" id="kuB-zm-leR" userLabel="ReadToMeLabel">
+                                <rect key="frame" x="10" y="8" width="300" height="21"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
                                 <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="GcN-lo-r42" secondAttribute="centerY" id="DXx-ZR-UiO"/>
-                            <constraint firstAttribute="centerX" secondItem="GcN-lo-r42" secondAttribute="centerX" id="Ibu-VC-107"/>
+                            <constraint firstAttribute="trailing" secondItem="Kbz-If-ByH" secondAttribute="trailing" id="3bM-pI-vmu"/>
+                            <constraint firstItem="kuB-zm-leR" firstAttribute="leading" secondItem="dHc-FE-BUK" secondAttribute="leading" constant="10" id="4RE-wH-UYE"/>
+                            <constraint firstItem="WBi-ck-0hh" firstAttribute="top" secondItem="kuB-zm-leR" secondAttribute="bottom" constant="8" id="6yC-QW-BRu"/>
+                            <constraint firstItem="Kbz-If-ByH" firstAttribute="top" secondItem="6ud-mY-TmR" secondAttribute="bottom" id="F3f-ML-UCZ"/>
+                            <constraint firstAttribute="trailing" secondItem="kuB-zm-leR" secondAttribute="trailing" constant="10" id="Y61-Qi-D03"/>
+                            <constraint firstItem="Kbz-If-ByH" firstAttribute="leading" secondItem="dHc-FE-BUK" secondAttribute="leading" id="cDF-2L-RQq"/>
+                            <constraint firstItem="WBi-ck-0hh" firstAttribute="top" secondItem="Kbz-If-ByH" secondAttribute="bottom" id="kry-Fe-dhn"/>
+                            <constraint firstItem="kuB-zm-leR" firstAttribute="top" secondItem="6ud-mY-TmR" secondAttribute="bottom" constant="8" id="vPy-ru-JQ9"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="37"/>
                     <connections>
-                        <outlet property="readToMeLabel" destination="GcN-lo-r42" id="DyE-BN-qbp"/>
+                        <outlet property="readToMeButton" destination="Kbz-If-ByH" id="yff-nX-Wbj"/>
+                        <outlet property="readToMeLabel" destination="kuB-zm-leR" id="24E-cQ-yRw"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="vXp-U4-Rya" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UBG-C6-KND" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="967" y="301"/>
+            <point key="canvasLocation" x="516" y="285"/>
         </scene>
     </scenes>
 </document>
