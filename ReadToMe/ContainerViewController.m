@@ -34,6 +34,7 @@
 #import <CoreData/CoreData.h>
 #import "DocumentsForSpeech.h"
 #import "DataManager.h"
+#import "AttributedTextView.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate>
@@ -66,7 +67,7 @@
 @property (weak, nonatomic) IBOutlet UIView *saveAlertView;
 @property (weak, nonatomic) IBOutlet UILabel *saveAlertLabel;
 
-@property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet AttributedTextView *textView;
 
 @property (weak, nonatomic) IBOutlet UIView *equalizerView;
 @property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
@@ -396,7 +397,7 @@
         }
         
         if (self.synthesizer.isSpeaking == NO) {
-            [self selectWord];
+            //[self selectWord];
             [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
             [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
             [self.synthesizer speakUtterance:self.utterance];
@@ -434,6 +435,8 @@
 
 - (IBAction)resetButtonTapped:(id)sender
 {
+    [self setInitialTextAttributes];
+    
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
         self.resetButton.alpha = 0.0;
@@ -469,6 +472,7 @@
 
 - (IBAction)languageButtonTapped:(id)sender
 {
+    [self setInitialTextAttributes];
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
@@ -493,6 +497,7 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
+    [self setInitialTextAttributes];
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self adjustEqualizerViewHeight];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -554,17 +559,29 @@
 	self.utterance.pitchMultiplier = self.pitch;
 	self.utterance.rate = self.rate;
     
-    NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
-    self.textView.selectedRange = rangeInTotalText;
-    //NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
+    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    UIColor *color = [UIColor orangeColor];
+    
+    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
+    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:characterRange];
+    [mutableAttributedString addAttribute:NSFontAttributeName value:font range:characterRange];
+    self.textView.attributedText = mutableAttributedString;
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didStartSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
+    [self setInitialTextAttributes];
+    
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-    [self selectWord];
+    //[self selectWord];
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -577,20 +594,18 @@
 
 - (void)setInitialTextAttributes
 {
+    self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
     
     NSRange rangeOfWholeText = NSMakeRange(0, self.textView.text.length);
-//    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-//    [attributedText addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Light" size:22] range:rangeOfWholeText];
     
     [self.textView.textStorage beginEditing];
-//    [self.textView.textStorage replaceCharactersInRange:rangeOfWholeText withAttributedString:attributedText];
     [self.textView.textStorage replaceCharactersInRange:rangeOfWholeText withAttributedString:self.textView.attributedText];
     [self.textView.textStorage endEditing];
 }
 
 
-- (NSDictionary *)paragraphAttributes
+- (NSDictionary *)paragraphAttributesWithColor:(UIColor *)color
 {
 	if ( _paragraphAttributes == nil) {
 		
@@ -602,8 +617,6 @@
 		paragraphStyle.paragraphSpacing = 4.0f;
 		paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 		
-        UIColor *color = [UIColor darkTextColor];
-        
         _paragraphAttributes = @{ NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle, NSForegroundColorAttributeName:color };
 	}
 	

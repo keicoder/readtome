@@ -20,6 +20,7 @@
 		32D651761ADA050200B16DCE /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D651751ADA050200B16DCE /* TodayViewController.m */; };
 		32D651781ADA050200B16DCE /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32D651771ADA050200B16DCE /* MainInterface.storyboard */; };
 		32D6517B1ADA050200B16DCE /* ReadToMeTodayExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		32D651CE1ADB4D8300B16DCE /* AttributedTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D651CD1ADB4D8300B16DCE /* AttributedTextView.m */; };
 		C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C12F07871ABF88FD0039EA89 /* Images.xcassets */; };
 		C110F2981AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
 		C110F2991AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
@@ -203,6 +204,8 @@
 		32D651751ADA050200B16DCE /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
 		32D651771ADA050200B16DCE /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		32D6517F1ADA056100B16DCE /* ReadToMeTodayExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeTodayExtension.entitlements; sourceTree = "<group>"; };
+		32D651CC1ADB4D8300B16DCE /* AttributedTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributedTextView.h; sourceTree = "<group>"; };
+		32D651CD1ADB4D8300B16DCE /* AttributedTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributedTextView.m; sourceTree = "<group>"; };
 		C110F2611AC12F4000B4E355 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C110F2621AC12F4000B4E355 /* pop-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "pop-Info.plist"; sourceTree = "<group>"; };
 		C110F2631AC12F4000B4E355 /* pop-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pop-Prefix.pch"; sourceTree = "<group>"; };
@@ -654,6 +657,8 @@
 				C18978FE1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m */,
 				C1931EA51ACE490E004DF586 /* ListTableViewCell.h */,
 				C1931EA61ACE490E004DF586 /* ListTableViewCell.m */,
+				32D651CC1ADB4D8300B16DCE /* AttributedTextView.h */,
+				32D651CD1ADB4D8300B16DCE /* AttributedTextView.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1009,6 +1014,7 @@
 				C110F2B01AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
 				C110F2CC1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */,
 				C110F2B61AC12F4000B4E355 /* POPMath.mm in Sources */,
+				32D651CE1ADB4D8300B16DCE /* AttributedTextView.m in Sources */,
 				C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */,
 				C1931EA71ACE490E004DF586 /* ListTableViewCell.m in Sources */,
 				C110F2B21AC12F4000B4E355 /* POPGeometry.mm in Sources */,

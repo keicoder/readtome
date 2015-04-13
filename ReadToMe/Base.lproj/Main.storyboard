@@ -103,20 +103,13 @@
                                     <constraint firstAttribute="height" constant="40" id="npb-29-jMO"/>
                                 </constraints>
                             </view>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" customClass="AttributedTextView">
                                 <rect key="frame" x="20" y="120" width="560" height="270"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <attributedString key="attributedText">
-                                    <fragment>
-                                        <string key="content">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
+                                <string key="text">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
 
 When the button in the toolbar is tapped, an activity view controller is presented and we will be able to invoke our Action extension from within there. Another good reason is that if you wanted to publish your extension on the App Store, it has to be part of a real app and obviously the app has to do something in order for it to be approved.</string>
-                                        <attributes>
-                                            <font key="NSFont" size="20" name="HelveticaNeue-Light"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ofM-O5-Xtc" userLabel="EqualizerView">
