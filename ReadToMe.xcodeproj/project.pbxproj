@@ -15,59 +15,34 @@
 		32281F771AD8B0AB00584E4A /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32281F761AD8B0AB00584E4A /* ShareViewController.m */; };
 		32281F791AD8B0AB00584E4A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32281F781AD8B0AB00584E4A /* MainInterface.storyboard */; };
 		32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		326B58E71AD7704C003E4DF1 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07821ABF88FD0039EA89 /* ContainerViewController.m */; };
 		32D651701ADA050200B16DCE /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D6516F1ADA050200B16DCE /* NotificationCenter.framework */; };
 		32D651761ADA050200B16DCE /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D651751ADA050200B16DCE /* TodayViewController.m */; };
 		32D651781ADA050200B16DCE /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32D651771ADA050200B16DCE /* MainInterface.storyboard */; };
 		32D6517B1ADA050200B16DCE /* ReadToMeTodayExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		32D651CE1ADB4D8300B16DCE /* AttributedTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D651CD1ADB4D8300B16DCE /* AttributedTextView.m */; };
-		C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C12F07871ABF88FD0039EA89 /* Images.xcassets */; };
 		C110F2981AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
-		C110F2991AC12F4000B4E355 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C110F2601AC12F4000B4E355 /* InfoPlist.strings */; };
 		C110F29A1AC12F4000B4E355 /* pop-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C110F2621AC12F4000B4E355 /* pop-Info.plist */; };
-		C110F29B1AC12F4000B4E355 /* pop-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C110F2621AC12F4000B4E355 /* pop-Info.plist */; };
 		C110F29C1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2671AC12F4000B4E355 /* POPAnimatableProperty.mm */; };
-		C110F29D1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2671AC12F4000B4E355 /* POPAnimatableProperty.mm */; };
 		C110F29E1AC12F4000B4E355 /* POPAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2691AC12F4000B4E355 /* POPAnimation.mm */; };
-		C110F29F1AC12F4000B4E355 /* POPAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2691AC12F4000B4E355 /* POPAnimation.mm */; };
 		C110F2A01AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F26B1AC12F4000B4E355 /* POPAnimationEvent.mm */; };
-		C110F2A11AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F26B1AC12F4000B4E355 /* POPAnimationEvent.mm */; };
 		C110F2A21AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F26E1AC12F4000B4E355 /* POPAnimationExtras.mm */; };
-		C110F2A31AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F26E1AC12F4000B4E355 /* POPAnimationExtras.mm */; };
 		C110F2A41AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2721AC12F4000B4E355 /* POPAnimationRuntime.mm */; };
-		C110F2A51AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2721AC12F4000B4E355 /* POPAnimationRuntime.mm */; };
 		C110F2A61AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2741AC12F4000B4E355 /* POPAnimationTracer.mm */; };
-		C110F2A71AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2741AC12F4000B4E355 /* POPAnimationTracer.mm */; };
 		C110F2A81AC12F4000B4E355 /* POPAnimator.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2771AC12F4000B4E355 /* POPAnimator.mm */; };
-		C110F2A91AC12F4000B4E355 /* POPAnimator.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2771AC12F4000B4E355 /* POPAnimator.mm */; };
 		C110F2AA1AC12F4000B4E355 /* POPBasicAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27A1AC12F4000B4E355 /* POPBasicAnimation.mm */; };
-		C110F2AB1AC12F4000B4E355 /* POPBasicAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27A1AC12F4000B4E355 /* POPBasicAnimation.mm */; };
 		C110F2AC1AC12F4000B4E355 /* POPCGUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27D1AC12F4000B4E355 /* POPCGUtils.mm */; };
-		C110F2AD1AC12F4000B4E355 /* POPCGUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27D1AC12F4000B4E355 /* POPCGUtils.mm */; };
 		C110F2AE1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27F1AC12F4000B4E355 /* POPCustomAnimation.mm */; };
-		C110F2AF1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F27F1AC12F4000B4E355 /* POPCustomAnimation.mm */; };
 		C110F2B01AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2811AC12F4000B4E355 /* POPDecayAnimation.mm */; };
-		C110F2B11AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2811AC12F4000B4E355 /* POPDecayAnimation.mm */; };
 		C110F2B21AC12F4000B4E355 /* POPGeometry.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2851AC12F4000B4E355 /* POPGeometry.mm */; };
-		C110F2B31AC12F4000B4E355 /* POPGeometry.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2851AC12F4000B4E355 /* POPGeometry.mm */; };
 		C110F2B41AC12F4000B4E355 /* POPLayerExtras.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2871AC12F4000B4E355 /* POPLayerExtras.mm */; };
-		C110F2B51AC12F4000B4E355 /* POPLayerExtras.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2871AC12F4000B4E355 /* POPLayerExtras.mm */; };
 		C110F2B61AC12F4000B4E355 /* POPMath.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2891AC12F4000B4E355 /* POPMath.mm */; };
-		C110F2B71AC12F4000B4E355 /* POPMath.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2891AC12F4000B4E355 /* POPMath.mm */; };
 		C110F2B81AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F28B1AC12F4000B4E355 /* POPPropertyAnimation.mm */; };
-		C110F2B91AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F28B1AC12F4000B4E355 /* POPPropertyAnimation.mm */; };
 		C110F2BA1AC12F4000B4E355 /* POPSpringAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F28E1AC12F4000B4E355 /* POPSpringAnimation.mm */; };
-		C110F2BB1AC12F4000B4E355 /* POPSpringAnimation.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F28E1AC12F4000B4E355 /* POPSpringAnimation.mm */; };
 		C110F2BC1AC12F4000B4E355 /* POPVector.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2921AC12F4000B4E355 /* POPVector.mm */; };
-		C110F2BD1AC12F4000B4E355 /* POPVector.mm in Sources */ = {isa = PBXBuildFile; fileRef = C110F2921AC12F4000B4E355 /* POPVector.mm */; };
 		C110F2BE1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C110F2951AC12F4000B4E355 /* TransformationMatrix.cpp */; };
-		C110F2BF1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C110F2951AC12F4000B4E355 /* TransformationMatrix.cpp */; };
 		C110F2C71AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */; };
-		C110F2C81AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2C61AC130AA00B4E355 /* PopAnimationClearButton.m */; };
 		C110F2CC1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */; };
-		C110F2CD1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */ = {isa = PBXBuildFile; fileRef = C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */; };
 		C12245451ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */ = {isa = PBXBuildFile; fileRef = C12245441ACA6C900085C0E6 /* DocumentsForSpeech.m */; };
-		C12245461ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */ = {isa = PBXBuildFile; fileRef = C12245441ACA6C900085C0E6 /* DocumentsForSpeech.m */; };
 		C12F077A1ABF88FD0039EA89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07791ABF88FD0039EA89 /* main.m */; };
 		C12F077D1ABF88FD0039EA89 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F077C1ABF88FD0039EA89 /* AppDelegate.m */; };
 		C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C12F077E1ABF88FD0039EA89 /* ReadToMe.xcdatamodeld */; };
@@ -76,31 +51,17 @@
 		C12F07881ABF88FD0039EA89 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C12F07871ABF88FD0039EA89 /* Images.xcassets */; };
 		C12F078B1ABF88FD0039EA89 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C12F07891ABF88FD0039EA89 /* LaunchScreen.xib */; };
 		C12F07971ABF88FD0039EA89 /* ReadToMeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07961ABF88FD0039EA89 /* ReadToMeTests.m */; };
-		C12F07AA1ABFB00A0039EA89 /* ActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07A91ABFB00A0039EA89 /* ActionViewController.m */; };
-		C12F07AC1ABFB00A0039EA89 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C12F07AB1ABFB00A0039EA89 /* MainInterface.storyboard */; };
-		C12F07AF1ABFB00A0039EA89 /* ReadToMeAction.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C12F07A41ABFB00A0039EA89 /* ReadToMeAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C16754991AC3A81E009F4D88 /* PopView.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754971AC3A81E009F4D88 /* PopView.m */; };
-		C167549A1AC3A81E009F4D88 /* PopView.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754971AC3A81E009F4D88 /* PopView.m */; };
 		C167549D1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */; };
-		C167549E1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */; };
 		C16754A11AC6AC33009F4D88 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754A01AC6AC33009F4D88 /* ListViewController.m */; };
-		C16754A21AC6AC33009F4D88 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754A01AC6AC33009F4D88 /* ListViewController.m */; };
 		C18978F31ACCC28D00BFFA61 /* correct.caf in Resources */ = {isa = PBXBuildFile; fileRef = C18978F21ACCC28D00BFFA61 /* correct.caf */; };
-		C18978F41ACCC28D00BFFA61 /* correct.caf in Resources */ = {isa = PBXBuildFile; fileRef = C18978F21ACCC28D00BFFA61 /* correct.caf */; };
 		C18978F71ACCD74800BFFA61 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978F61ACCD74800BFFA61 /* AboutViewController.m */; };
-		C18978F81ACCD74800BFFA61 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978F61ACCD74800BFFA61 /* AboutViewController.m */; };
 		C18978FB1ACCD78A00BFFA61 /* GradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FA1ACCD78A00BFFA61 /* GradientView.m */; };
-		C18978FC1ACCD78A00BFFA61 /* GradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FA1ACCD78A00BFFA61 /* GradientView.m */; };
 		C18978FF1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FE1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m */; };
-		C18979001ACCED5300BFFA61 /* OpenSourceLicencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FE1ACCED5300BFFA61 /* OpenSourceLicencesViewController.m */; };
 		C1931EA71ACE490E004DF586 /* ListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C1931EA61ACE490E004DF586 /* ListTableViewCell.m */; };
-		C1931EA81ACE490E004DF586 /* ListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C1931EA61ACE490E004DF586 /* ListTableViewCell.m */; };
 		C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
-		C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14DF1AC29B5700F24030 /* SettingsViewController.m */; };
 		C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */; };
-		C1FB14E51AC2AFD800F24030 /* PopAnimationImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FB14E31AC2AFD800F24030 /* PopAnimationImageView.m */; };
 		C1FF5C1E1ACA48DE0094FCD1 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FF5C1D1ACA48DE0094FCD1 /* DataManager.m */; };
-		C1FF5C1F1ACA48DE0094FCD1 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FF5C1D1ACA48DE0094FCD1 /* DataManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -146,13 +107,6 @@
 			remoteGlobalIDString = C12F07731ABF88FD0039EA89;
 			remoteInfo = ReadToMe;
 		};
-		C12F07AD1ABFB00A0039EA89 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C12F07A31ABFB00A0039EA89;
-			remoteInfo = ReadToMeAction;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -174,7 +128,6 @@
 			dstSubfolderSpec = 13;
 			files = (
 				32D6517B1ADA050200B16DCE /* ReadToMeTodayExtension.appex in Embed App Extensions */,
-				C12F07AF1ABFB00A0039EA89 /* ReadToMeAction.appex in Embed App Extensions */,
 				32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -280,7 +233,6 @@
 		C12F07901ABF88FD0039EA89 /* ReadToMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReadToMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12F07951ABF88FD0039EA89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C12F07961ABF88FD0039EA89 /* ReadToMeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReadToMeTests.m; sourceTree = "<group>"; };
-		C12F07A41ABFB00A0039EA89 /* ReadToMeAction.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReadToMeAction.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12F07A71ABFB00A0039EA89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C12F07A81ABFB00A0039EA89 /* ActionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionViewController.h; sourceTree = "<group>"; };
 		C12F07A91ABFB00A0039EA89 /* ActionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionViewController.m; sourceTree = "<group>"; };
@@ -348,13 +300,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C12F078D1ABF88FD0039EA89 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C12F07A11ABFB00A0039EA89 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -542,9 +487,9 @@
 			children = (
 				32D651711ADA050200B16DCE /* ReadToMeTodayExtension */,
 				32281F721AD8B0AB00584E4A /* ReadToMeShareExtension */,
-				C12F07A51ABFB00A0039EA89 /* ReadToMeAction */,
 				C12F07761ABF88FD0039EA89 /* ReadToMe */,
 				32281F4E1AD8AA7600584E4A /* ReadToMeKit */,
+				C12F07A51ABFB00A0039EA89 /* ReadToMeAction */,
 				C12F07931ABF88FD0039EA89 /* ReadToMeTests */,
 				32281F5D1AD8AA7600584E4A /* ReadToMeKitTests */,
 				32D6516E1ADA050200B16DCE /* Frameworks */,
@@ -557,7 +502,6 @@
 			children = (
 				C12F07741ABF88FD0039EA89 /* ReadToMe.app */,
 				C12F07901ABF88FD0039EA89 /* ReadToMeTests.xctest */,
-				C12F07A41ABFB00A0039EA89 /* ReadToMeAction.appex */,
 				32281F4D1AD8AA7600584E4A /* ReadToMeKit.framework */,
 				32281F571AD8AA7600584E4A /* ReadToMeKitTests.xctest */,
 				32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */,
@@ -783,7 +727,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				C12F07AE1ABFB00A0039EA89 /* PBXTargetDependency */,
 				32281F631AD8AA7600584E4A /* PBXTargetDependency */,
 				32281F7B1AD8B0AB00584E4A /* PBXTargetDependency */,
 				32D6517A1ADA050200B16DCE /* PBXTargetDependency */,
@@ -810,23 +753,6 @@
 			productName = ReadToMeTests;
 			productReference = C12F07901ABF88FD0039EA89 /* ReadToMeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		C12F07A31ABFB00A0039EA89 /* ReadToMeAction */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C12F07B01ABFB00A0039EA89 /* Build configuration list for PBXNativeTarget "ReadToMeAction" */;
-			buildPhases = (
-				C12F07A01ABFB00A0039EA89 /* Sources */,
-				C12F07A11ABFB00A0039EA89 /* Frameworks */,
-				C12F07A21ABFB00A0039EA89 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ReadToMeAction;
-			productName = ReadToMeAction;
-			productReference = C12F07A41ABFB00A0039EA89 /* ReadToMeAction.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -875,15 +801,6 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = C12F07731ABF88FD0039EA89;
 					};
-					C12F07A31ABFB00A0039EA89 = {
-						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 9DHQ6GLLC9;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-						};
-					};
 				};
 			};
 			buildConfigurationList = C12F076F1ABF88FD0039EA89 /* Build configuration list for PBXProject "ReadToMe" */;
@@ -901,7 +818,6 @@
 			targets = (
 				C12F07731ABF88FD0039EA89 /* ReadToMe */,
 				C12F078F1ABF88FD0039EA89 /* ReadToMeTests */,
-				C12F07A31ABFB00A0039EA89 /* ReadToMeAction */,
 				32281F4C1AD8AA7600584E4A /* ReadToMeKit */,
 				32281F561AD8AA7600584E4A /* ReadToMeKitTests */,
 				32281F701AD8B0AB00584E4A /* ReadToMeShareExtension */,
@@ -958,18 +874,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C12F07A21ABFB00A0039EA89 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C110F29B1AC12F4000B4E355 /* pop-Info.plist in Resources */,
-				C110F25E1AC0F19C00B4E355 /* Images.xcassets in Resources */,
-				C110F2991AC12F4000B4E355 /* InfoPlist.strings in Resources */,
-				C12F07AC1ABFB00A0039EA89 /* MainInterface.storyboard in Resources */,
-				C18978F41ACCC28D00BFFA61 /* correct.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1058,46 +962,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C12F07A01ABFB00A0039EA89 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C110F2A91AC12F4000B4E355 /* POPAnimator.mm in Sources */,
-				C110F2BB1AC12F4000B4E355 /* POPSpringAnimation.mm in Sources */,
-				C167549E1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */,
-				C1FF5C1F1ACA48DE0094FCD1 /* DataManager.m in Sources */,
-				C110F2C81AC130AA00B4E355 /* PopAnimationClearButton.m in Sources */,
-				C110F29F1AC12F4000B4E355 /* POPAnimation.mm in Sources */,
-				C110F2B51AC12F4000B4E355 /* POPLayerExtras.mm in Sources */,
-				C110F2B91AC12F4000B4E355 /* POPPropertyAnimation.mm in Sources */,
-				C167549A1AC3A81E009F4D88 /* PopView.m in Sources */,
-				C110F2BF1AC12F4000B4E355 /* TransformationMatrix.cpp in Sources */,
-				C18979001ACCED5300BFFA61 /* OpenSourceLicencesViewController.m in Sources */,
-				C18978FC1ACCD78A00BFFA61 /* GradientView.m in Sources */,
-				C18978F81ACCD74800BFFA61 /* AboutViewController.m in Sources */,
-				C1931EA81ACE490E004DF586 /* ListTableViewCell.m in Sources */,
-				C110F2A31AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */,
-				C16754A21AC6AC33009F4D88 /* ListViewController.m in Sources */,
-				C110F2A71AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */,
-				C110F2A11AC12F4000B4E355 /* POPAnimationEvent.mm in Sources */,
-				C110F2BD1AC12F4000B4E355 /* POPVector.mm in Sources */,
-				C110F2AD1AC12F4000B4E355 /* POPCGUtils.mm in Sources */,
-				C12245461ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */,
-				C110F2AB1AC12F4000B4E355 /* POPBasicAnimation.mm in Sources */,
-				C110F2B31AC12F4000B4E355 /* POPGeometry.mm in Sources */,
-				C110F2A51AC12F4000B4E355 /* POPAnimationRuntime.mm in Sources */,
-				C110F2B71AC12F4000B4E355 /* POPMath.mm in Sources */,
-				C110F2AF1AC12F4000B4E355 /* POPCustomAnimation.mm in Sources */,
-				C110F2B11AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
-				C110F29D1AC12F4000B4E355 /* POPAnimatableProperty.mm in Sources */,
-				C1FB14E11AC29B5700F24030 /* SettingsViewController.m in Sources */,
-				326B58E71AD7704C003E4DF1 /* ContainerViewController.m in Sources */,
-				C110F2CD1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */,
-				C12F07AA1ABFB00A0039EA89 /* ActionViewController.m in Sources */,
-				C1FB14E51AC2AFD800F24030 /* PopAnimationImageView.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1130,11 +994,6 @@
 			isa = PBXTargetDependency;
 			target = C12F07731ABF88FD0039EA89 /* ReadToMe */;
 			targetProxy = C12F07911ABF88FD0039EA89 /* PBXContainerItemProxy */;
-		};
-		C12F07AE1ABFB00A0039EA89 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C12F07A31ABFB00A0039EA89 /* ReadToMeAction */;
-			targetProxy = C12F07AD1ABFB00A0039EA89 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1413,6 +1272,10 @@
 				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
 				INFOPLIST_FILE = ReadToMe/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1428,6 +1291,10 @@
 				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
 				INFOPLIST_FILE = ReadToMe/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1470,44 +1337,6 @@
 			};
 			name = Release;
 		};
-		C12F07B11ABFB00A0039EA89 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_ENTITLEMENTS = ReadToMeAction/ReadToMeAction.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = ReadToMeAction/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		C12F07B21ABFB00A0039EA89 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_ENTITLEMENTS = ReadToMeAction/ReadToMeAction.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = ReadToMeAction/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1545,6 +1374,7 @@
 				32D6517D1ADA050200B16DCE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C12F076F1ABF88FD0039EA89 /* Build configuration list for PBXProject "ReadToMe" */ = {
 			isa = XCConfigurationList;
@@ -1569,15 +1399,6 @@
 			buildConfigurations = (
 				C12F079E1ABF88FD0039EA89 /* Debug */,
 				C12F079F1ABF88FD0039EA89 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C12F07B01ABFB00A0039EA89 /* Build configuration list for PBXNativeTarget "ReadToMeAction" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C12F07B11ABFB00A0039EA89 /* Debug */,
-				C12F07B21ABFB00A0039EA89 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
