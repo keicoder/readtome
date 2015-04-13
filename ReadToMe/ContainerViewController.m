@@ -135,6 +135,9 @@
 	[self addApplicationsStateObserver];
 	[self addDidSelectDocumentForSpeechFromListViewObserver];
     [self addObserverForChangingSliderValue];
+    
+    //Speech Voices
+    //NSLog (@"[AVSpeechSynthesisVoice speechVoices]: %@\n", [AVSpeechSynthesisVoice speechVoices]);
 }
 
 
