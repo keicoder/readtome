@@ -103,13 +103,20 @@
                                     <constraint firstAttribute="height" constant="40" id="npb-29-jMO"/>
                                 </constraints>
                             </view>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" customClass="AttributedTextView">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" customClass="AttributedTextView">
                                 <rect key="frame" x="20" y="120" width="560" height="270"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <string key="text">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
 
 When the button in the toolbar is tapped, an activity view controller is presented and we will be able to invoke our Action extension from within there. Another good reason is that if you wanted to publish your extension on the App Store, it has to be part of a real app and obviously the app has to do something in order for it to be approved.</string>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ofM-O5-Xtc" userLabel="EqualizerView">
@@ -443,43 +450,8 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="GGg-dg-8bc" userLabel="Gear" customClass="PopAnimationImageView">
-                                <rect key="frame" x="280" y="109" width="40" height="40"/>
-                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="9fY-Rt-rqi">
-                                        <variation key="heightClass=regular-widthClass=regular" constant="44"/>
-                                    </constraint>
-                                    <constraint firstAttribute="width" constant="40" id="u9F-ny-M0S">
-                                        <variation key="heightClass=regular-widthClass=regular" constant="44"/>
-                                    </constraint>
-                                </constraints>
-                            </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Cc-OC-0dn" userLabel="Background" customClass="PopView">
-                                <rect key="frame" x="150" y="179" width="300" height="50"/>
-                                <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="lO9-KD-d3b">
-                                        <rect key="frame" x="24" y="13" width="24" height="24"/>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Background On" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Obp-nd-1sZ">
-                                        <rect key="frame" x="82" y="13" width="137" height="24"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                        <variation key="heightClass=regular-widthClass=regular">
-                                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="26"/>
-                                        </variation>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" red="1" green="0.69527506829999997" blue="0.3225385845" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="centerY" secondItem="Obp-nd-1sZ" secondAttribute="centerY" id="SNo-kl-GAZ"/>
-                                    <constraint firstAttribute="centerX" secondItem="Obp-nd-1sZ" secondAttribute="centerX" id="kUH-Ha-nxp"/>
-                                    <constraint firstAttribute="centerY" secondItem="lO9-KD-d3b" secondAttribute="centerY" id="z1j-yq-lZ7"/>
-                                </constraints>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LDw-MT-ARf" userLabel="About" customClass="PopView">
-                                <rect key="frame" x="150" y="237" width="300" height="50"/>
+                                <rect key="frame" x="150" y="217" width="300" height="50"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="megaphone" translatesAutoresizingMaskIntoConstraints="NO" id="iPu-En-3Iz">
                                         <rect key="frame" x="24" y="13" width="24" height="24"/>
@@ -502,7 +474,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oD8-Ng-CKd" userLabel="OpenSource" customClass="PopView">
-                                <rect key="frame" x="150" y="295" width="300" height="50"/>
+                                <rect key="frame" x="150" y="275" width="300" height="50"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="openSource" translatesAutoresizingMaskIntoConstraints="NO" id="6S3-Ex-MKO">
                                         <rect key="frame" x="24" y="13" width="24" height="24"/>
@@ -540,7 +512,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NKC-2P-cJX" userLabel="SendMail" customClass="PopView">
-                                <rect key="frame" x="150" y="353" width="300" height="50"/>
+                                <rect key="frame" x="150" y="333" width="300" height="50"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mail" translatesAutoresizingMaskIntoConstraints="NO" id="C0d-y8-fbS">
                                         <rect key="frame" x="24" y="13" width="24" height="24"/>
@@ -563,7 +535,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BrI-JW-5lk" userLabel="Return" customClass="PopView">
-                                <rect key="frame" x="150" y="411" width="300" height="50"/>
+                                <rect key="frame" x="150" y="391" width="300" height="50"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circle-down" translatesAutoresizingMaskIntoConstraints="NO" id="7H8-uf-6ag">
                                         <rect key="frame" x="24" y="13" width="24" height="24"/>
@@ -585,70 +557,73 @@ When the button in the toolbar is tapped, an activity view controller is present
                                     <constraint firstItem="ZkW-Oz-fur" firstAttribute="centerY" secondItem="7H8-uf-6ag" secondAttribute="centerY" id="hBG-Xn-jL6"/>
                                 </constraints>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="GGg-dg-8bc" userLabel="Gear" customClass="PopAnimationImageView">
+                                <rect key="frame" x="280" y="137" width="40" height="40"/>
+                                <color key="backgroundColor" red="1" green="0.69527506828308105" blue="0.3225385844707489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="9fY-Rt-rqi">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="44"/>
+                                    </constraint>
+                                    <constraint firstAttribute="width" constant="40" id="u9F-ny-M0S">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="44"/>
+                                    </constraint>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="6S3-Ex-MKO" firstAttribute="height" secondItem="iPu-En-3Iz" secondAttribute="height" id="0jW-cA-Mek"/>
                             <constraint firstItem="BrI-JW-5lk" firstAttribute="top" secondItem="NKC-2P-cJX" secondAttribute="bottom" constant="8" id="2o4-x2-8JM"/>
                             <constraint firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="4W4-eK-pTJ">
-                                <variation key="heightClass=compact" constant="-10"/>
+                                <variation key="heightClass=compact" constant="-30"/>
                             </constraint>
                             <constraint firstItem="oD8-Ng-CKd" firstAttribute="centerX" secondItem="LDw-MT-ARf" secondAttribute="centerX" id="4rs-Xd-fxH"/>
-                            <constraint firstItem="1Cc-OC-0dn" firstAttribute="height" secondItem="LDw-MT-ARf" secondAttribute="height" id="6tN-Kn-3NF"/>
-                            <constraint firstItem="1Cc-OC-0dn" firstAttribute="centerX" secondItem="GGg-dg-8bc" secondAttribute="centerX" id="73t-v8-utq"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="top" secondItem="GGg-dg-8bc" secondAttribute="bottom" constant="40" id="5Js-Y7-fvK"/>
                             <constraint firstItem="NKC-2P-cJX" firstAttribute="height" secondItem="oD8-Ng-CKd" secondAttribute="height" id="9Sd-lh-oZg"/>
                             <constraint firstItem="oD8-Ng-CKd" firstAttribute="height" secondItem="LDw-MT-ARf" secondAttribute="height" id="A5T-yz-Y7U"/>
                             <constraint firstItem="6S3-Ex-MKO" firstAttribute="leading" secondItem="4pL-4Y-EBL" secondAttribute="leading" id="JHd-xA-acE"/>
                             <constraint firstItem="6S3-Ex-MKO" firstAttribute="width" secondItem="iPu-En-3Iz" secondAttribute="width" id="KGG-8u-vDx"/>
-                            <constraint firstAttribute="centerY" secondItem="oD8-Ng-CKd" secondAttribute="centerY" constant="-20" id="Lnr-kK-qTV">
-                                <variation key="heightClass=compact" constant="0.0"/>
+                            <constraint firstAttribute="centerY" secondItem="oD8-Ng-CKd" secondAttribute="centerY" id="Lnr-kK-qTV">
+                                <variation key="heightClass=compact" constant="28"/>
                             </constraint>
                             <constraint firstItem="BrI-JW-5lk" firstAttribute="width" secondItem="NKC-2P-cJX" secondAttribute="width" id="QRp-0R-gBs"/>
-                            <constraint firstItem="lO9-KD-d3b" firstAttribute="width" secondItem="iPu-En-3Iz" secondAttribute="width" id="RMg-b2-itw"/>
                             <constraint firstItem="oD8-Ng-CKd" firstAttribute="leading" secondItem="GGg-dg-8bc" secondAttribute="trailing" constant="28" id="StG-rh-itq">
-                                <variation key="heightClass=compact" constant="20"/>
+                                <variation key="heightClass=compact" constant="40"/>
                             </constraint>
-                            <constraint firstItem="oD8-Ng-CKd" firstAttribute="centerY" secondItem="GGg-dg-8bc" secondAttribute="centerY" id="VPM-SQ-jJc"/>
                             <constraint firstItem="NKC-2P-cJX" firstAttribute="centerX" secondItem="oD8-Ng-CKd" secondAttribute="centerX" id="Vtc-mc-dEG"/>
                             <constraint firstItem="oD8-Ng-CKd" firstAttribute="width" secondItem="LDw-MT-ARf" secondAttribute="width" id="WEx-ht-cbX"/>
+                            <constraint firstItem="LDw-MT-ARf" firstAttribute="centerX" secondItem="GGg-dg-8bc" secondAttribute="centerX" id="adB-wJ-D6d"/>
                             <constraint firstItem="C0d-y8-fbS" firstAttribute="height" secondItem="7H8-uf-6ag" secondAttribute="height" id="axv-Vx-32Y"/>
-                            <constraint firstItem="lO9-KD-d3b" firstAttribute="leading" secondItem="iPu-En-3Iz" secondAttribute="leading" id="cAs-xj-rCr"/>
-                            <constraint firstItem="1Cc-OC-0dn" firstAttribute="centerX" secondItem="LDw-MT-ARf" secondAttribute="centerX" id="cmP-gz-tQ9"/>
-                            <constraint firstItem="lO9-KD-d3b" firstAttribute="height" secondItem="iPu-En-3Iz" secondAttribute="height" id="dhc-kk-G0c"/>
-                            <constraint firstItem="1Cc-OC-0dn" firstAttribute="top" secondItem="GGg-dg-8bc" secondAttribute="bottom" constant="30" id="djK-G4-nQn"/>
                             <constraint firstItem="BrI-JW-5lk" firstAttribute="height" secondItem="NKC-2P-cJX" secondAttribute="height" id="dkt-mI-m0l"/>
                             <constraint firstItem="C0d-y8-fbS" firstAttribute="width" secondItem="7H8-uf-6ag" secondAttribute="width" id="dtt-PX-Afh"/>
-                            <constraint firstItem="LDw-MT-ARf" firstAttribute="top" secondItem="1Cc-OC-0dn" secondAttribute="bottom" constant="8" id="fgw-1L-5hg"/>
                             <constraint firstItem="NKC-2P-cJX" firstAttribute="width" secondItem="oD8-Ng-CKd" secondAttribute="width" id="hdm-ST-SJo"/>
                             <constraint firstItem="BrI-JW-5lk" firstAttribute="centerX" secondItem="NKC-2P-cJX" secondAttribute="centerX" id="hhv-fD-45p"/>
                             <constraint firstItem="NKC-2P-cJX" firstAttribute="top" secondItem="oD8-Ng-CKd" secondAttribute="bottom" constant="8" id="i4Y-Bh-cOn"/>
                             <constraint firstItem="oD8-Ng-CKd" firstAttribute="top" secondItem="LDw-MT-ARf" secondAttribute="bottom" constant="8" id="jCo-6a-EA2"/>
                             <constraint firstItem="C0d-y8-fbS" firstAttribute="leading" secondItem="7H8-uf-6ag" secondAttribute="leading" id="jSJ-h1-27q"/>
-                            <constraint firstItem="1Cc-OC-0dn" firstAttribute="width" secondItem="LDw-MT-ARf" secondAttribute="width" id="o9N-ZR-ssI"/>
                             <constraint firstItem="6S3-Ex-MKO" firstAttribute="leading" secondItem="C0d-y8-fbS" secondAttribute="leading" id="tVp-4q-kDX"/>
                             <constraint firstItem="6S3-Ex-MKO" firstAttribute="height" secondItem="C0d-y8-fbS" secondAttribute="height" id="uCi-1l-ojS"/>
+                            <constraint firstAttribute="centerY" secondItem="GGg-dg-8bc" secondAttribute="centerY" id="uTh-FE-phP"/>
                             <constraint firstItem="6S3-Ex-MKO" firstAttribute="width" secondItem="C0d-y8-fbS" secondAttribute="width" id="wUW-gF-6Pi"/>
                             <constraint firstItem="6S3-Ex-MKO" firstAttribute="leading" secondItem="iPu-En-3Iz" secondAttribute="leading" id="xhm-MQ-MzB"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="uTh-FE-phP"/>
                                 <exclude reference="StG-rh-itq"/>
-                                <exclude reference="VPM-SQ-jJc"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact">
                             <mask key="constraints">
-                                <exclude reference="73t-v8-utq"/>
-                                <exclude reference="djK-G4-nQn"/>
+                                <exclude reference="5Js-Y7-fvK"/>
+                                <exclude reference="adB-wJ-D6d"/>
+                                <include reference="uTh-FE-phP"/>
                                 <include reference="StG-rh-itq"/>
-                                <include reference="VPM-SQ-jJc"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
                         <outlet property="aboutView" destination="LDw-MT-ARf" id="dDF-DV-hrF"/>
-                        <outlet property="backgroundPlayValueLabel" destination="Obp-nd-1sZ" id="5ha-Hp-Us2"/>
-                        <outlet property="backgroundPlayView" destination="1Cc-OC-0dn" id="GdH-Tq-kQs"/>
                         <outlet property="gearImageView" destination="GGg-dg-8bc" id="ZD1-kq-eP0"/>
                         <outlet property="openSourceView" destination="oD8-Ng-CKd" id="UJn-hS-P0k"/>
                         <outlet property="returnView" destination="BrI-JW-5lk" id="ehk-wl-jCg"/>
@@ -657,7 +632,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mki-U5-9CZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="838" y="460"/>
+            <point key="canvasLocation" x="838" y="339"/>
         </scene>
         <!--Language Picker View Controller-->
         <scene sceneID="2Pr-nr-QW3">
@@ -912,7 +887,6 @@ When the button in the toolbar is tapped, an activity view controller is present
     </scenes>
     <resources>
         <image name="action" width="44" height="44"/>
-        <image name="background" width="44" height="44"/>
         <image name="circle-down" width="32" height="32"/>
         <image name="clip" width="42" height="41"/>
         <image name="equalizer" width="45" height="45"/>

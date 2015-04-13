@@ -18,6 +18,14 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    NSError *error = NULL;
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+    if(error) { NSLog(@"Speech in background mode error occurred."); }
+    [session setActive:YES error:&error];
+    if (error) { NSLog(@"Speech in background mode setActive error occurred."); }
+    
 	return YES;
 }
 

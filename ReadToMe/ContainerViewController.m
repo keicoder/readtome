@@ -269,93 +269,6 @@
 }
 
 
-#pragma mark - Save Current Documents For Speech
-
-- (IBAction)saveCurrentDocument:(id)sender
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (self.managedObjectContext == nil) {
-        self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-        NSLog (@"self.managedObjectContext: %@\n", self.managedObjectContext);
-    }
-    
-    DocumentsForSpeech *document = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-    document.language = self.language;
-    document.volume = [NSNumber numberWithFloat:self.volume];;
-    document.pitch = [NSNumber numberWithFloat:self.pitch];
-    document.rate = [NSNumber numberWithFloat:self.rate];
-    
-    document.document = self.textView.text;
-    
-    NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
-    document.documentTitle = firstLineForTitle;
-    
-    [self.managedObjectContext performBlock:^{
-        NSError *error = nil;
-        if ([self.managedObjectContext save:&error]) {
-            
-            NSLog (@"Save to coredata succeed");
-            
-            [self executePerformFetch];
-            
-        } else {
-            
-            NSLog(@"Error saving to coredata: %@", error);
-        }
-    }];
-}
-
-
-#pragma mark 첫째 라인만 가져오기
-
-- (NSString *)retrieveFirstLineOfStringForTitle:(NSString *)string
-{
-    NSString *trimmedString = nil;
-    NSCharacterSet *charSet = [NSCharacterSet whitespaceAndNewlineCharacterSet]; //공백, 라인 피드문자 삭제
-    trimmedString = [string stringByTrimmingCharactersInSet:charSet];
-    
-    __block NSString *firstLine = nil;
-    NSString *wholeText = trimmedString;
-    [wholeText enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-        firstLine = [line copy];
-        *stop = YES;
-    }];
-    
-    if (firstLine.length == 0)
-    {
-        firstLine = @"Empty Title";
-    }
-    
-    if (firstLine.length > 0)
-    {
-        __block NSString *trimmedTitle = nil;
-        [firstLine enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {trimmedTitle = line; *stop = YES;}];
-    }
-    
-    return firstLine;
-}
-
-
-#pragma mark - Show no text to speech alert
-
-- (void)showNoTextToSpeechAlertTitle:(NSString *)aTitle withBody:(NSString *)aBody
-{
-	NSString *title = aTitle;
-	NSString *message = aBody;
-	
-	UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-	[sheet addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
-		NSLog(@"Tapped OK");
-	}]];
-	
-	sheet.popoverPresentationController.sourceView = self.view;
-	sheet.popoverPresentationController.sourceRect = self.view.frame;
-	
-	[self presentViewController:sheet animated:YES completion:nil];
-}
-
-
 #pragma mark - Speech
 
 - (IBAction)speechText:(id)sender
@@ -397,7 +310,6 @@
         }
         
         if (self.synthesizer.isSpeaking == NO) {
-            //[self selectWord];
             [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
             [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
             [self.synthesizer speakUtterance:self.utterance];
@@ -528,28 +440,6 @@
 }
 
 
-#pragma mark - Select Word
-
-- (void)selectWord
-{
-    NSRange selectedRange; //= NSMakeRange(0, 0);
-    
-    if (![self.textView hasText])
-    {
-        [self.textView select:self];
-    }
-    else if ([self.textView hasText] && selectedRange.length == 0)
-    {
-        [self.textView select:self];
-    }
-    else if ([self.textView hasText] && selectedRange.length > 0)
-    {
-        selectedRange.location = selectedRange.location + selectedRange.length;
-        selectedRange.length = 0;
-        self.textView.selectedRange = selectedRange;
-    }
-}
-
 #pragma mark - AVSpeechSynthesizerDelegate
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
@@ -581,7 +471,6 @@
     
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
-    //[self selectWord];
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -596,12 +485,6 @@
 {
     self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
-    
-    NSRange rangeOfWholeText = NSMakeRange(0, self.textView.text.length);
-    
-    [self.textView.textStorage beginEditing];
-    [self.textView.textStorage replaceCharactersInRange:rangeOfWholeText withAttributedString:self.textView.attributedText];
-    [self.textView.textStorage endEditing];
 }
 
 
@@ -660,14 +543,7 @@
         [self.defaults setFloat:1.0 forKey:kPitchValue];
         [self.defaults setFloat:0.07 forKey:kRateValue];
         
-        [self.defaults setObject:kBackgroundOn forKey:kBackgroundPlayValue];
-        NSError *error = NULL;
-        AVAudioSession *session = [AVAudioSession sharedInstance];
-        [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-        if(error) { NSLog(@"Speech in background mode error occurred."); }
-        [session setActive:YES error:&error];
-        if (error) { NSLog(@"Speech in background mode setActive error occurred."); }
-        
+        [self.defaults setObject:kBackgroundOn forKey:kBackgroundPlayValue];        
         [self.defaults synchronize];
         
         NSString *backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
@@ -931,6 +807,116 @@
     self.actionButton.alpha = 0.0;
     
     self.resetButton.alpha = 0.0;
+}
+
+
+#pragma mark - Save Current Documents For Speech
+
+- (IBAction)saveCurrentDocument:(id)sender
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if (self.managedObjectContext == nil) {
+        self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+        NSLog (@"self.managedObjectContext: %@\n", self.managedObjectContext);
+    }
+    
+    DocumentsForSpeech *document = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
+    document.language = self.language;
+    document.volume = [NSNumber numberWithFloat:self.volume];;
+    document.pitch = [NSNumber numberWithFloat:self.pitch];
+    document.rate = [NSNumber numberWithFloat:self.rate];
+    
+    document.document = self.textView.text;
+    
+    NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
+    document.documentTitle = firstLineForTitle;
+    
+    [self.managedObjectContext performBlock:^{
+        NSError *error = nil;
+        if ([self.managedObjectContext save:&error]) {
+            
+            NSLog (@"Save to coredata succeed");
+            
+            [self executePerformFetch];
+            
+        } else {
+            
+            NSLog(@"Error saving to coredata: %@", error);
+        }
+    }];
+}
+
+
+#pragma mark 첫째 라인만 가져오기
+
+- (NSString *)retrieveFirstLineOfStringForTitle:(NSString *)string
+{
+    NSString *trimmedString = nil;
+    NSCharacterSet *charSet = [NSCharacterSet whitespaceAndNewlineCharacterSet]; //공백, 라인 피드문자 삭제
+    trimmedString = [string stringByTrimmingCharactersInSet:charSet];
+    
+    __block NSString *firstLine = nil;
+    NSString *wholeText = trimmedString;
+    [wholeText enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+        firstLine = [line copy];
+        *stop = YES;
+    }];
+    
+    if (firstLine.length == 0)
+    {
+        firstLine = @"Empty Title";
+    }
+    
+    if (firstLine.length > 0)
+    {
+        __block NSString *trimmedTitle = nil;
+        [firstLine enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {trimmedTitle = line; *stop = YES;}];
+    }
+    
+    return firstLine;
+}
+
+
+#pragma mark - Select Word
+
+- (void)selectWord
+{
+    NSRange selectedRange; //= NSMakeRange(0, 0);
+    
+    if (![self.textView hasText])
+    {
+        [self.textView select:self];
+    }
+    else if ([self.textView hasText] && selectedRange.length == 0)
+    {
+        [self.textView select:self];
+    }
+    else if ([self.textView hasText] && selectedRange.length > 0)
+    {
+        selectedRange.location = selectedRange.location + selectedRange.length;
+        selectedRange.length = 0;
+        self.textView.selectedRange = selectedRange;
+    }
+}
+
+
+#pragma mark - Show no text to speech alert
+
+- (void)showNoTextToSpeechAlertTitle:(NSString *)aTitle withBody:(NSString *)aBody
+{
+    NSString *title = aTitle;
+    NSString *message = aBody;
+    
+    UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [sheet addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
+        NSLog(@"Tapped OK");
+    }]];
+    
+    sheet.popoverPresentationController.sourceView = self.view;
+    sheet.popoverPresentationController.sourceRect = self.view.frame;
+    
+    [self presentViewController:sheet animated:YES completion:nil];
 }
 
 
