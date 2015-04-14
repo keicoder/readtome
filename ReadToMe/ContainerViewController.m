@@ -430,7 +430,7 @@
         _selectionTypeHighlighted = YES;
         [self.defaults setBool:YES forKey:kSelectionTypeHighlighted];
         [self.defaults synchronize];
-        [self adjustSlideViewHeightWithTitle:@"WORD HIGHLIGHTING" withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" withSender:self.selectionButton];
     }
     
     NSRange selectedRange = self.textView.selectedRange;
