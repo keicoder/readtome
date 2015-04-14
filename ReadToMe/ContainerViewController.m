@@ -6,23 +6,24 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
-#define debug					1
-#define kBackgroundColor		[UIColor colorWithRed:0.286 green:0.58 blue:0.753 alpha:1]
-#define kWhiteColor				[UIColor whiteColor]
-#define kPause					[UIImage imageNamed:@"pause"]
-#define kPlay					[UIImage imageNamed:@"play"]
-#define kSettings				[UIImage imageNamed:@"settings"]
+#define debug                       1
+#define kBackgroundColor            [UIColor colorWithRed:0.286 green:0.58 blue:0.753 alpha:1]
+#define kWhiteColor                 [UIColor whiteColor]
+#define kPause                      [UIImage imageNamed:@"pause"]
+#define kPlay                       [UIImage imageNamed:@"play"]
+#define kSettings                   [UIImage imageNamed:@"settings"]
 
-#define kHasLaunchedOnce        @"kHasLaunchedOnce"
-#define kLanguage               @"kLanguage"
-#define kVolumeValue            @"kVolumeValue"
-#define kPitchValue             @"kPitchValue"
-#define kRateValue              @"kRateValue"
+#define kHasLaunchedOnce            @"kHasLaunchedOnce"
+#define kSelectionTypeHighlighted   @"kSelectionTypeHighlighted"
+#define kLanguage                   @"kLanguage"
+#define kVolumeValue                @"kVolumeValue"
+#define kPitchValue                 @"kPitchValue"
+#define kRateValue                  @"kRateValue"
 
-#define kBackgroundPlayValue	@"kBackgroundPlayValue"
-#define kBackgroundOn			@"Background On"
+#define kBackgroundPlayValue        @"kBackgroundPlayValue"
+#define kBackgroundOn               @"Background On"
 
-#define kSharedDocument         @"kSharedDocument" //Shared Extension item
+#define kSharedDocument             @"kSharedDocument" //Shared Extension item
 
 
 #import "ContainerViewController.h"
@@ -79,6 +80,7 @@
 
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UIButton *actionButton;
+@property (weak, nonatomic) IBOutlet UIButton *selectionButton;
 @property (weak, nonatomic) IBOutlet UIButton *languageButton;
 @property (weak, nonatomic) IBOutlet UIButton *equalizerButton;
 @property (weak, nonatomic) IBOutlet UIButton *settingsButton;
@@ -91,6 +93,7 @@
 @implementation ContainerViewController
 {
 	BOOL _paused;
+    BOOL _selectionTypeHighlighted;
 	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
     NSRange _previousSelectedRange;
@@ -146,6 +149,7 @@
 	[super viewWillAppear:animated];
     [self checkToPasteText];
 	[self speechLanguage];
+    [self selectionTypeHighlighted];
 	[self volumeValue];
 	[self pitchValue];
 	[self rateValue];
@@ -173,6 +177,14 @@
     self.language = [self.defaults objectForKey:kLanguage];
     NSLog (@"self.language: %@\n", self.language);
     return self.language;
+}
+
+
+- (BOOL)selectionTypeHighlighted
+{
+    _selectionTypeHighlighted = [self.defaults boolForKey:kSelectionTypeHighlighted];
+    NSLog (@"_selectionTypeHighlighted: %@\n", _selectionTypeHighlighted ? @"YES" : @"NO");
+    return _selectionTypeHighlighted;
 }
 
 
@@ -313,9 +325,16 @@
         }
         
         if (self.synthesizer.isSpeaking == NO) {
+            if (_selectionTypeHighlighted == NO) {
+                NSLog (@"_selectionTypeHighlighted: %@\n", _selectionTypeHighlighted ? @"YES" : @"NO");
+                [self selectWord];
+            } else {
+                NSLog (@"_selectionTypeHighlighted: %@\n", _selectionTypeHighlighted ? @"YES" : @"NO");
+            }
             [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
             [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
             [self.synthesizer speakUtterance:self.utterance];
+            
             [UIView animateWithDuration:duration animations:^{
                 self.resetButton.alpha = 1.0;
             }completion:^(BOOL finished) { }];
@@ -382,6 +401,40 @@
 - (void)action:(id)sender
 {
 	NSLog(@"Action");
+}
+
+
+- (IBAction)selectionButtonTapped:(id)sender
+{
+    [self setInitialTextAttributes];
+    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.resetButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
+    
+    if (_equalizerViewExpanded == YES) {
+        [self adjustEqualizerViewHeight];
+    }
+    
+    if (_selectionTypeHighlighted == YES) {
+        _selectionTypeHighlighted = NO;
+        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" withSender:self.selectionButton];
+    } else {
+        _selectionTypeHighlighted = YES;
+        [self adjustSlideViewHeightWithTitle:@"WORD HIGHLIGHTING" withSender:self.selectionButton];
+    }
+    
+    NSRange selectedRange = self.textView.selectedRange;
+    if (selectedRange.length > 0) {
+        selectedRange.length = 0;
+        self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+    }
+    
+    NSLog (@"_selectionTypeHighlighted: %@\n", _selectionTypeHighlighted ? @"YES" : @"NO");
 }
 
 
@@ -452,13 +505,27 @@
 	self.utterance.pitchMultiplier = self.pitch;
 	self.utterance.rate = self.rate;
     
-    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
-    UIColor *color = [UIColor orangeColor];
+    if (_selectionTypeHighlighted == YES) {
+        
+        //NSLog(@"_selectionTypeHighlighted == YES");
+        
+        UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+        UIColor *color = [UIColor orangeColor];
+        
+        NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
+        [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:characterRange];
+        [mutableAttributedString addAttribute:NSFontAttributeName value:font range:characterRange];
+        self.textView.attributedText = mutableAttributedString;
+        
+    } else {
+        
+        //NSLog(@"_selectionTypeHighlighted == NO");
+        NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
+        self.textView.selectedRange = rangeInTotalText;
+        //NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
+    }
     
-    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:characterRange];
-    [mutableAttributedString addAttribute:NSFontAttributeName value:font range:characterRange];
-    self.textView.attributedText = mutableAttributedString;
+    
 }
 
 
@@ -471,6 +538,8 @@
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
     [self setInitialTextAttributes];
+    
+    [self selectWord];
     
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
@@ -542,6 +611,7 @@
         NSLog (@"defaultLanguageName: %@\n", defaultLanguageName);
         
         [self.defaults setObject:defaultLanguageName forKey:kLanguage];
+        [self.defaults setBool:YES forKey:kSelectionTypeHighlighted];
         [self.defaults setFloat:1.0 forKey:kVolumeValue];
         [self.defaults setFloat:1.0 forKey:kPitchValue];
         [self.defaults setFloat:0.07 forKey:kRateValue];
@@ -551,21 +621,26 @@
         
         NSString *backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
         NSLog (@"backgroundPlayValue: %@\n", backgroundPlayValue);
+    
+    } else {
+        
+        NSLog (@"HasLaunchedOnce: %@\n", [self.defaults boolForKey:kHasLaunchedOnce] ? @"YES" : @"NO");
     }
 }
 
 
-#pragma mark - Show saveAlertView view when user touches archive button
+#pragma mark - Adjust SlideView height when user touches equivalent button
 
-- (void)adjustSaveAlertViewHeightWithTitle:(NSString *)string
+- (void)adjustSlideViewHeightWithTitle:(NSString *)string withSender:(UIButton *)button
 {
-	CGFloat duration = 0.2f;
+	CGFloat duration = 0.3f;
 	CGFloat delay = 0.0f;
 	
 	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
 		
+        button.enabled = NO;
 		_saveAlertViewExpanded = YES;
-		self.saveAlertViewHeightConstraint.constant = 40.0;
+		self.saveAlertViewHeightConstraint.constant = 60.0;
 		[self.view layoutIfNeeded];
 		self.archiveButton.enabled = NO;
 		self.saveAlertLabel.alpha = 1.0;
@@ -574,7 +649,7 @@
 	} completion:^(BOOL finished) {
 		
         //Dispatch After
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
             
             [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
                 
@@ -584,7 +659,9 @@
                 self.archiveButton.enabled = YES;
                 self.saveAlertLabel.alpha = 0.0;
                 
-            } completion:nil];
+            } completion:^(BOOL finished) {
+                button.enabled = YES;
+            }];
         });
 	}];
 }
@@ -885,7 +962,9 @@
 
 - (void)selectWord
 {
-    NSRange selectedRange; //= NSMakeRange(0, 0);
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    NSRange selectedRange = self.textView.selectedRange;
     
     if (![self.textView hasText])
     {
@@ -894,6 +973,12 @@
     else if ([self.textView hasText] && selectedRange.length == 0)
     {
         [self.textView select:self];
+        
+        NSRange selectedRange = self.textView.selectedRange;
+        if (selectedRange.length > 0) {
+            selectedRange.length = 0;
+            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+        }
     }
     else if ([self.textView hasText] && selectedRange.length > 0)
     {
