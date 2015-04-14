@@ -422,9 +422,14 @@
     
     if (_selectionTypeHighlighted == YES) {
         _selectionTypeHighlighted = NO;
+        [self.defaults setBool:NO forKey:kSelectionTypeHighlighted];
+        [self.defaults synchronize];
+        
         [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" withSender:self.selectionButton];
     } else {
         _selectionTypeHighlighted = YES;
+        [self.defaults setBool:YES forKey:kSelectionTypeHighlighted];
+        [self.defaults synchronize];
         [self adjustSlideViewHeightWithTitle:@"WORD HIGHLIGHTING" withSender:self.selectionButton];
     }
     
@@ -509,19 +514,28 @@
         
         //NSLog(@"_selectionTypeHighlighted == YES");
         
-        UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
-        UIColor *color = [UIColor orangeColor];
         
-        NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-        [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:characterRange];
-        [mutableAttributedString addAttribute:NSFontAttributeName value:font range:characterRange];
-        self.textView.attributedText = mutableAttributedString;
+        NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length - characterRange.length);
+        self.textView.selectedRange = rangeInTotalText;
+        [self.textView scrollToVisibleCaretAnimated]; //Auto Scroll. Yahoo!
+        
+        
+        //보류
+//        UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+//        UIColor *color = [UIColor orangeColor];
+//        
+//        NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
+//        [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:characterRange];
+//        [mutableAttributedString addAttribute:NSFontAttributeName value:font range:characterRange];
+//        self.textView.attributedText = mutableAttributedString;
         
     } else {
         
         //NSLog(@"_selectionTypeHighlighted == NO");
         NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
         self.textView.selectedRange = rangeInTotalText;
+        [self.textView scrollToVisibleCaretAnimated]; //Auto Scroll. Yahoo!
+        
         //NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
     }
     
@@ -986,6 +1000,30 @@
         selectedRange.length = 0;
         self.textView.selectedRange = selectedRange;
     }
+}
+
+
+- (void)nextWord
+{
+    NSRange selectedRange = self.textView.selectedRange;
+    NSInteger currentLocation = selectedRange.location + selectedRange.length;
+    NSInteger textLength = [self.textView.text length];
+    
+    if ( currentLocation == textLength ) {
+        return;
+    }
+    
+    NSRange newRange = [self.textView.text
+                        rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]
+                        options:NSCaseInsensitiveSearch
+                        range:NSMakeRange((currentLocation + 1), (textLength - 1 - currentLocation))];
+    
+    if ( newRange.location != NSNotFound ) {
+        self.textView.selectedRange = NSMakeRange(newRange.location, 0);
+    } else {
+        self.textView.selectedRange = NSMakeRange(textLength, 0);
+    }
+    [self.textView scrollToVisibleCaretAnimated];
 }
 
 

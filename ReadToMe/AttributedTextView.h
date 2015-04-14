@@ -10,6 +10,8 @@
 
 @interface AttributedTextView : UITextView
 
+- (void)scrollToVisibleCaretAnimated;
+
 - (void)replaceSelectionWithAttributedText:(NSAttributedString *)text;
 - (void)replaceRange:(NSRange)range withAttributedText:(NSAttributedString *)text;
 
