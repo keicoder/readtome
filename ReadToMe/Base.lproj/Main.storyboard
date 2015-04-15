@@ -86,11 +86,39 @@
                                     <constraint firstAttribute="trailing" secondItem="gGU-LD-ksn" secondAttribute="trailing" constant="20" id="y3A-wm-beO"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EqM-jD-gG9" userLabel="SaveAlertView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ch7-hb-2ah" userLabel="ProgressInfoView">
                                 <rect key="frame" x="0.0" y="80" width="600" height="40"/>
                                 <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Progress" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uom-dM-su8" userLabel="ProgressLabel">
+                                        <rect key="frame" x="28" y="8" width="77" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="BVz-FP-Yrg" userLabel="progressSlider">
+                                        <rect key="frame" x="116" y="5" width="453" height="31"/>
+                                        <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <action selector="progressSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="VhV-GG-3vf"/>
+                                            <action selector="volumeSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="D1E-s4-IDj"/>
+                                        </connections>
+                                    </slider>
+                                </subviews>
+                                <color key="backgroundColor" red="0.19215686269999999" green="0.66666666669999997" blue="0.22352941179999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="BVz-FP-Yrg" firstAttribute="leading" secondItem="Uom-dM-su8" secondAttribute="trailing" constant="13" id="4XI-ti-lji"/>
+                                    <constraint firstAttribute="height" constant="40" id="JUg-3N-Tig"/>
+                                    <constraint firstItem="Uom-dM-su8" firstAttribute="leading" secondItem="Ch7-hb-2ah" secondAttribute="leading" constant="28" id="T4l-vx-ckm"/>
+                                    <constraint firstAttribute="trailing" secondItem="BVz-FP-Yrg" secondAttribute="trailing" constant="33" id="TOD-ke-Htg"/>
+                                    <constraint firstItem="BVz-FP-Yrg" firstAttribute="centerY" secondItem="Uom-dM-su8" secondAttribute="centerY" id="VdU-jK-qOW"/>
+                                    <constraint firstItem="Uom-dM-su8" firstAttribute="top" secondItem="Ch7-hb-2ah" secondAttribute="top" constant="8" id="vqa-XJ-UzE"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EqM-jD-gG9" userLabel="SaveAlertView">
+                                <rect key="frame" x="0.0" y="120" width="600" height="60"/>
+                                <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saved" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ja-D3-AWW" userLabel="SaveAlertLabel">
-                                        <rect key="frame" x="271" y="8" width="59" height="24"/>
+                                        <rect key="frame" x="271" y="18" width="59" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -100,11 +128,11 @@
                                 <constraints>
                                     <constraint firstAttribute="centerY" secondItem="9ja-D3-AWW" secondAttribute="centerY" id="6Io-bH-ZW5"/>
                                     <constraint firstAttribute="centerX" secondItem="9ja-D3-AWW" secondAttribute="centerX" id="DQW-Eh-vTH"/>
-                                    <constraint firstAttribute="height" constant="40" id="npb-29-jMO"/>
+                                    <constraint firstAttribute="height" constant="60" id="npb-29-jMO"/>
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" customClass="AttributedTextView">
-                                <rect key="frame" x="20" y="120" width="560" height="270"/>
+                                <rect key="frame" x="20" y="180" width="560" height="210"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
@@ -272,20 +300,23 @@ When the button in the toolbar is tapped, an activity view controller is present
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="U9H-OM-Fxj" firstAttribute="centerX" secondItem="Ch7-hb-2ah" secondAttribute="centerX" id="2fB-4V-Ifl"/>
                             <constraint firstItem="Wws-1S-BRE" firstAttribute="top" secondItem="ofM-O5-Xtc" secondAttribute="bottom" id="6ce-Bk-3cm"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="top" secondItem="VWj-si-BKE" secondAttribute="bottom" id="Euq-nb-64a">
                                 <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
                             </constraint>
+                            <constraint firstItem="Ch7-hb-2ah" firstAttribute="top" secondItem="U9H-OM-Fxj" secondAttribute="bottom" id="Fpa-3V-Jep"/>
                             <constraint firstAttribute="trailing" secondItem="ofM-O5-Xtc" secondAttribute="trailing" id="SD7-8q-EfJ"/>
                             <constraint firstItem="VWj-si-BKE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="VQs-zH-cqK">
                                 <variation key="heightClass=compact" constant="80"/>
                                 <variation key="heightClass=regular-widthClass=regular" constant="100"/>
                             </constraint>
-                            <constraint firstItem="EqM-jD-gG9" firstAttribute="top" secondItem="U9H-OM-Fxj" secondAttribute="bottom" id="XZo-kC-KeP"/>
+                            <constraint firstItem="U9H-OM-Fxj" firstAttribute="width" secondItem="Ch7-hb-2ah" secondAttribute="width" id="VbX-9y-Zbc"/>
                             <constraint firstAttribute="centerX" secondItem="U9H-OM-Fxj" secondAttribute="centerX" id="Yd7-9X-1Qg"/>
                             <constraint firstItem="U9H-OM-Fxj" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Zp3-x1-6KE"/>
                             <constraint firstAttribute="trailing" secondItem="U9H-OM-Fxj" secondAttribute="trailing" id="afN-Hm-tih"/>
                             <constraint firstItem="VWj-si-BKE" firstAttribute="centerX" secondItem="EqM-jD-gG9" secondAttribute="centerX" id="b8X-wn-sZM"/>
+                            <constraint firstItem="EqM-jD-gG9" firstAttribute="top" secondItem="Ch7-hb-2ah" secondAttribute="bottom" id="dG3-wD-iat"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="centerX" secondItem="VWj-si-BKE" secondAttribute="centerX" id="f8O-rB-XGB"/>
                             <constraint firstItem="U9H-OM-Fxj" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="gXP-uu-Z7y"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Wws-1S-BRE" secondAttribute="bottom" id="gih-Rt-fXt"/>
@@ -316,6 +347,10 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <outlet property="pitchLabel" destination="OwE-xb-ztj" id="itK-un-8IC"/>
                         <outlet property="pitchSlider" destination="PDz-gG-Mvc" id="Lye-RR-NeI"/>
                         <outlet property="playPauseButton" destination="djw-qX-P0a" id="o9K-Lj-sya"/>
+                        <outlet property="progressInfoViewHeightConstraint" destination="JUg-3N-Tig" id="be1-Wc-K60"/>
+                        <outlet property="progressLabel" destination="Uom-dM-su8" id="aAA-Yr-aWO"/>
+                        <outlet property="progressSlider" destination="BVz-FP-Yrg" id="GkV-Bd-qEa"/>
+                        <outlet property="progressView" destination="Ch7-hb-2ah" id="uU2-fa-S81"/>
                         <outlet property="rateLabel" destination="Skf-hE-fIQ" id="bei-Lv-jda"/>
                         <outlet property="rateSlider" destination="Kur-ii-tqL" id="31K-fQ-Cqb"/>
                         <outlet property="resetButton" destination="gGU-LD-ksn" id="yg3-KX-RbJ"/>

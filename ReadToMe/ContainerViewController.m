@@ -62,12 +62,17 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *saveAlertViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *progressInfoViewHeightConstraint;
 
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIButton *listButton;
 @property (weak, nonatomic) IBOutlet UIButton *archiveButton;
 @property (weak, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
+
+@property (weak, nonatomic) IBOutlet UIView *progressView;
+@property (weak, nonatomic) IBOutlet UILabel *progressLabel;
+@property (weak, nonatomic) IBOutlet UISlider *progressSlider;
 
 @property (weak, nonatomic) IBOutlet UIView *saveAlertView;
 @property (weak, nonatomic) IBOutlet UILabel *saveAlertLabel;
@@ -221,6 +226,13 @@
 
 
 #pragma mark - Slider value changed
+
+- (IBAction)progressSliderValueChanged:(UISlider *)sender
+{
+    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+}
+
+
 
 - (IBAction)volumeSliderValueChanged:(UISlider *)sender
 {
@@ -545,6 +557,7 @@
     float textViewLength = (float)[self.textView.text length];
     float location = (float)self.textView.selectedRange.location;
     _speechLocationPercentValueInWholeTexts = (location / textViewLength) * 100;
+    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
     NSLog (@"_speechLocationPercentValueInWholeTexts: %f\n", _speechLocationPercentValueInWholeTexts);
     
 }
@@ -578,6 +591,9 @@
 {
     self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
+    
+    _speechLocationPercentValueInWholeTexts = 0.0;
+    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
 }
 
 
