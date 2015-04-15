@@ -273,9 +273,14 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Wws-1S-BRE" firstAttribute="top" secondItem="ofM-O5-Xtc" secondAttribute="bottom" id="6ce-Bk-3cm"/>
-                            <constraint firstItem="ofM-O5-Xtc" firstAttribute="top" secondItem="VWj-si-BKE" secondAttribute="bottom" id="Euq-nb-64a"/>
+                            <constraint firstItem="ofM-O5-Xtc" firstAttribute="top" secondItem="VWj-si-BKE" secondAttribute="bottom" id="Euq-nb-64a">
+                                <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                            </constraint>
                             <constraint firstAttribute="trailing" secondItem="ofM-O5-Xtc" secondAttribute="trailing" id="SD7-8q-EfJ"/>
-                            <constraint firstItem="VWj-si-BKE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="VQs-zH-cqK"/>
+                            <constraint firstItem="VWj-si-BKE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="VQs-zH-cqK">
+                                <variation key="heightClass=compact" constant="80"/>
+                                <variation key="heightClass=regular-widthClass=regular" constant="100"/>
+                            </constraint>
                             <constraint firstItem="EqM-jD-gG9" firstAttribute="top" secondItem="U9H-OM-Fxj" secondAttribute="bottom" id="XZo-kC-KeP"/>
                             <constraint firstAttribute="centerX" secondItem="U9H-OM-Fxj" secondAttribute="centerX" id="Yd7-9X-1Qg"/>
                             <constraint firstItem="U9H-OM-Fxj" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Zp3-x1-6KE"/>
@@ -286,8 +291,13 @@ When the button in the toolbar is tapped, an activity view controller is present
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Wws-1S-BRE" secondAttribute="bottom" id="gih-Rt-fXt"/>
                             <constraint firstItem="Wws-1S-BRE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ivy-fO-u87"/>
                             <constraint firstItem="EqM-jD-gG9" firstAttribute="width" secondItem="U9H-OM-Fxj" secondAttribute="width" id="j1H-75-zyd"/>
-                            <constraint firstAttribute="trailing" secondItem="VWj-si-BKE" secondAttribute="trailing" constant="20" id="jbw-yu-czq"/>
-                            <constraint firstItem="VWj-si-BKE" firstAttribute="top" secondItem="EqM-jD-gG9" secondAttribute="bottom" id="kpU-5r-Lg3"/>
+                            <constraint firstAttribute="trailing" secondItem="VWj-si-BKE" secondAttribute="trailing" constant="20" id="jbw-yu-czq">
+                                <variation key="heightClass=compact" constant="80"/>
+                                <variation key="heightClass=regular-widthClass=regular" constant="100"/>
+                            </constraint>
+                            <constraint firstItem="VWj-si-BKE" firstAttribute="top" secondItem="EqM-jD-gG9" secondAttribute="bottom" id="kpU-5r-Lg3">
+                                <variation key="heightClass=regular-widthClass=regular" constant="20"/>
+                            </constraint>
                             <constraint firstItem="EqM-jD-gG9" firstAttribute="centerX" secondItem="U9H-OM-Fxj" secondAttribute="centerX" id="ncy-u1-hbL"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pP0-hC-9TR"/>
                             <constraint firstAttribute="trailing" secondItem="Wws-1S-BRE" secondAttribute="trailing" id="qW3-oK-nqN"/>

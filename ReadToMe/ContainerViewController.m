@@ -20,6 +20,10 @@
 #define kPitchValue                 @"kPitchValue"
 #define kRateValue                  @"kRateValue"
 
+#define kFontName                   @"HelveticaNeue-Light"
+#define kFontSizeiPhone             20.0
+#define kFontSizeiPad               22.0
+
 #define kBackgroundPlayValue        @"kBackgroundPlayValue"
 #define kBackgroundOn               @"Background On"
 
@@ -521,7 +525,7 @@
         
         
         //보류
-//        UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+//        UIFont *font = [UIFont fontWithName:kFontName size:kFontSizeiPhone];
 //        UIColor *color = [UIColor orangeColor];
 //        
 //        NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
@@ -578,7 +582,13 @@
 {
 	if ( _paragraphAttributes == nil) {
 		
-		UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+        UIFont *font;
+        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            font = [UIFont fontWithName:kFontName size:kFontSizeiPad];
+        } else {
+            font = [UIFont fontWithName:kFontName size:kFontSizeiPhone];
+        }
 		
 		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 		paragraphStyle.firstLineHeadIndent = 0.0f;
