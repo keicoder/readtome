@@ -103,6 +103,7 @@
     NSRange _previousSelectedRange;
     int _totalTextLength;
     int _spokenTextLengths;
+    float _speechLocationPercentValueInWholeTexts;
 }
 
 
@@ -518,7 +519,6 @@
         
         //NSLog(@"_selectionTypeHighlighted == YES");
         
-        
         NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length - characterRange.length);
         self.textView.selectedRange = rangeInTotalText;
         [self.textView scrollToVisibleCaretAnimated]; //Auto Scroll. Yahoo!
@@ -542,7 +542,10 @@
         
         //NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
     }
-    
+    float textViewLength = (float)[self.textView.text length];
+    float location = (float)self.textView.selectedRange.location;
+    _speechLocationPercentValueInWholeTexts = (location / textViewLength) * 100;
+    NSLog (@"_speechLocationPercentValueInWholeTexts: %f\n", _speechLocationPercentValueInWholeTexts);
     
 }
 
@@ -988,7 +991,15 @@
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    NSRange selectedRange = self.textView.selectedRange;
+    NSRange selectedRange;
+    
+    if (self.textView.selectedRange.location == 0) { //or NSNotFound?
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.textView.selectedRange = NSMakeRange(0, 0);
+        });;
+    } else {
+        selectedRange = self.textView.selectedRange;
+    }
     
     if (![self.textView hasText])
     {
