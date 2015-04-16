@@ -562,7 +562,7 @@
     float location = (float)self.textView.selectedRange.location;
     _speechLocationPercentValueInWholeTexts = (location / textViewLength) * 100;
     self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
-    NSLog (@"_speechLocationPercentValueInWholeTexts: %f\n", _speechLocationPercentValueInWholeTexts);
+//    NSLog (@"_speechLocationPercentValueInWholeTexts: %f\n", _speechLocationPercentValueInWholeTexts);
     
 }
 
@@ -798,6 +798,7 @@
         [self.view layoutIfNeeded];
         self.archiveButton.enabled = YES;
         self.saveAlertLabel.alpha = 0.0;
+//        self.saveAlertLabel.text = @"WORD SELECTING";
     } completion:nil];
     
     [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -883,25 +884,25 @@
 
 - (void)applicationWillResignActive
 {
-	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+//	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
 }
 
 
 - (void)applicationDidBecomeActive
 {
-	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+//	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
 }
 
 
 - (void)applicationDidEnterBackground
 {
-	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+//	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
 }
 
 
 - (void)applicationWillEnterForeground
 {
-	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+//	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
 	[self checkToPasteText];
 }
 
