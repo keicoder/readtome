@@ -90,6 +90,7 @@
 		for (NSString *code in languages)
 		{
 			dictionary[code] = [currentLocale displayNameForKey:NSLocaleIdentifier value:code];
+            //NSLog (@"dictionary[code]: %@\n", dictionary[code]);
 		}
 		_languageDictionary = dictionary;
 	}
