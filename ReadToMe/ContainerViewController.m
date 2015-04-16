@@ -71,7 +71,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 
 @property (weak, nonatomic) IBOutlet UIView *progressView;
-@property (weak, nonatomic) IBOutlet UILabel *progressLabel;
 @property (weak, nonatomic) IBOutlet UISlider *progressSlider;
 
 @property (weak, nonatomic) IBOutlet UIView *saveAlertView;
@@ -103,6 +102,7 @@
 {
 	BOOL _paused;
     BOOL _selectionTypeHighlighted;
+    BOOL _progressViewExpanded;
 	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
     NSRange _previousSelectedRange;
@@ -132,7 +132,7 @@
     _totalTextLength = 0;
     _spokenTextLengths = 0;
     
-    [self hideSaveAlertViewAndEqualizerViewWithNoAnimation]; //화면에 보여주지 않기
+    [self hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation]; //화면에 보여주지 않기
 }
 
 
@@ -141,8 +141,9 @@
 	[super viewDidLoad];
 	
 	[self configureUI];
+    [self configureSliderUI];
 	[self setInitialData]; //순서 바꾸지 말 것
-    [self setInitialTextAttributes];
+    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
     [self checkHasLaunchedOnce];
 	[self addPickedLanguageObserver];
 	[self addApplicationsStateObserver];
@@ -309,6 +310,9 @@
     if (_equalizerViewExpanded == YES) {
         [self adjustEqualizerViewHeight];
         time = 0.35;
+    } else if (_progressViewExpanded == NO) {
+        time = 0.30;
+        [self adjustProgressViewHeight];
     } else {
         time = 0.0;
     }
@@ -386,7 +390,7 @@
 
 - (IBAction)resetButtonTapped:(id)sender
 {
-    [self setInitialTextAttributes];
+    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -423,7 +427,7 @@
 
 - (IBAction)selectionButtonTapped:(id)sender
 {
-    [self setInitialTextAttributes];
+    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
     [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     _paused = YES;
@@ -462,7 +466,7 @@
 
 - (IBAction)languageButtonTapped:(id)sender
 {
-    [self setInitialTextAttributes];
+    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
@@ -487,7 +491,7 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
-    [self setInitialTextAttributes];
+    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
 	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self adjustEqualizerViewHeight];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -571,7 +575,7 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    [self setInitialTextAttributes];
+    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
     
     [self selectWord];
     
@@ -587,13 +591,18 @@
 
 #pragma mark - NSAttributedString
 
-- (void)setInitialTextAttributes
+- (void)setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight
 {
     self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
     
     _speechLocationPercentValueInWholeTexts = 0.0;
     self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+    
+    if (_progressViewExpanded == YES) {
+        [self adjustProgressViewHeight];
+        _progressViewExpanded = NO;
+    }
 }
 
 
@@ -714,12 +723,52 @@
 
 - (void)adjustEqualizerViewHeight
 {
-	if (_equalizerViewExpanded == YES) {
-		self.equalizerViewHeightConstraint.constant = 0.0;
-		_equalizerViewExpanded = NO;
+    if (_equalizerViewExpanded == YES) {
+        self.equalizerViewHeightConstraint.constant = 0.0;
+        _equalizerViewExpanded = NO;
+    } else {
+        self.equalizerViewHeightConstraint.constant = 150.0;
+        _equalizerViewExpanded = YES;
+    }
+    
+    CGFloat duration = 0.25f;
+    CGFloat delay = 0.0f;
+    [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        [self.view layoutIfNeeded];
+        
+        if (_equalizerViewExpanded == YES) {
+            self.volumeLabel.alpha = 1.0;
+            self.pitchLabel.alpha = 1.0;
+            self.rateLabel.alpha = 1.0;
+            self.volumeSlider.alpha = 1.0;
+            self.pitchSlider.alpha = 1.0;
+            self.rateSlider.alpha = 1.0;
+            
+        } else {
+            self.volumeLabel.alpha = 0.0;
+            self.pitchLabel.alpha = 0.0;
+            self.rateLabel.alpha = 0.0;
+            self.volumeSlider.alpha = 0.0;
+            self.pitchSlider.alpha = 0.0;
+            self.rateSlider.alpha = 0.0;
+        }
+        
+    } completion:^(BOOL finished) { }];
+}
+
+
+
+#pragma mark - Show progress view when speech start
+
+- (void)adjustProgressViewHeight
+{
+	if (_progressViewExpanded == YES) {
+		self.progressInfoViewHeightConstraint.constant = 0.0;
+		_progressViewExpanded = NO;
 	} else {
-		self.equalizerViewHeightConstraint.constant = 150.0;
-		_equalizerViewExpanded = YES;
+		self.progressInfoViewHeightConstraint.constant = 33.0;
+		_progressViewExpanded = YES;
 	}
 	
 	CGFloat duration = 0.25f;
@@ -728,28 +777,20 @@
 		
 		[self.view layoutIfNeeded];
 		
-		if (_equalizerViewExpanded == YES) {
-			self.volumeLabel.alpha = 1.0;
-			self.pitchLabel.alpha = 1.0;
-			self.rateLabel.alpha = 1.0;
-			self.volumeSlider.alpha = 1.0;
-			self.pitchSlider.alpha = 1.0;
-			self.rateSlider.alpha = 1.0;
+		if (_progressViewExpanded == YES) {
+			self.progressSlider.alpha = 1.0;
 			
 		} else {
-			self.volumeLabel.alpha = 0.0;
-			self.pitchLabel.alpha = 0.0;
-			self.rateLabel.alpha = 0.0;
-			self.volumeSlider.alpha = 0.0;
-			self.pitchSlider.alpha = 0.0;
-			self.rateSlider.alpha = 0.0;
+			self.progressSlider.alpha = 0.0;
 		}
 		
 	} completion:^(BOOL finished) { }];
 }
 
 
-- (void)hideSaveAlertViewAndEqualizerViewWithNoAnimation
+#pragma mark - hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation
+
+- (void)hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation
 {
     [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         _saveAlertViewExpanded = NO;
@@ -769,6 +810,13 @@
         self.volumeSlider.alpha = 0.0;
         self.pitchSlider.alpha = 0.0;
         self.rateSlider.alpha = 0.0;
+    } completion:nil];
+    
+    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        _progressViewExpanded = NO;
+        self.progressInfoViewHeightConstraint.constant = 0.0;
+        [self.view layoutIfNeeded];
+        self.progressSlider.alpha = 0.0;
     } completion:nil];
 }
 
@@ -906,9 +954,11 @@
 
 - (void)configureUI
 {
-    self.menuView.backgroundColor = [UIColor colorWithRed:0.149 green:0.604 blue:0.949 alpha:1];
-    self.bottomView.backgroundColor = [UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
-    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
+    self.menuView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1]; //[UIColor colorWithRed:0.988 green:0.757 blue:0 alpha:1]; //[UIColor colorWithRed:0.149 green:0.604 blue:0.949 alpha:1];
+    self.saveAlertView.backgroundColor = [UIColor colorWithRed:0.945 green:0.671 blue:0.686 alpha:1];
+    self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1]; //[UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1]; //[UIColor colorWithRed:0.988 green:0.757 blue:0 alpha:1]; //[UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
+    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1]; //[UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
     
     //Image View
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -930,6 +980,23 @@
     self.actionButton.alpha = 0.0;
     
     self.resetButton.alpha = 0.0;
+}
+
+
+#pragma mark - Configure Slider UI
+
+- (void)configureSliderUI
+{
+    UIImage *thumbImageNormal = [UIImage imageNamed:@"SliderThumb-Normal"];
+    [self.progressSlider setThumbImage:thumbImageNormal forState:UIControlStateNormal];
+    UIImage *thumbImageHighlighted = [UIImage imageNamed:@"SliderThumb-Highlighted"];
+    [self.progressSlider setThumbImage:thumbImageHighlighted forState:UIControlStateHighlighted];
+    UIImage *trackLeftImage =
+    [[UIImage imageNamed:@"SliderTrackLeft"]
+     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
+    [self.progressSlider setMinimumTrackImage:trackLeftImage forState:UIControlStateNormal];
+    UIImage *trackRightImage = [[UIImage imageNamed:@"SliderTrackRight"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
+    [self.progressSlider setMaximumTrackImage:trackRightImage forState:UIControlStateNormal];
 }
 
 
