@@ -101,10 +101,11 @@
 @implementation ContainerViewController
 {
 	BOOL _paused;
-    BOOL _selectionTypeHighlighted;
+    BOOL _isTypeSelecting;
     BOOL _progressViewExpanded;
 	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
+    NSRange _selectedRange;
     NSRange _previousSelectedRange;
     int _totalTextLength;
     int _spokenTextLengths;
@@ -193,9 +194,9 @@
 
 - (BOOL)selectionTypeHighlighted
 {
-    _selectionTypeHighlighted = [self.defaults boolForKey:kSelectionTypeHighlighted];
-    NSLog (@"_selectionTypeHighlighted: %@\n", _selectionTypeHighlighted ? @"YES" : @"NO");
-    return _selectionTypeHighlighted;
+    _isTypeSelecting = [self.defaults boolForKey:kSelectionTypeHighlighted];
+    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    return _isTypeSelecting;
 }
 
 
@@ -285,14 +286,13 @@
     else {
         NSLog(@"self.pasteBoard.string and self.textView.text are not equal, so paste it to textview");
         self.textView.text = self.pasteBoard.string;
-        NSLog(@"paste done");
-        
-        if (self.synthesizer != nil) {
-            [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-            NSLog(@"Because paste new text, avspeech synthsizer stoped speaking. New Start will began.");
-            _paused = YES;
-            [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-        }
+        _selectedRange = NSMakeRange(0, 0);
+        self.textView.selectedRange = _selectedRange;
+        NSLog (@"self.textView.selectedRange.location: %lu, and length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
+        [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        NSLog(@"Because paste new text, avspeech synthsizer stoped speaking. New Start will began.");
+        _paused = YES;
+        [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     }
     
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.keicoder.demo.readtome"];
@@ -319,7 +319,8 @@
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
         
-        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+//        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+        self.utterance = [[AVSpeechUtterance alloc] initWithString:self.textView.text];
         self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
         self.utterance.volume = self.volume;
         self.utterance.pitchMultiplier = self.pitch;
@@ -346,11 +347,11 @@
         }
         
         if (self.synthesizer.isSpeaking == NO) {
-            if (_selectionTypeHighlighted == NO) {
-                NSLog (@"_selectionTypeHighlighted: %@\n", _selectionTypeHighlighted ? @"YES" : @"NO");
+            if (_isTypeSelecting == NO) {
+                NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
                 [self selectWord];
             } else {
-                NSLog (@"_selectionTypeHighlighted: %@\n", _selectionTypeHighlighted ? @"YES" : @"NO");
+                NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
             }
             [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
             [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
@@ -441,14 +442,14 @@
         [self adjustEqualizerViewHeight];
     }
     
-    if (_selectionTypeHighlighted == YES) {
-        _selectionTypeHighlighted = NO;
+    if (_isTypeSelecting == YES) {
+        _isTypeSelecting = NO;
         [self.defaults setBool:NO forKey:kSelectionTypeHighlighted];
         [self.defaults synchronize];
         
         [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" withSender:self.selectionButton];
     } else {
-        _selectionTypeHighlighted = YES;
+        _isTypeSelecting = YES;
         [self.defaults setBool:YES forKey:kSelectionTypeHighlighted];
         [self.defaults synchronize];
         [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" withSender:self.selectionButton];
@@ -460,7 +461,7 @@
         self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
     }
     
-    NSLog (@"_selectionTypeHighlighted: %@\n", _selectionTypeHighlighted ? @"YES" : @"NO");
+    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
 }
 
 
@@ -526,14 +527,14 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
 {
-    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
-	self.utterance.volume = self.volume;
-	self.utterance.pitchMultiplier = self.pitch;
-	self.utterance.rate = self.rate;
+//    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
+//	self.utterance.volume = self.volume;
+//	self.utterance.pitchMultiplier = self.pitch;
+//	self.utterance.rate = self.rate;
     
-    if (_selectionTypeHighlighted == YES) {
+    if (_isTypeSelecting == YES) {
         
-        //NSLog(@"_selectionTypeHighlighted == YES");
+        //NSLog(@"_isTypeSelecting == YES");
         
         NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length - characterRange.length);
         self.textView.selectedRange = rangeInTotalText;
@@ -551,7 +552,7 @@
         
     } else {
         
-        //NSLog(@"_selectionTypeHighlighted == NO");
+        //NSLog(@"_isTypeSelecting == NO");
         NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
         self.textView.selectedRange = rangeInTotalText;
         [self.textView scrollToVisibleCaretAnimated]; //Auto Scroll. Yahoo!
@@ -577,7 +578,9 @@
 {
     [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
     
-    [self selectWord];
+//    _selectedRange = NSMakeRange(0, 0);
+//    self.textView.selectedRange = _selectedRange;
+//    NSLog (@"self.textView.selectedRange.location: %lu, and length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
     
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
@@ -598,6 +601,10 @@
     
     _speechLocationPercentValueInWholeTexts = 0.0;
     self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+    
+    _selectedRange = NSMakeRange(0, 0);
+    self.textView.selectedRange = _selectedRange;
+    NSLog (@"self.textView.selectedRange.location: %lu, and length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
     
     if (_progressViewExpanded == YES) {
         [self adjustProgressViewHeight];
@@ -1075,35 +1082,40 @@
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    NSRange selectedRange;
-    
-    if (self.textView.selectedRange.location == 0) { //or NSNotFound?
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.textView.selectedRange = NSMakeRange(0, 0);
-        });;
-    } else {
-        selectedRange = self.textView.selectedRange;
-    }
+    _selectedRange = self.textView.selectedRange;
+//    NSLog (@"selectedRange.location: %lu and length: %lu\n", selectedRange.location, selectedRange.length);
+//    
+//    if (selectedRange.location == 0 && selectedRange.length == 0) { //or NSNotFound?
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            self.textView.selectedRange = NSMakeRange(0, 0);
+//        });;
+//    } else {
+//         self.textView.selectedRange = selectedRange;
+//    }
     
     if (![self.textView hasText])
     {
-        [self.textView select:self];
+        NSLog(@"self.textview has no text.");
+//        [self.textView select:self];
     }
-    else if ([self.textView hasText] && selectedRange.length == 0)
+    else if ([self.textView hasText] && _selectedRange.length == 0)
     {
+        NSLog(@"self.textview has texts but selectedRange.length == 0");
         [self.textView select:self];
         
-        NSRange selectedRange = self.textView.selectedRange;
-        if (selectedRange.length > 0) {
-            selectedRange.length = 0;
-            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
-        }
+//        NSRange selectedRange = self.textView.selectedRange;
+//        if (selectedRange.length > 0) {
+//            NSLog(@"self.textview has texts and selectedRange.length > 0");
+////            selectedRange.length = 0;
+//            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+//        }
     }
-    else if ([self.textView hasText] && selectedRange.length > 0)
+    else if ([self.textView hasText] && _selectedRange.length > 0)
     {
-        selectedRange.location = selectedRange.location + selectedRange.length;
-        selectedRange.length = 0;
-        self.textView.selectedRange = selectedRange;
+        NSLog(@"self.textview has texts and selectedRange.length > 0");
+//        selectedRange.location = selectedRange.location + selectedRange.length;
+//        selectedRange.length = 0;
+        self.textView.selectedRange = _selectedRange;
     }
 }
 
