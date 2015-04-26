@@ -21,6 +21,14 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U9H-OM-Fxj" userLabel="MenuView">
                                 <rect key="frame" x="0.0" y="20" width="600" height="60"/>
                                 <subviews>
+                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eMX-kn-ZVO" userLabel="LogoButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="20" y="8" width="44" height="44"/>
+                                        <accessibility key="accessibilityConfiguration" label="ResetButton"/>
+                                        <inset key="contentEdgeInsets" minX="4" minY="4" maxX="4" maxY="4"/>
+                                        <state key="normal" image="readtome100">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rW-tW-Hkj" userLabel="ListButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="20" y="8" width="44" height="44"/>
                                         <accessibility key="accessibilityConfiguration" label="ResetButton"/>
@@ -32,19 +40,14 @@
                                             <action selector="listButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="L0P-Lb-O0Z"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eMX-kn-ZVO" userLabel="LogoButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="20" y="8" width="44" height="44"/>
-                                        <accessibility key="accessibilityConfiguration" label="ResetButton"/>
-                                        <inset key="contentEdgeInsets" minX="4" minY="4" maxX="4" maxY="4"/>
-                                        <state key="normal" image="readtome100">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8pi-Cu-ToX" userLabel="ArchiveButton" customClass="PopAnimationClearButton">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8pi-Cu-ToX" userLabel="ArchiveButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="72" y="8" width="44" height="44"/>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <inset key="contentEdgeInsets" minX="10" minY="9" maxX="10" maxY="8"/>
+                                        <color key="tintColor" red="0.95707070709999997" green="0.80975241769999995" blue="0.166872558" alpha="1" colorSpace="calibratedRGB"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="8" maxX="10" maxY="7"/>
                                         <state key="normal" image="save"/>
+                                        <connections>
+                                            <action selector="saveCurrentDocument:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0pA-ui-GOW"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djw-qX-P0a" userLabel="PlayPauseButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="278" y="8" width="44" height="44"/>
@@ -86,7 +89,9 @@
                                     <constraint firstItem="8pi-Cu-ToX" firstAttribute="height" secondItem="djw-qX-P0a" secondAttribute="height" id="ggR-M6-4ms"/>
                                     <constraint firstItem="6rW-tW-Hkj" firstAttribute="leading" secondItem="U9H-OM-Fxj" secondAttribute="leading" constant="20" id="iHy-9B-wGg"/>
                                     <constraint firstItem="eMX-kn-ZVO" firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="jDJ-Jq-byt"/>
-                                    <constraint firstItem="8pi-Cu-ToX" firstAttribute="leading" secondItem="6rW-tW-Hkj" secondAttribute="trailing" constant="8" id="kqc-PH-Iqd"/>
+                                    <constraint firstItem="8pi-Cu-ToX" firstAttribute="leading" secondItem="6rW-tW-Hkj" secondAttribute="trailing" constant="8" id="kqc-PH-Iqd">
+                                        <variation key="heightClass=compact" constant="20"/>
+                                    </constraint>
                                     <constraint firstAttribute="centerX" secondItem="djw-qX-P0a" secondAttribute="centerX" id="o8s-wi-Ief"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="width" secondItem="6rW-tW-Hkj" secondAttribute="width" id="pOq-Ql-WwV"/>
                                     <constraint firstItem="8pi-Cu-ToX" firstAttribute="width" secondItem="djw-qX-P0a" secondAttribute="width" id="qdE-Mb-uTE"/>
@@ -117,12 +122,22 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText">
                                     <fragment>
-                                        <string key="content">Of course, we could have left the containing app blank. After all, we are building a sample app extension so the app doesn't really have to do anything. But I wanted to show how easy it is to invoke the activity controller from inside your app and provide a point where other Action extensions can come in.
+                                        <string key="content">There are no text to speech.
 
-When the button in the toolbar is tapped, an activity view controller is presented and we will be able to invoke our Action extension from within there. Another good reason is that if you wanted to publish your extension on the App Store, it has to be part of a real app and obviously the app has to do something in order for it to be approved.</string>
+Copy whatever you want to read, ReadToMe will read aloud for you.
+
+You can play, pause or replay whenever you want.
+
+Enjoy reading!</string>
                                         <attributes>
-                                            <font key="NSFont" size="18" name="HelveticaNeue-Light"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <font key="NSFont" size="20" name="HelveticaNeue-Light"/>
+                                            <integer key="NSLigature" value="0"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" defaultTabInterval="33.700000000000003">
+                                                <tabStops>
+                                                    <textTab alignment="left" location="33.700000762939453"/>
+                                                </tabStops>
+                                            </paragraphStyle>
                                         </attributes>
                                     </fragment>
                                 </attributedString>
@@ -343,6 +358,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                         <outlet property="equalizerViewHeightConstraint" destination="obj-XC-AMD" id="0Jo-8k-N3d"/>
                         <outlet property="languageButton" destination="xtD-FV-k3Q" id="rcL-Vr-d3H"/>
                         <outlet property="listButton" destination="6rW-tW-Hkj" id="evV-nU-ao9"/>
+                        <outlet property="logoButton" destination="eMX-kn-ZVO" id="1dX-QJ-uMJ"/>
                         <outlet property="menuView" destination="U9H-OM-Fxj" id="SLX-Bo-y7O"/>
                         <outlet property="pitchLabel" destination="OwE-xb-ztj" id="itK-un-8IC"/>
                         <outlet property="pitchSlider" destination="PDz-gG-Mvc" id="Lye-RR-NeI"/>

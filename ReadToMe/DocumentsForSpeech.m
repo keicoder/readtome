@@ -60,7 +60,6 @@
 	
 	[super awakeFromInsert];
 	[self updateDateValue];
-	[self updateOtherValue];
 }
 
 
@@ -103,18 +102,6 @@
 	self.monthAndYearString = monthAndYearString;
 	
 	self.section = monthAndYearString;
-	
-//	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
-//	self.uniqueIdString = uniqueIDString;
-}
-
-
-- (void)updateOtherValue
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-	self.isNewDocument = [NSNumber numberWithBool:NO];
-	self.savedDocument = @"savedDocument";
 }
 
 

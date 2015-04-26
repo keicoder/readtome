@@ -18,6 +18,9 @@
 #define kPitchValue                 @"kPitchValue"
 #define kRateValue                  @"kRateValue"
 
+#define kSavedDocument              @"kSavedDocument"
+#define kNotSavedDocument           @"kNotSavedDocument"
+
 #define kFontName                   @"HelveticaNeue-Light"
 #define kFontSizeiPhone             20.0
 #define kFontSizeiPad               22.0
@@ -59,6 +62,7 @@
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIButton *listButton;
 @property (weak, nonatomic) IBOutlet UIButton *archiveButton;
+@property (weak, nonatomic) IBOutlet UIButton *logoButton;
 @property (weak, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 
@@ -272,6 +276,16 @@
     } else if (![self.pasteBoard.string isEqualToString:self.textView.text]) {
         
         self.textView.text = self.pasteBoard.string;
+        
+        if (self.managedObjectContext == nil) {
+            self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+        }
+        
+        self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
+        
+        self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
+        self.currentDocument.savedDocument = kNotSavedDocument;
+        self.currentDocument.document = self.textView.text;
     }
     
     _selectedRange = NSMakeRange(0, 0);
@@ -439,7 +453,7 @@
         [self.defaults setBool:NO forKey:kTypeSelecting];
         [self.defaults synchronize];
         
-        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" andColor:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
         
         [self typeSelecting];
         
@@ -455,7 +469,7 @@
         [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults synchronize];
         
-        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" andColor:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
         
         [self typeSelecting];
         
@@ -466,12 +480,12 @@
         }
     }
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-        
-        [self.synthesizer continueSpeaking];
-        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-        _paused = NO;
-    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+//        
+//        [self.synthesizer continueSpeaking];
+//        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+//        _paused = NO;
+//    });
 }
 
 
@@ -684,36 +698,38 @@
 
 #pragma mark - Adjust SlideView height when user touches equivalent button
 
-- (void)adjustSlideViewHeightWithTitle:(NSString *)string withSender:(UIButton *)button
+- (void)adjustSlideViewHeightWithTitle:(NSString *)string andColor:(UIColor *)color withSender:(UIButton *)button
 {
 	CGFloat duration = 0.2f;
 	CGFloat delay = 0.0f;
 	
+    _saveAlertViewExpanded = YES;
+    self.saveAlertViewHeightConstraint.constant = 60.0;
+    button.enabled = NO;
+    self.saveAlertView.backgroundColor = color;
+    
 	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
 		
-        button.enabled = NO;
-		_saveAlertViewExpanded = YES;
-		self.saveAlertViewHeightConstraint.constant = 60.0;
-		[self.view layoutIfNeeded];
-		self.archiveButton.enabled = NO;
+        [self.view layoutIfNeeded];
 		self.saveAlertLabel.alpha = 1.0;
-		self.saveAlertLabel.text = string;
+        self.saveAlertLabel.text = string;
 		
 	} completion:^(BOOL finished) {
 		
         //Dispatch After
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
             
+            _saveAlertViewExpanded = NO;
+            self.saveAlertViewHeightConstraint.constant = 0.0;
+            
             [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
                 
-                _saveAlertViewExpanded = NO;
-                self.saveAlertViewHeightConstraint.constant = 0.0;
                 [self.view layoutIfNeeded];
-                self.archiveButton.enabled = YES;
                 self.saveAlertLabel.alpha = 0.0;
                 
             } completion:^(BOOL finished) {
                 button.enabled = YES;
+//                self.saveAlertView.backgroundColor = [UIColor colorWithRed:0.945 green:0.671 blue:0.686 alpha:1];
             }];
         });
 	}];
@@ -908,41 +924,56 @@
 
 #pragma mark - Save Current Documents For Speech
 
-- (void)saveCurrentDocument
+- (IBAction)saveCurrentDocument:(id)sender
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (self.managedObjectContext == nil) {
-        self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+    if ([self.currentDocument.isNewDocument boolValue] == YES && [self.currentDocument.savedDocument isEqualToString:kNotSavedDocument]) {
+        
+        if (self.managedObjectContext == nil) {
+            self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+        }
+        
+        if (self.currentDocument == nil) {
+            self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
+        }
+        
+        self.currentDocument.language = self.language;
+        self.currentDocument.volume = [NSNumber numberWithFloat:self.volume];;
+        self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitch];
+        self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
+        
+        NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+        self.currentDocument.uniqueIdString = uniqueIDString;
+        
+        self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
+        self.currentDocument.savedDocument = kSavedDocument;
+        
+        self.currentDocument.document = self.textView.text;
+        
+        NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
+        self.currentDocument.documentTitle = firstLineForTitle;
+        
+        [self.managedObjectContext performBlock:^{
+            NSError *error = nil;
+            if ([self.managedObjectContext save:&error]) {
+                
+                NSLog (@"Save to coredata succeed");
+                
+                [self adjustSlideViewHeightWithTitle:@"Saved" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
+                
+                [self executePerformFetch];
+                
+            } else {
+                
+                NSLog(@"Error saving to coredata: %@", error);
+            }
+        }];
+        
+    } else {
+        
+        NSLog(@"Already Saved Document");
+        [self adjustSlideViewHeightWithTitle:@"Already Saved" andColor:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
     }
     
-    self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-    self.currentDocument.language = self.language;
-    self.currentDocument.volume = [NSNumber numberWithFloat:self.volume];;
-    self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitch];
-    self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
-    
-    NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
-    self.currentDocument.uniqueIdString = uniqueIDString;
-    
-    self.currentDocument.document = self.textView.text;
-    
-    NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
-    self.currentDocument.documentTitle = firstLineForTitle;
-    
-    [self.managedObjectContext performBlock:^{
-        NSError *error = nil;
-        if ([self.managedObjectContext save:&error]) {
-            
-            NSLog (@"Save to coredata succeed");
-            
-            [self executePerformFetch];
-            
-        } else {
-            
-            NSLog(@"Error saving to coredata: %@", error);
-        }
-    }];
 }
 
 
@@ -1059,13 +1090,10 @@
     self.rateSlider.alpha = 0.0;
     
     //Button
-    self.listButton.enabled = NO;
-    self.listButton.alpha = 0.0;
-    self.archiveButton.enabled = NO;
-    self.archiveButton.alpha = 0.0;
+    self.logoButton.enabled = NO;
+    self.logoButton.alpha = 0.0;
     self.actionButton.enabled = NO;
     self.actionButton.alpha = 0.0;
-    
     self.resetButton.alpha = 0.0;
 }
 
@@ -1093,16 +1121,14 @@
 {
     _selectedRange = self.textView.selectedRange;
     
-    [self.textView select:self];
-    
-//    if ([self.textView hasText] && _selectedRange.length == 0) {
-//        
-//        //[self.textView select:self];
-//        
-//    } else if ([self.textView hasText] && _selectedRange.length > 0) {
-//        
-//        self.textView.selectedRange = _selectedRange;
-//    }
+    if ([self.textView hasText] && _selectedRange.length == 0) {
+        
+        [self.textView select:self];
+        
+    } else if ([self.textView hasText] && _selectedRange.length > 0) {
+        
+        self.textView.selectedRange = _selectedRange;
+    }
 }
 
 
