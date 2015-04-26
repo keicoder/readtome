@@ -448,9 +448,9 @@
 - (IBAction)selectionButtonTapped:(id)sender
 {
     //[self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
-    //[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    //[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    //_paused = YES;
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -495,6 +495,14 @@
     }
     
     NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        
+        [self.synthesizer continueSpeaking];
+        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+        _paused = NO;
+    });
 }
 
 
