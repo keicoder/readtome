@@ -14,7 +14,7 @@
 #define kSettings                   [UIImage imageNamed:@"settings"]
 
 #define kHasLaunchedOnce            @"kHasLaunchedOnce"
-#define kSelectionTypeHighlighted   @"kSelectionTypeHighlighted"
+#define kTypeSelecting              @"kTypeSelecting"
 #define kLanguage                   @"kLanguage"
 #define kVolumeValue                @"kVolumeValue"
 #define kPitchValue                 @"kPitchValue"
@@ -31,7 +31,7 @@
 
 
 #import "ContainerViewController.h"
-#import <AVFoundation/AVFoundation.h>
+@import AVFoundation;
 #import "UIImage+ChangeColor.h"
 #import "SettingsViewController.h"
 #import "LanguagePickerViewController.h"
@@ -131,7 +131,6 @@
 	
     _paused = YES;
     _totalTextLength = 0;
-    _spokenTextLengths = 0;
     
     [self hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation]; //화면에 보여주지 않기
 }
@@ -161,7 +160,7 @@
 	[super viewWillAppear:animated];
     [self checkToPasteText];
 	[self speechLanguage];
-    [self selectionTypeHighlighted];
+    [self typeSelecting];
 	[self volumeValue];
 	[self pitchValue];
 	[self rateValue];
@@ -192,9 +191,9 @@
 }
 
 
-- (BOOL)selectionTypeHighlighted
+- (BOOL)typeSelecting
 {
-    _isTypeSelecting = [self.defaults boolForKey:kSelectionTypeHighlighted];
+    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
     NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
     return _isTypeSelecting;
 }
@@ -320,7 +319,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
         
 //        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-        self.utterance = [[AVSpeechUtterance alloc] initWithString:self.textView.text];
+        self.utterance = [[AVSpeechUtterance alloc] initWithString:self.textView.text]; //An utterance’s text cannot be changed once it is created. To speak different text, create a new utterance.
         self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
         self.utterance.volume = self.volume;
         self.utterance.pitchMultiplier = self.pitch;
@@ -444,15 +443,15 @@
     
     if (_isTypeSelecting == YES) {
         _isTypeSelecting = NO;
-        [self.defaults setBool:NO forKey:kSelectionTypeHighlighted];
+        [self.defaults setBool:NO forKey:kTypeSelecting];
         [self.defaults synchronize];
         
-        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" withSender:self.selectionButton];
     } else {
         _isTypeSelecting = YES;
-        [self.defaults setBool:YES forKey:kSelectionTypeHighlighted];
+        [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults synchronize];
-        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" withSender:self.selectionButton];
     }
     
     NSRange selectedRange = self.textView.selectedRange;
@@ -527,44 +526,28 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
 {
-//    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
-//	self.utterance.volume = self.volume;
-//	self.utterance.pitchMultiplier = self.pitch;
-//	self.utterance.rate = self.rate;
-    
+    NSRange rangeInTotalText;
     if (_isTypeSelecting == YES) {
         
-        //NSLog(@"_isTypeSelecting == YES");
+        rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length);
         
-        NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length - characterRange.length);
-        self.textView.selectedRange = rangeInTotalText;
-        [self.textView scrollToVisibleCaretAnimated]; //Auto Scroll. Yahoo!
-        
-        
-        //보류
-//        UIFont *font = [UIFont fontWithName:kFontName size:kFontSizeiPhone];
-//        UIColor *color = [UIColor orangeColor];
-//        
-//        NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-//        [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:characterRange];
-//        [mutableAttributedString addAttribute:NSFontAttributeName value:font range:characterRange];
-//        self.textView.attributedText = mutableAttributedString;
+        //[self updateTextAttributeWithSelectedRange:characterRange]; //보류 > 텍스트 하이라이트 기능
         
     } else {
         
-        //NSLog(@"_isTypeSelecting == NO");
-        NSRange rangeInTotalText = NSMakeRange(_spokenTextLengths + characterRange.location, characterRange.length);
-        self.textView.selectedRange = rangeInTotalText;
-        [self.textView scrollToVisibleCaretAnimated]; //Auto Scroll. Yahoo!
-        
-        //NSLog (@"self.textView.selectedRange.location: %lu, self.textView.selectedRange.length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
+        rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length  - characterRange.length);
     }
+    
+    self.textView.selectedRange = rangeInTotalText;
+    [self.textView scrollToVisibleCaretAnimated]; //Auto Scroll. Yahoo!
+    
     float textViewLength = (float)[self.textView.text length];
     float location = (float)self.textView.selectedRange.location;
     _speechLocationPercentValueInWholeTexts = (location / textViewLength) * 100;
     self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
-//    NSLog (@"_speechLocationPercentValueInWholeTexts: %f\n", _speechLocationPercentValueInWholeTexts);
     
+    _spokenTextLengths = location;
+    NSLog (@"spokenTextLengths: %d\f",_spokenTextLengths);
 }
 
 
@@ -578,10 +561,6 @@
 {
     [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
     
-//    _selectedRange = NSMakeRange(0, 0);
-//    self.textView.selectedRange = _selectedRange;
-//    NSLog (@"self.textView.selectedRange.location: %lu, and length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
-    
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 	_paused = YES;
     
@@ -589,6 +568,24 @@
     [UIView animateWithDuration:duration animations:^{
         self.resetButton.alpha = 0.0;
     }completion:^(BOOL finished) { }];
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    
 }
 
 
@@ -604,7 +601,7 @@
     
     _selectedRange = NSMakeRange(0, 0);
     self.textView.selectedRange = _selectedRange;
-    NSLog (@"self.textView.selectedRange.location: %lu, and length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
+//    NSLog (@"self.textView.selectedRange.location: %lu, and length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
     
     if (_progressViewExpanded == YES) {
         [self adjustProgressViewHeight];
@@ -670,7 +667,7 @@
         NSLog (@"defaultLanguageName: %@\n", defaultLanguageName);
         
         [self.defaults setObject:defaultLanguageName forKey:kLanguage];
-        [self.defaults setBool:YES forKey:kSelectionTypeHighlighted];
+        [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults setFloat:1.0 forKey:kVolumeValue];
         [self.defaults setFloat:1.0 forKey:kPitchValue];
         [self.defaults setFloat:0.07 forKey:kRateValue];
@@ -805,7 +802,6 @@
         [self.view layoutIfNeeded];
         self.archiveButton.enabled = YES;
         self.saveAlertLabel.alpha = 0.0;
-//        self.saveAlertLabel.text = @"WORD SELECTING";
     } completion:nil];
     
     [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -891,25 +887,24 @@
 
 - (void)applicationWillResignActive
 {
-//	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+    
 }
 
 
 - (void)applicationDidBecomeActive
 {
-//	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+    
 }
 
 
 - (void)applicationDidEnterBackground
 {
-//	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
+    
 }
 
 
 - (void)applicationWillEnterForeground
 {
-//	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
 	[self checkToPasteText];
 }
 
@@ -962,11 +957,11 @@
 
 - (void)configureUI
 {
-    self.menuView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1]; //[UIColor colorWithRed:0.988 green:0.757 blue:0 alpha:1]; //[UIColor colorWithRed:0.149 green:0.604 blue:0.949 alpha:1];
+    self.menuView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.saveAlertView.backgroundColor = [UIColor colorWithRed:0.945 green:0.671 blue:0.686 alpha:1];
     self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
-    self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1]; //[UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1]; //[UIColor colorWithRed:0.988 green:0.757 blue:0 alpha:1]; //[UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
-    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1]; //[UIColor colorWithRed:0.329 green:0.384 blue:0.827 alpha:1];
+    self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1];
+    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     
     //Image View
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -1083,68 +1078,50 @@
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     _selectedRange = self.textView.selectedRange;
-//    NSLog (@"selectedRange.location: %lu and length: %lu\n", selectedRange.location, selectedRange.length);
-//    
-//    if (selectedRange.location == 0 && selectedRange.length == 0) { //or NSNotFound?
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            self.textView.selectedRange = NSMakeRange(0, 0);
-//        });;
-//    } else {
-//         self.textView.selectedRange = selectedRange;
-//    }
     
-    if (![self.textView hasText])
-    {
+    if (![self.textView hasText]) {
+        
         NSLog(@"self.textview has no text.");
-//        [self.textView select:self];
-    }
-    else if ([self.textView hasText] && _selectedRange.length == 0)
-    {
+        
+    } else if ([self.textView hasText] && _selectedRange.length == 0) {
+        
         NSLog(@"self.textview has texts but selectedRange.length == 0");
         [self.textView select:self];
         
-//        NSRange selectedRange = self.textView.selectedRange;
-//        if (selectedRange.length > 0) {
-//            NSLog(@"self.textview has texts and selectedRange.length > 0");
-////            selectedRange.length = 0;
-//            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
-//        }
-    }
-    else if ([self.textView hasText] && _selectedRange.length > 0)
-    {
+    } else if ([self.textView hasText] && _selectedRange.length > 0) {
+        
         NSLog(@"self.textview has texts and selectedRange.length > 0");
-//        selectedRange.location = selectedRange.location + selectedRange.length;
-//        selectedRange.length = 0;
         self.textView.selectedRange = _selectedRange;
     }
 }
 
 
+#pragma mark - Not Use
+
 - (void)nextWord
 {
-    NSRange selectedRange = self.textView.selectedRange;
-    NSInteger currentLocation = selectedRange.location + selectedRange.length;
+    _selectedRange = self.textView.selectedRange;
+    NSInteger currentLocation = _selectedRange.location + _selectedRange.length;
     NSInteger textLength = [self.textView.text length];
     
     if ( currentLocation == textLength ) {
         return;
     }
     
-    NSRange newRange = [self.textView.text
-                        rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]
-                        options:NSCaseInsensitiveSearch
-                        range:NSMakeRange((currentLocation + 1), (textLength - 1 - currentLocation))];
+    NSRange newRange = [self.textView.text rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSCaseInsensitiveSearch range:NSMakeRange((currentLocation + 1), (textLength - 1 - currentLocation))];
     
     if ( newRange.location != NSNotFound ) {
+        
         self.textView.selectedRange = NSMakeRange(newRange.location, 0);
+        
     } else {
+        
         self.textView.selectedRange = NSMakeRange(textLength, 0);
     }
+    
     [self.textView scrollToVisibleCaretAnimated];
 }
 
-
-#pragma mark - Show no text to speech alert
 
 - (void)showNoTextToSpeechAlertTitle:(NSString *)aTitle withBody:(NSString *)aBody
 {
@@ -1160,6 +1137,18 @@
     sheet.popoverPresentationController.sourceRect = self.view.frame;
     
     [self presentViewController:sheet animated:YES completion:nil];
+}
+
+
+- (void)updateTextAttributeWithSelectedRange:(NSRange)characterRange
+{
+    UIFont *font = [UIFont fontWithName:kFontName size:kFontSizeiPhone];
+    UIColor *color = [UIColor orangeColor];
+    
+    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
+    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:characterRange];
+    [mutableAttributedString addAttribute:NSFontAttributeName value:font range:characterRange];
+    self.textView.attributedText = mutableAttributedString;
 }
 
 
