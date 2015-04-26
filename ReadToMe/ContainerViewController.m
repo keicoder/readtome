@@ -108,7 +108,9 @@
     NSRange _selectedRange;
     NSRange _previousSelectedRange;
     int _totalTextLength;
-    int _spokenTextLengths;
+    int _spokenTextRangeLocation;
+    int _spokenTextRangeLength;
+    NSString *_subString;
     float _speechLocationPercentValueInWholeTexts;
 }
 
@@ -131,6 +133,7 @@
 	
     _paused = YES;
     _totalTextLength = 0;
+    _subString = self.textView.text;
     
     [self hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation]; //화면에 보여주지 않기
 }
@@ -159,11 +162,6 @@
 {
 	[super viewWillAppear:animated];
     [self checkToPasteText];
-	[self speechLanguage];
-    [self typeSelecting];
-	[self volumeValue];
-	[self pitchValue];
-	[self rateValue];
 }
 
 
@@ -237,35 +235,40 @@
 
 - (IBAction)volumeSliderValueChanged:(UISlider *)sender
 {
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    _paused = YES;
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    //[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    //_paused = YES;
+    //[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     self.volume = sender.value;
     [self.defaults setFloat:sender.value forKey:kVolumeValue];
     [self.defaults synchronize];
     
+    [self volumeValue];
 }
 
 
 - (IBAction)pitchSliderValueChanged:(UISlider *)sender
 {
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    _paused = YES;
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    //[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    //_paused = YES;
+    //[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     self.pitch = sender.value;
     [self.defaults setFloat:sender.value forKey:kPitchValue];
     [self.defaults synchronize];
+    
+    [self pitchValue];
 }
 
 
 - (IBAction)rateSliderValueChanged:(UISlider *)sender
 {
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    _paused = YES;
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    //[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    //_paused = YES;
+    //[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     self.rate = sender.value;
     [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
     [self.defaults synchronize];
+    
+    [self rateValue];
 }
 
 
@@ -305,6 +308,8 @@
 
 - (IBAction)speechText:(id)sender
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     CGFloat time;
     if (_equalizerViewExpanded == YES) {
         [self adjustEqualizerViewHeight];
@@ -316,50 +321,65 @@
         time = 0.0;
     }
     
+    
+    [self speechLanguage];
+    [self typeSelecting];
+    [self volumeValue];
+    [self pitchValue];
+    [self rateValue];
+    
+    
+    self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
+    self.utterance.volume = self.volume;
+    self.utterance.pitchMultiplier = self.pitch;
+    self.utterance.rate = self.rate;
+    self.utterance.preUtteranceDelay = 0.3f;
+    self.utterance.postUtteranceDelay = 0.3f;
+    
+    
+    CGFloat duration = 0.25f;
+    
+    if (_paused == YES) {
+        
+        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+        _paused = NO;
+        [self.synthesizer continueSpeaking];
+        [UIView animateWithDuration:duration animations:^{
+            self.resetButton.alpha = 1.0;
+        }completion:^(BOOL finished) { }];
+        
+    } else {
+        
+        [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+        [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        _paused = YES;
+        [UIView animateWithDuration:duration animations:^{
+            self.resetButton.alpha = 0.0;
+        }completion:^(BOOL finished) { }];
+    }
+    
+    if (self.synthesizer.isSpeaking == NO) {
+        
+        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+        [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        [self.synthesizer speakUtterance:self.utterance];
+        
+        [UIView animateWithDuration:duration animations:^{
+            self.resetButton.alpha = 1.0;
+        }completion:^(BOOL finished) { }];
+        
+    }
+    
+    if (_isTypeSelecting == YES) {
+        NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+        [self selectWord];
+    } else {
+        NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    }
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
         
-//        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-        self.utterance = [[AVSpeechUtterance alloc] initWithString:self.textView.text]; //An utterance’s text cannot be changed once it is created. To speak different text, create a new utterance.
-        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
-        self.utterance.volume = self.volume;
-        self.utterance.pitchMultiplier = self.pitch;
-        self.utterance.rate = self.rate;
-        self.utterance.preUtteranceDelay = 0.3f;
-        self.utterance.postUtteranceDelay = 0.3f;
-        
-        CGFloat duration = 0.25f;
-        
-        if (_paused == YES) {
-            [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-            [self.synthesizer continueSpeaking];
-            _paused = NO;
-            [UIView animateWithDuration:duration animations:^{
-                self.resetButton.alpha = 1.0;
-            }completion:^(BOOL finished) { }];
-        } else {
-            [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-            [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-            _paused = YES;
-            [UIView animateWithDuration:duration animations:^{
-                self.resetButton.alpha = 0.0;
-            }completion:^(BOOL finished) { }];
-        }
-        
-        if (self.synthesizer.isSpeaking == NO) {
-            if (_isTypeSelecting == NO) {
-                NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
-                [self selectWord];
-            } else {
-                NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
-            }
-            [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-            [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-            [self.synthesizer speakUtterance:self.utterance];
-            
-            [UIView animateWithDuration:duration animations:^{
-                self.resetButton.alpha = 1.0;
-            }completion:^(BOOL finished) { }];
-        }
     });
 }
 
@@ -427,10 +447,10 @@
 
 - (IBAction)selectionButtonTapped:(id)sender
 {
-    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
+    //[self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
+    //[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    //[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    //_paused = YES;
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -442,22 +462,36 @@
     }
     
     if (_isTypeSelecting == YES) {
+        
         _isTypeSelecting = NO;
         [self.defaults setBool:NO forKey:kTypeSelecting];
         [self.defaults synchronize];
         
         [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" withSender:self.selectionButton];
+        
+        [self typeSelecting];
+        
+        NSRange selectedRange = self.textView.selectedRange;
+        if (selectedRange.length > 0) {
+            selectedRange.length = 0;
+            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+        }
+        
     } else {
+        
         _isTypeSelecting = YES;
         [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults synchronize];
+        
         [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" withSender:self.selectionButton];
-    }
-    
-    NSRange selectedRange = self.textView.selectedRange;
-    if (selectedRange.length > 0) {
-        selectedRange.length = 0;
-        self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+        
+        [self typeSelecting];
+        
+        NSRange selectedRange = self.textView.selectedRange;
+        if (selectedRange.length > 0) {
+            selectedRange.length = 0;
+            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+        }
     }
     
     NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
@@ -491,10 +525,11 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
-    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
-	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self adjustEqualizerViewHeight];
+    //[self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
+	//[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    [self adjustEqualizerViewHeight];
 	_paused = YES;
 }
 
@@ -527,27 +562,27 @@
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
 {
     NSRange rangeInTotalText;
+    
     if (_isTypeSelecting == YES) {
         
         rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length);
-        
         //[self updateTextAttributeWithSelectedRange:characterRange]; //보류 > 텍스트 하이라이트 기능
         
     } else {
-        
         rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length  - characterRange.length);
     }
     
     self.textView.selectedRange = rangeInTotalText;
     [self.textView scrollToVisibleCaretAnimated]; //Auto Scroll. Yahoo!
     
-    float textViewLength = (float)[self.textView.text length];
+    float entireTextLength = (float)[self.textView.text length];
     float location = (float)self.textView.selectedRange.location;
-    _speechLocationPercentValueInWholeTexts = (location / textViewLength) * 100;
+    _speechLocationPercentValueInWholeTexts = (location / entireTextLength) * 100;
     self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
     
-    _spokenTextLengths = location;
-    NSLog (@"spokenTextLengths: %d\f",_spokenTextLengths);
+    _spokenTextRangeLocation = location;
+    _spokenTextRangeLength = (int)self.textView.selectedRange.length;
+    _subString = [self.textView.text substringFromIndex:location];
 }
 
 
@@ -573,13 +608,21 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    
+    float location = (float)self.textView.selectedRange.location;
+    _spokenTextRangeLocation = location;
+    _spokenTextRangeLength = (int)self.textView.selectedRange.length;
+    NSRange spokenTextRange = NSMakeRange(_spokenTextRangeLocation, _spokenTextRangeLength);
+    self.textView.selectedRange = spokenTextRange;
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    
+    float location = (float)self.textView.selectedRange.location;
+    _spokenTextRangeLocation = location;
+    _spokenTextRangeLength = (int)self.textView.selectedRange.length;
+    NSRange spokenTextRange = NSMakeRange(_spokenTextRangeLocation, _spokenTextRangeLength);
+    self.textView.selectedRange = spokenTextRange;
 }
 
 
