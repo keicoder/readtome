@@ -104,8 +104,8 @@
 	
 	self.section = monthAndYearString;
 	
-	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
-	self.uniqueIdString = uniqueIDString;
+//	NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+//	self.uniqueIdString = uniqueIDString;
 }
 
 

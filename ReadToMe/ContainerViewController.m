@@ -7,11 +7,9 @@
 //
 
 #define debug                       1
-#define kBackgroundColor            [UIColor colorWithRed:0.286 green:0.58 blue:0.753 alpha:1]
-#define kWhiteColor                 [UIColor whiteColor]
+
 #define kPause                      [UIImage imageNamed:@"pause"]
 #define kPlay                       [UIImage imageNamed:@"play"]
-#define kSettings                   [UIImage imageNamed:@"settings"]
 
 #define kHasLaunchedOnce            @"kHasLaunchedOnce"
 #define kTypeSelecting              @"kTypeSelecting"
@@ -23,11 +21,6 @@
 #define kFontName                   @"HelveticaNeue-Light"
 #define kFontSizeiPhone             20.0
 #define kFontSizeiPad               22.0
-
-#define kBackgroundPlayValue        @"kBackgroundPlayValue"
-#define kBackgroundOn               @"Background On"
-
-#define kSharedDocument             @"kSharedDocument" //Shared Extension item
 
 
 #import "ContainerViewController.h"
@@ -46,6 +39,7 @@
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, strong) NSMutableArray *fetchedDocuments;
 
 @property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
 @property (nonatomic, strong) AVSpeechUtterance *utterance;
@@ -55,8 +49,6 @@
 @property (nonatomic, assign) float volume;
 @property (nonatomic, assign) float pitch;
 @property (nonatomic, assign) float rate;
-
-@property (nonatomic, strong) NSString *backgroundPlayValue;
 
 @property (strong, nonatomic) NSDictionary *paragraphAttributes;
 
@@ -106,8 +98,6 @@
 	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
     NSRange _selectedRange;
-    NSRange _previousSelectedRange;
-    int _totalTextLength;
     int _spokenTextRangeLocation;
     int _spokenTextRangeLength;
     NSString *_subString;
@@ -119,8 +109,6 @@
 
 - (void)setInitialData
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
 	self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
     
 	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
@@ -129,10 +117,7 @@
 	self.pasteBoard.persistent = YES;
 	self.defaults = [NSUserDefaults standardUserDefaults];
     
-	self.backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
-	
     _paused = YES;
-    _totalTextLength = 0;
     _subString = self.textView.text;
     
     [self hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation]; //화면에 보여주지 않기
@@ -184,7 +169,7 @@
 - (NSString *)speechLanguage
 {
     self.language = [self.defaults objectForKey:kLanguage];
-    NSLog (@"self.language: %@\n", self.language);
+    //NSLog (@"self.language: %@\n", self.language);
     return self.language;
 }
 
@@ -192,7 +177,7 @@
 - (BOOL)typeSelecting
 {
     _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    //NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
     return _isTypeSelecting;
 }
 
@@ -201,7 +186,7 @@
 {
     self.volume = [self.defaults floatForKey:kVolumeValue];
     self.volumeSlider.value = self.volume;
-    NSLog (@"self.volume: %f\n", self.volume);
+    //NSLog (@"self.volume: %f\n", self.volume);
     return self.volume;
 }
 
@@ -210,7 +195,7 @@
 {
     self.pitch = [self.defaults floatForKey:kPitchValue];
     self.pitchSlider.value = self.pitch;
-    NSLog (@"self.pitch: %f\n", self.pitch);
+    //NSLog (@"self.pitch: %f\n", self.pitch);
     return self.pitch;
 }
 
@@ -219,7 +204,7 @@
 {
     self.rate = [self.defaults floatForKey:kRateValue];
     self.rateSlider.value = self.rate;
-    NSLog (@"self.rate: %f\n", self.rate);
+    //NSLog (@"self.rate: %f\n", self.rate);
     return self.rate;
 }
 
@@ -235,9 +220,10 @@
 
 - (IBAction)volumeSliderValueChanged:(UISlider *)sender
 {
-    //[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    //_paused = YES;
-    //[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    
     self.volume = sender.value;
     [self.defaults setFloat:sender.value forKey:kVolumeValue];
     [self.defaults synchronize];
@@ -248,9 +234,10 @@
 
 - (IBAction)pitchSliderValueChanged:(UISlider *)sender
 {
-    //[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    //_paused = YES;
-    //[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    
     self.pitch = sender.value;
     [self.defaults setFloat:sender.value forKey:kPitchValue];
     [self.defaults synchronize];
@@ -261,9 +248,10 @@
 
 - (IBAction)rateSliderValueChanged:(UISlider *)sender
 {
-    //[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    //_paused = YES;
-    //[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    
     self.rate = sender.value;
     [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
     [self.defaults synchronize];
@@ -276,31 +264,21 @@
 
 - (void)checkToPasteText
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (self.pasteBoard.string == NULL || self.pasteBoard.string == nil || [self.pasteBoard.string  isEqualToString: @""]) {
-        NSLog(@"self.pasteBoard.string is null");
-    }
-    else if ([self.pasteBoard.string isEqualToString:self.textView.text]) {
-        NSLog(@"self.pasteBoard.string and self.textView.text are equal, so nothing happened");
+    if (!self.pasteBoard.string || [self.pasteBoard.string  isEqualToString: @""]) {
         
-    }
-    else {
-        NSLog(@"self.pasteBoard.string and self.textView.text are not equal, so paste it to textview");
+        self.pasteBoard.string = @"There are no text to speech.\n\nCopy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
         self.textView.text = self.pasteBoard.string;
-        _selectedRange = NSMakeRange(0, 0);
-        self.textView.selectedRange = _selectedRange;
-        NSLog (@"self.textView.selectedRange.location: %lu, and length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
-        [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-        NSLog(@"Because paste new text, avspeech synthsizer stoped speaking. New Start will began.");
-        _paused = YES;
-        [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+        
+    } else if (![self.pasteBoard.string isEqualToString:self.textView.text]) {
+        
+        self.textView.text = self.pasteBoard.string;
     }
     
-    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.keicoder.demo.readtome"];
-    NSString *sharedDocument = [sharedDefaults objectForKey:kSharedDocument];
-    NSLog (@"sharedDocument: %@\n", sharedDocument);
+    _selectedRange = NSMakeRange(0, 0);
+    self.textView.selectedRange = _selectedRange;
     
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
 }
 
 
@@ -308,8 +286,6 @@
 
 - (IBAction)speechText:(id)sender
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
     CGFloat time;
     if (_equalizerViewExpanded == YES) {
         [self adjustEqualizerViewHeight];
@@ -344,7 +320,9 @@
         
         [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
         _paused = NO;
+        
         [self.synthesizer continueSpeaking];
+        
         [UIView animateWithDuration:duration animations:^{
             self.resetButton.alpha = 1.0;
         }completion:^(BOOL finished) { }];
@@ -352,8 +330,10 @@
     } else {
         
         [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-        [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
         _paused = YES;
+        
+        [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        
         [UIView animateWithDuration:duration animations:^{
             self.resetButton.alpha = 0.0;
         }completion:^(BOOL finished) { }];
@@ -362,25 +342,18 @@
     if (self.synthesizer.isSpeaking == NO) {
         
         [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-        [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        _paused = NO;
+        
         [self.synthesizer speakUtterance:self.utterance];
         
         [UIView animateWithDuration:duration animations:^{
             self.resetButton.alpha = 1.0;
         }completion:^(BOOL finished) { }];
-        
     }
     
     if (_isTypeSelecting == YES) {
-        NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
         [self selectWord];
-    } else {
-        NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
     }
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-        
-    });
 }
 
 
@@ -447,7 +420,6 @@
 
 - (IBAction)selectionButtonTapped:(id)sender
 {
-    //[self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
     [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     _paused = YES;
@@ -494,9 +466,6 @@
         }
     }
     
-    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
-    
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
         
         [self.synthesizer continueSpeaking];
@@ -535,10 +504,10 @@
 {
     //[self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
 	//[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    //[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+	//[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    //_paused = YES;
     [self adjustEqualizerViewHeight];
-	_paused = YES;
 }
 
 
@@ -574,9 +543,9 @@
     if (_isTypeSelecting == YES) {
         
         rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length);
-        //[self updateTextAttributeWithSelectedRange:characterRange]; //보류 > 텍스트 하이라이트 기능
         
     } else {
+        
         rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length  - characterRange.length);
     }
     
@@ -587,21 +556,19 @@
     float location = (float)self.textView.selectedRange.location;
     _speechLocationPercentValueInWholeTexts = (location / entireTextLength) * 100;
     self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
-    
-    _spokenTextRangeLocation = location;
-    _spokenTextRangeLength = (int)self.textView.selectedRange.length;
-    _subString = [self.textView.text substringFromIndex:location];
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didStartSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    
+    NSLog(@"speechSynthesizer didStartSpeechUtterance");
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
+    NSLog(@"speechSynthesizer didFinishSpeechUtterance");
+    
     [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
     
 	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -616,27 +583,19 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    float location = (float)self.textView.selectedRange.location;
-    _spokenTextRangeLocation = location;
-    _spokenTextRangeLength = (int)self.textView.selectedRange.length;
-    NSRange spokenTextRange = NSMakeRange(_spokenTextRangeLocation, _spokenTextRangeLength);
-    self.textView.selectedRange = spokenTextRange;
+    NSLog(@"speechSynthesizer didPauseSpeechUtterance");
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    float location = (float)self.textView.selectedRange.location;
-    _spokenTextRangeLocation = location;
-    _spokenTextRangeLength = (int)self.textView.selectedRange.length;
-    NSRange spokenTextRange = NSMakeRange(_spokenTextRangeLocation, _spokenTextRangeLength);
-    self.textView.selectedRange = spokenTextRange;
+    NSLog(@"speechSynthesizer didContinueSpeechUtterance");
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    
+    NSLog(@"speechSynthesizer didCancelSpeechUtterance");
 }
 
 
@@ -707,31 +666,18 @@
 - (void)checkHasLaunchedOnce
 {
     if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
-		
-        NSLog (@"HasLaunchedOnce: %@\n", [self.defaults boolForKey:kHasLaunchedOnce] ? @"YES" : @"NO");
         
         [self.defaults setBool:YES forKey:kHasLaunchedOnce];
         
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
         NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
         NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
-        NSLog (@"defaultLanguageName: %@\n", defaultLanguageName);
         
         [self.defaults setObject:defaultLanguageName forKey:kLanguage];
         [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults setFloat:1.0 forKey:kVolumeValue];
         [self.defaults setFloat:1.0 forKey:kPitchValue];
         [self.defaults setFloat:0.07 forKey:kRateValue];
-        
-        [self.defaults setObject:kBackgroundOn forKey:kBackgroundPlayValue];        
-        [self.defaults synchronize];
-        
-        NSString *backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
-        NSLog (@"backgroundPlayValue: %@\n", backgroundPlayValue);
-    
-    } else {
-        
-        NSLog (@"HasLaunchedOnce: %@\n", [self.defaults boolForKey:kHasLaunchedOnce] ? @"YES" : @"NO");
     }
 }
 
@@ -740,7 +686,7 @@
 
 - (void)adjustSlideViewHeightWithTitle:(NSString *)string withSender:(UIButton *)button
 {
-	CGFloat duration = 0.3f;
+	CGFloat duration = 0.2f;
 	CGFloat delay = 0.0f;
 	
 	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -756,7 +702,7 @@
 	} completion:^(BOOL finished) {
 		
         //Dispatch After
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
             
             [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
                 
@@ -960,6 +906,76 @@
 }
 
 
+#pragma mark - Save Current Documents For Speech
+
+- (void)saveCurrentDocument
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if (self.managedObjectContext == nil) {
+        self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+    }
+    
+    self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
+    self.currentDocument.language = self.language;
+    self.currentDocument.volume = [NSNumber numberWithFloat:self.volume];;
+    self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitch];
+    self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
+    
+    NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+    self.currentDocument.uniqueIdString = uniqueIDString;
+    
+    self.currentDocument.document = self.textView.text;
+    
+    NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
+    self.currentDocument.documentTitle = firstLineForTitle;
+    
+    [self.managedObjectContext performBlock:^{
+        NSError *error = nil;
+        if ([self.managedObjectContext save:&error]) {
+            
+            NSLog (@"Save to coredata succeed");
+            
+            [self executePerformFetch];
+            
+        } else {
+            
+            NSLog(@"Error saving to coredata: %@", error);
+        }
+    }];
+}
+
+
+#pragma mark 첫째 라인만 가져오기
+
+- (NSString *)retrieveFirstLineOfStringForTitle:(NSString *)string
+{
+    NSString *trimmedString = nil;
+    NSCharacterSet *charSet = [NSCharacterSet whitespaceAndNewlineCharacterSet]; //공백, 라인 피드문자 삭제
+    trimmedString = [string stringByTrimmingCharactersInSet:charSet];
+    
+    __block NSString *firstLine = nil;
+    NSString *wholeText = trimmedString;
+    [wholeText enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+        firstLine = [line copy];
+        *stop = YES;
+    }];
+    
+    if (firstLine.length == 0)
+    {
+        firstLine = @"Empty Title";
+    }
+    
+    if (firstLine.length > 0)
+    {
+        __block NSString *trimmedTitle = nil;
+        [firstLine enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {trimmedTitle = line; *stop = YES;}];
+    }
+    
+    return firstLine;
+}
+
+
 #pragma mark - Fetched Results Controller
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -1000,6 +1016,23 @@
 	} else {
 		
 		NSLog (@"[self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
+        
+        self.fetchedDocuments = nil;
+        
+        for (DocumentsForSpeech *document in [self.fetchedResultsController fetchedObjects]) {
+        
+            //NSLog (@"document: %@\n", document);
+            //NSLog (@"document.uniqueIdString: %@\n", document.uniqueIdString);
+            [self.fetchedDocuments addObject:document];
+        }
+        
+        for (DocumentsForSpeech *document in self.fetchedDocuments) {
+            if (document.uniqueIdString == self.currentDocument.uniqueIdString) {
+                self.currentDocument = document;
+                NSLog (@"document.uniqueIdString: %@\n", document.uniqueIdString);
+                NSLog (@"self.currentDocument.uniqueIdString: %@\n", self.currentDocument.uniqueIdString);
+            }
+        }
 	}
 }
 
@@ -1054,96 +1087,22 @@
 }
 
 
-#pragma mark - Save Current Documents For Speech
-
-- (IBAction)saveCurrentDocument:(id)sender
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (self.managedObjectContext == nil) {
-        self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-        NSLog (@"self.managedObjectContext: %@\n", self.managedObjectContext);
-    }
-    
-    DocumentsForSpeech *document = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-    document.language = self.language;
-    document.volume = [NSNumber numberWithFloat:self.volume];;
-    document.pitch = [NSNumber numberWithFloat:self.pitch];
-    document.rate = [NSNumber numberWithFloat:self.rate];
-    
-    document.document = self.textView.text;
-    
-    NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
-    document.documentTitle = firstLineForTitle;
-    
-    [self.managedObjectContext performBlock:^{
-        NSError *error = nil;
-        if ([self.managedObjectContext save:&error]) {
-            
-            NSLog (@"Save to coredata succeed");
-            
-            [self executePerformFetch];
-            
-        } else {
-            
-            NSLog(@"Error saving to coredata: %@", error);
-        }
-    }];
-}
-
-
-#pragma mark 첫째 라인만 가져오기
-
-- (NSString *)retrieveFirstLineOfStringForTitle:(NSString *)string
-{
-    NSString *trimmedString = nil;
-    NSCharacterSet *charSet = [NSCharacterSet whitespaceAndNewlineCharacterSet]; //공백, 라인 피드문자 삭제
-    trimmedString = [string stringByTrimmingCharactersInSet:charSet];
-    
-    __block NSString *firstLine = nil;
-    NSString *wholeText = trimmedString;
-    [wholeText enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-        firstLine = [line copy];
-        *stop = YES;
-    }];
-    
-    if (firstLine.length == 0)
-    {
-        firstLine = @"Empty Title";
-    }
-    
-    if (firstLine.length > 0)
-    {
-        __block NSString *trimmedTitle = nil;
-        [firstLine enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {trimmedTitle = line; *stop = YES;}];
-    }
-    
-    return firstLine;
-}
-
-
 #pragma mark - Select Word
 
 - (void)selectWord
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
     _selectedRange = self.textView.selectedRange;
     
-    if (![self.textView hasText]) {
-        
-        NSLog(@"self.textview has no text.");
-        
-    } else if ([self.textView hasText] && _selectedRange.length == 0) {
-        
-        NSLog(@"self.textview has texts but selectedRange.length == 0");
-        [self.textView select:self];
-        
-    } else if ([self.textView hasText] && _selectedRange.length > 0) {
-        
-        NSLog(@"self.textview has texts and selectedRange.length > 0");
-        self.textView.selectedRange = _selectedRange;
-    }
+    [self.textView select:self];
+    
+//    if ([self.textView hasText] && _selectedRange.length == 0) {
+//        
+//        //[self.textView select:self];
+//        
+//    } else if ([self.textView hasText] && _selectedRange.length > 0) {
+//        
+//        self.textView.selectedRange = _selectedRange;
+//    }
 }
 
 
