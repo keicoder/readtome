@@ -37,6 +37,7 @@
 #import "DocumentsForSpeech.h"
 #import "DataManager.h"
 #import "KeiTextView.h"
+#import "UIViewController+BHTKeyboardNotifications.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate, UITextViewDelegate>
@@ -99,6 +100,8 @@
 
 @implementation ContainerViewController
 {
+    CGRect _keyboardRect;
+    
 	BOOL _paused;
     BOOL _isTypeSelecting;
     BOOL _progressViewExpanded;
@@ -131,10 +134,6 @@
     
     self.textView.delegate = self;
     
-    //키보드 숨길때 튕김현상 발생
-//    self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
-//    self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
-    
     [self hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation]; //화면에 보여주지 않기
 }
 
@@ -147,6 +146,7 @@
     [self configureSliderUI];
 	[self setInitialData]; //순서 바꾸지 말 것
     [self stopSpeech];
+//    [self setupKeyboardAnimations];
     [self registerKeyboardNotifications];
     [self checkHasLaunchedOnce];
 	[self addPickedLanguageObserver];
@@ -222,15 +222,12 @@
 
 - (IBAction)speechText:(id)sender
 {
-    CGFloat time;
     if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight];
-        time = 0.35;
+        [self adjustEqualizerViewHeight:0.0];
+        _equalizerViewExpanded = NO;
+        
     } else if (_progressViewExpanded == NO) {
-        time = 0.30;
         [self adjustProgressViewHeight];
-    } else {
-        time = 0.0;
     }
     
     
@@ -280,6 +277,7 @@
         }completion:^(BOOL finished) { }];
     }
     
+    
     if (_isTypeSelecting == YES) {
         [self selectWord];
     }
@@ -293,7 +291,8 @@
     [self stopSpeech];
     
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight];
+		[self adjustEqualizerViewHeight:0.0];
+        _equalizerViewExpanded = NO;
 		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.0];
@@ -321,6 +320,11 @@
     
     _paused = YES;
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    
+    if (self.textView.editable == NO) {
+        self.textView.editable = YES;
+        [self.textView resignFirstResponder];
+    }
 }
 
 
@@ -331,7 +335,8 @@
 	_paused = YES;
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight];
+		[self adjustEqualizerViewHeight:0.0];
+        _equalizerViewExpanded = NO;
 		[self performSelector:@selector(action:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(action:) withObject:nil afterDelay:0.0];
@@ -357,7 +362,8 @@
     }completion:^(BOOL finished) { }];
     
     if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight];
+        [self adjustEqualizerViewHeight:0.0];
+        _equalizerViewExpanded = NO;
     }
     
     if (_isTypeSelecting == YES) {
@@ -400,7 +406,8 @@
     [self stopSpeech];
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight];
+		[self adjustEqualizerViewHeight:0.0];
+        _equalizerViewExpanded = NO;
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.0];
@@ -420,7 +427,13 @@
 - (IBAction)equalizerButtonTappped:(id)sender
 {
     [self stopSpeech];
-    [self adjustEqualizerViewHeight];
+    if (_equalizerViewExpanded == YES) {
+        [self adjustEqualizerViewHeight:0.0];
+        _equalizerViewExpanded = NO;
+    } else {
+        [self adjustEqualizerViewHeight:150.0];
+        _equalizerViewExpanded = YES;
+    }
 }
 
 
@@ -431,7 +444,8 @@
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight];
+		[self adjustEqualizerViewHeight:0.0];
+        _equalizerViewExpanded = NO;
 		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.0];
@@ -500,33 +514,6 @@
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance
 {
     NSLog(@"speechSynthesizer didCancelSpeechUtterance");
-}
-
-
-#pragma mark - NSAttributedString
-
-- (NSDictionary *)paragraphAttributesWithColor:(UIColor *)color
-{
-	if ( _paragraphAttributes == nil) {
-		
-        UIFont *font;
-        
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            font = [UIFont fontWithName:kFontName size:kFontSizeiPad];
-        } else {
-            font = [UIFont fontWithName:kFontName size:kFontSizeiPhone];
-        }
-		
-		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-		paragraphStyle.firstLineHeadIndent = 0.0f;
-		paragraphStyle.lineSpacing = 2.0f;
-		paragraphStyle.paragraphSpacing = 4.0f;
-		paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-		
-        _paragraphAttributes = @{ NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle, NSForegroundColorAttributeName:color };
-	}
-	
-	return _paragraphAttributes;
 }
 
 
@@ -609,23 +596,17 @@
 
 #pragma mark - Show equalizer view when user touches equalizer button
 
-- (void)adjustEqualizerViewHeight
+- (void)adjustEqualizerViewHeight:(float)height
 {
-    if (_equalizerViewExpanded == YES) {
-        self.equalizerViewHeightConstraint.constant = 0.0;
-        _equalizerViewExpanded = NO;
-    } else {
-        self.equalizerViewHeightConstraint.constant = 150.0;
-        _equalizerViewExpanded = YES;
-    }
+    self.equalizerViewHeightConstraint.constant = height;
     
-    CGFloat duration = 0.25f;
-    CGFloat delay = 0.0f;
+    CGFloat duration = 0.45f;
+    CGFloat delay = 0.1f;
     [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
         
         [self.view layoutIfNeeded];
         
-        if (_equalizerViewExpanded == YES) {
+        if (_equalizerViewExpanded == NO) {
             self.volumeLabel.alpha = 1.0;
             self.pitchLabel.alpha = 1.0;
             self.rateLabel.alpha = 1.0;
@@ -1194,6 +1175,24 @@
 
 #pragma mark - Keyboard handle
 
+- (void)setupKeyboardAnimations
+{
+    __weak typeof(self) wself = self;
+    
+    [self setKeyboardWillShowAnimationBlock:^(CGRect keyboardFrame) {
+    
+        [wself adjustEqualizerViewHeight:keyboardFrame.size.height];
+        _equalizerViewExpanded = YES;
+    }];
+    
+    [self setKeyboardWillHideAnimationBlock:^(CGRect keyboardFrame) {
+        
+        [wself adjustEqualizerViewHeight:0.0];
+        _equalizerViewExpanded = NO;
+    }];
+}
+
+
 - (void)registerKeyboardNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:)
@@ -1206,13 +1205,24 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-    [self.textView keyboardWillShow:notification];
+    //[self.textView keyboardWillShow:notification];
+    
+    NSDictionary *info = [notification userInfo];
+    CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
+    CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
+    
+    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight];
+    _equalizerViewExpanded = YES;
 }
 
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-    [self.textView keyboardWillHide:notification];
+    //[self.textView keyboardWillHide:notification];
+    
+    [self adjustEqualizerViewHeight:0.0];
+    _equalizerViewExpanded = NO;
 }
 
 
@@ -1229,62 +1239,6 @@
 {
     NSLog(@"textViewShouldEndEditing");
     return YES;
-}
-
-
-#pragma mark - Not Use
-
-- (void)nextWord
-{
-    _selectedRange = self.textView.selectedRange;
-    NSInteger currentLocation = _selectedRange.location + _selectedRange.length;
-    NSInteger textLength = [self.textView.text length];
-    
-    if ( currentLocation == textLength ) {
-        return;
-    }
-    
-    NSRange newRange = [self.textView.text rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSCaseInsensitiveSearch range:NSMakeRange((currentLocation + 1), (textLength - 1 - currentLocation))];
-    
-    if ( newRange.location != NSNotFound ) {
-        
-        self.textView.selectedRange = NSMakeRange(newRange.location, 0);
-        
-    } else {
-        
-        self.textView.selectedRange = NSMakeRange(textLength, 0);
-    }
-    
-    [self.textView scrollToVisibleCaretAnimated];
-}
-
-
-- (void)showNoTextToSpeechAlertTitle:(NSString *)aTitle withBody:(NSString *)aBody
-{
-    NSString *title = aTitle;
-    NSString *message = aBody;
-    
-    UIAlertController *sheet = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    [sheet addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^void (UIAlertAction *action) {
-        NSLog(@"Tapped OK");
-    }]];
-    
-    sheet.popoverPresentationController.sourceView = self.view;
-    sheet.popoverPresentationController.sourceRect = self.view.frame;
-    
-    [self presentViewController:sheet animated:YES completion:nil];
-}
-
-
-- (void)updateTextAttributeWithSelectedRange:(NSRange)characterRange
-{
-    UIFont *font = [UIFont fontWithName:kFontName size:kFontSizeiPhone];
-    UIColor *color = [UIColor orangeColor];
-    
-    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:characterRange];
-    [mutableAttributedString addAttribute:NSFontAttributeName value:font range:characterRange];
-    self.textView.attributedText = mutableAttributedString;
 }
 
 

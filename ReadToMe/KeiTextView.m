@@ -36,7 +36,7 @@
 {
     CGFloat contentInsetBottom = 0.f;
     contentInsetBottom = __tg_fmin(CGRectGetHeight(_keyboardRect), CGRectGetWidth(_keyboardRect));
-    UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, contentInsetBottom, 0);
+    UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, contentInsetBottom - 56, 0);
     self.contentInset = contentInset;
 }
 

@@ -133,6 +133,9 @@ Enjoy reading!</string>
                                 <variation key="heightClass=compact">
                                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="22"/>
                                 </variation>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Mwx-45-N4G"/>
+                                </connections>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ch7-hb-2ah" userLabel="ProgressInfoView">
                                 <rect key="frame" x="0.0" y="350" width="600" height="40"/>
