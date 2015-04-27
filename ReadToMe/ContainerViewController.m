@@ -18,6 +18,7 @@
 #define kPitchValue                 @"kPitchValue"
 #define kRateValue                  @"kRateValue"
 
+#define kLastViewedDocument         @"kLastViewedDocument"
 #define kSavedDocument              @"kSavedDocument"
 #define kNotSavedDocument           @"kNotSavedDocument"
 
@@ -43,6 +44,8 @@
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSMutableArray *fetchedDocuments;
+
+@property (nonatomic, strong) NSDateFormatter *formatter;
 
 @property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
 @property (nonatomic, strong) AVSpeechUtterance *utterance;
@@ -104,6 +107,7 @@
     NSRange _selectedRange;
     int _spokenTextRangeLocation;
     int _spokenTextRangeLength;
+    NSString *_lastViewedDocument;
     NSString *_subString;
     float _speechLocationPercentValueInWholeTexts;
 }
@@ -122,7 +126,11 @@
 	self.defaults = [NSUserDefaults standardUserDefaults];
     
     _paused = YES;
+    self.isReceivedDocument = NO;
     _subString = self.textView.text;
+    
+    self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
+    self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
     
     [self hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation]; //화면에 보여주지 않기
 }
@@ -135,7 +143,7 @@
 	[self configureUI];
     [self configureSliderUI];
 	[self setInitialData]; //순서 바꾸지 말 것
-    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
+    [self stopSpeech];
     [self checkHasLaunchedOnce];
 	[self addPickedLanguageObserver];
 	[self addApplicationsStateObserver];
@@ -150,7 +158,13 @@
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+    [self lastViewedDocument];
     [self checkToPasteText];
+    [self speechLanguage];
+    [self typeSelecting];
+    [self volumeValue];
+    [self pitchValue];
+    [self rateValue];
 }
 
 
@@ -168,120 +182,24 @@
 }
 
 
-#pragma mark - State Restoration
-
-- (NSString *)speechLanguage
-{
-    self.language = [self.defaults objectForKey:kLanguage];
-    //NSLog (@"self.language: %@\n", self.language);
-    return self.language;
-}
-
-
-- (BOOL)typeSelecting
-{
-    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    //NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
-    return _isTypeSelecting;
-}
-
-
-- (CGFloat)volumeValue
-{
-    self.volume = [self.defaults floatForKey:kVolumeValue];
-    self.volumeSlider.value = self.volume;
-    //NSLog (@"self.volume: %f\n", self.volume);
-    return self.volume;
-}
-
-
-- (CGFloat)pitchValue
-{
-    self.pitch = [self.defaults floatForKey:kPitchValue];
-    self.pitchSlider.value = self.pitch;
-    //NSLog (@"self.pitch: %f\n", self.pitch);
-    return self.pitch;
-}
-
-
-- (CGFloat)rateValue
-{
-    self.rate = [self.defaults floatForKey:kRateValue];
-    self.rateSlider.value = self.rate;
-    //NSLog (@"self.rate: %f\n", self.rate);
-    return self.rate;
-}
-
-
-#pragma mark - Slider value changed
-
-- (IBAction)progressSliderValueChanged:(UISlider *)sender
-{
-    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
-}
-
-
-
-- (IBAction)volumeSliderValueChanged:(UISlider *)sender
-{
-    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
-    
-    self.volume = sender.value;
-    [self.defaults setFloat:sender.value forKey:kVolumeValue];
-    [self.defaults synchronize];
-    
-    [self volumeValue];
-}
-
-
-- (IBAction)pitchSliderValueChanged:(UISlider *)sender
-{
-    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
-    
-    self.pitch = sender.value;
-    [self.defaults setFloat:sender.value forKey:kPitchValue];
-    [self.defaults synchronize];
-    
-    [self pitchValue];
-}
-
-
-- (IBAction)rateSliderValueChanged:(UISlider *)sender
-{
-    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
-    
-    self.rate = sender.value;
-    [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
-    [self.defaults synchronize];
-    
-    [self rateValue];
-}
-
-
 #pragma mark - Paste Text
 
 - (void)checkToPasteText
 {
-    if (!self.pasteBoard.string || [self.pasteBoard.string  isEqualToString: @""]) {
+    //NSLog (@"self.pasteBoard.string: %@\n", self.pasteBoard.string);
+    
+    if (!self.pasteBoard.string) {
         
         self.pasteBoard.string = @"There are no text to speech.\n\nCopy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
         self.textView.text = self.pasteBoard.string;
         
-    } else if (![self.pasteBoard.string isEqualToString:self.textView.text]) {
+    } else if (self.isReceivedDocument == YES) {
+      
+        NSLog(@"Received Document");
+        
+    } else {
         
         self.textView.text = self.pasteBoard.string;
-        
-        if (self.managedObjectContext == nil) {
-            self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-        }
-        
-        self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
         
         self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
         self.currentDocument.savedDocument = kNotSavedDocument;
@@ -310,13 +228,6 @@
     } else {
         time = 0.0;
     }
-    
-    
-    [self speechLanguage];
-    [self typeSelecting];
-    [self volumeValue];
-    [self pitchValue];
-    [self rateValue];
     
     
     self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
@@ -375,9 +286,7 @@
 
 - (IBAction)listButtonTapped:(id)sender
 {
-	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	_paused = YES;
+    [self stopSpeech];
     
 	if (_equalizerViewExpanded == YES) {
 		[self adjustEqualizerViewHeight];
@@ -397,7 +306,7 @@
 
 - (IBAction)resetButtonTapped:(id)sender
 {
-    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
+    [self stopSpeech];
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -479,22 +388,12 @@
             self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
         }
     }
-    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-//        
-//        [self.synthesizer continueSpeaking];
-//        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-//        _paused = NO;
-//    });
 }
 
 
 - (IBAction)languageButtonTapped:(id)sender
 {
-    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
-	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	_paused = YES;
+    [self stopSpeech];
 	
 	if (_equalizerViewExpanded == YES) {
 		[self adjustEqualizerViewHeight];
@@ -516,11 +415,7 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
-    //[self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
-	//[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    //[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-	//[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    //_paused = YES;
+    [self stopSpeech];
     [self adjustEqualizerViewHeight];
 }
 
@@ -582,16 +477,7 @@
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
     NSLog(@"speechSynthesizer didFinishSpeechUtterance");
-    
-    [self setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight];
-    
-	[self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-	_paused = YES;
-    
-    CGFloat duration = 0.25f;
-    [UIView animateWithDuration:duration animations:^{
-        self.resetButton.alpha = 0.0;
-    }completion:^(BOOL finished) { }];
+    [self stopSpeech];
 }
 
 
@@ -614,25 +500,6 @@
 
 
 #pragma mark - NSAttributedString
-
-- (void)setInitialTextAttributesSpeechLocationAndProgressSliderViewHeight
-{
-    self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
-    self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
-    
-    _speechLocationPercentValueInWholeTexts = 0.0;
-    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
-    
-    _selectedRange = NSMakeRange(0, 0);
-    self.textView.selectedRange = _selectedRange;
-//    NSLog (@"self.textView.selectedRange.location: %lu, and length: %lu\n", self.textView.selectedRange.location, self.textView.selectedRange.length);
-    
-    if (_progressViewExpanded == YES) {
-        [self adjustProgressViewHeight];
-        _progressViewExpanded = NO;
-    }
-}
-
 
 - (NSDictionary *)paragraphAttributesWithColor:(UIColor *)color
 {
@@ -855,7 +722,7 @@
     self.currentDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
     
     self.pasteBoard.string = self.currentDocument.document;
-    NSLog (@"[self.pasteBoard.string isEqualToString:self.currentDocument.document] : %@\n", [self.pasteBoard.string isEqualToString:self.currentDocument.document] ? @"YES" : @"NO");
+    //NSLog (@"[self.pasteBoard.string isEqualToString:self.currentDocument.document] : %@\n", [self.pasteBoard.string isEqualToString:self.currentDocument.document] ? @"YES" : @"NO");
     
     self.isReceivedDocument = YES;
     self.textView.text = self.currentDocument.document;
@@ -924,46 +791,116 @@
 
 #pragma mark - Save Current Documents For Speech
 
+- (NSDateFormatter *)formatter
+{
+    if (!_formatter) {
+        _formatter = [[NSDateFormatter alloc] init];
+    }
+    return _formatter;
+}
+
+- (void)updateDocument
+{
+    self.currentDocument.language = self.language;
+    self.currentDocument.volume = [NSNumber numberWithFloat:self.volume];;
+    self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitch];
+    self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
+    
+    if (self.currentDocument.uniqueIdString == nil) {
+        NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+        self.currentDocument.uniqueIdString = uniqueIDString;
+    }
+    
+    self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
+    self.currentDocument.savedDocument = kSavedDocument;
+    
+    self.currentDocument.document = self.textView.text;
+    
+    NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
+    self.currentDocument.documentTitle = firstLineForTitle;
+    
+    NSDate *now = [NSDate date];
+    
+    [self.formatter setDateFormat:@"yyyy"];
+    NSString *stringYear = [self.formatter stringFromDate:now];
+    
+    [self.formatter setDateFormat:@"MMM"];
+    NSString *stringMonth = [self.formatter stringFromDate:now];
+    
+    [self.formatter setDateFormat:@"dd"];
+    NSString *stringDay = [self.formatter stringFromDate:now];
+    
+    [self.formatter setDateFormat:@"EEEE"];
+    NSString *stringDate = [self.formatter stringFromDate:now];
+    NSString *stringdaysOfTheWeek = [[stringDate substringToIndex:3] uppercaseString];
+    
+    if (self.currentDocument.createdDate == nil) {
+        self.currentDocument.createdDate = now;
+    }
+    
+    if (self.currentDocument.modifiedDate == nil) {
+        self.currentDocument.modifiedDate = now;
+    }
+    
+    self.currentDocument.yearString = stringYear;
+    self.currentDocument.monthString = stringMonth;
+    self.currentDocument.dayString = stringDay;
+    self.currentDocument.dateString = stringdaysOfTheWeek;
+    
+    [self.formatter setDateFormat:@"MMM yyyy"];
+    NSString *monthAndYearString = [self.formatter stringFromDate:now];
+    self.currentDocument.monthAndYearString = monthAndYearString;
+    
+    self.currentDocument.section = monthAndYearString;
+}
+
+
 - (IBAction)saveCurrentDocument:(id)sender
 {
-    if ([self.currentDocument.isNewDocument boolValue] == YES && [self.currentDocument.savedDocument isEqualToString:kNotSavedDocument]) {
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    
+    
+    if (![self.textView.text isEqualToString:_lastViewedDocument]) {
+        
+        _lastViewedDocument = self.textView.text;
+        [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
+        [self.defaults synchronize];
+        
+        if (self.managedObjectContext == nil) {
+            self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+        }
+        self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
+        
+        [self updateDocument];
+        
+        [self.managedObjectContext performBlock:^{
+            NSError *error = nil;
+            if ([self.managedObjectContext save:&error]) {
+                NSLog (@"Save to coredata succeed");
+                [self adjustSlideViewHeightWithTitle:@"Saved" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
+            } else {
+                NSLog(@"Error saving to coredata: %@", error);
+            }
+        }];
+        
+    } else if (([self.textView.text isEqualToString:_lastViewedDocument] || self.isReceivedDocument == YES) && ([self.currentDocument.volume floatValue] != self.volumeSlider.value || [self.currentDocument.pitch floatValue] != self.pitchSlider.value || [self.currentDocument.rate floatValue] != self.rateSlider.value)) {
         
         if (self.managedObjectContext == nil) {
             self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
         }
         
-        if (self.currentDocument == nil) {
-            self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-        }
-        
-        self.currentDocument.language = self.language;
-        self.currentDocument.volume = [NSNumber numberWithFloat:self.volume];;
-        self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitch];
-        self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
-        
-        NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
-        self.currentDocument.uniqueIdString = uniqueIDString;
-        
-        self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
-        self.currentDocument.savedDocument = kSavedDocument;
-        
-        self.currentDocument.document = self.textView.text;
-        
-        NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
-        self.currentDocument.documentTitle = firstLineForTitle;
+        [self updateDocument];
+        NSDate *now = [NSDate date];
+        self.currentDocument.modifiedDate = now;
         
         [self.managedObjectContext performBlock:^{
             NSError *error = nil;
             if ([self.managedObjectContext save:&error]) {
-                
-                NSLog (@"Save to coredata succeed");
-                
-                [self adjustSlideViewHeightWithTitle:@"Saved" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
-                
-                [self executePerformFetch];
-                
+                NSLog (@"Update to coredata succeed");
+                [self adjustSlideViewHeightWithTitle:@"Updated" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
             } else {
-                
                 NSLog(@"Error saving to coredata: %@", error);
             }
         }];
@@ -973,7 +910,6 @@
         NSLog(@"Already Saved Document");
         [self adjustSlideViewHeightWithTitle:@"Already Saved" andColor:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
     }
-    
 }
 
 
@@ -1120,7 +1056,7 @@
 - (void)selectWord
 {
     _selectedRange = self.textView.selectedRange;
-    
+
     if ([self.textView hasText] && _selectedRange.length == 0) {
         
         [self.textView select:self];
@@ -1129,6 +1065,126 @@
         
         self.textView.selectedRange = _selectedRange;
     }
+}
+
+
+#pragma mark - State Restoration
+
+- (NSString *)lastViewedDocument
+{
+    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
+    //NSLog (@"_lastViewedDocument: %@\n", _lastViewedDocument);
+    return _lastViewedDocument;
+}
+
+
+- (NSString *)speechLanguage
+{
+    self.language = [self.defaults objectForKey:kLanguage];
+    //NSLog (@"self.language: %@\n", self.language);
+    return self.language;
+}
+
+
+- (BOOL)typeSelecting
+{
+    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    //NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    return _isTypeSelecting;
+}
+
+
+- (CGFloat)volumeValue
+{
+    self.volume = [self.defaults floatForKey:kVolumeValue];
+    self.volumeSlider.value = self.volume;
+    //NSLog (@"self.volume: %f\n", self.volume);
+    return self.volume;
+}
+
+
+- (CGFloat)pitchValue
+{
+    self.pitch = [self.defaults floatForKey:kPitchValue];
+    self.pitchSlider.value = self.pitch;
+    //NSLog (@"self.pitch: %f\n", self.pitch);
+    return self.pitch;
+}
+
+
+- (CGFloat)rateValue
+{
+    self.rate = [self.defaults floatForKey:kRateValue];
+    self.rateSlider.value = self.rate;
+    //NSLog (@"self.rate: %f\n", self.rate);
+    return self.rate;
+}
+
+
+#pragma mark - Slider value changed
+
+- (IBAction)progressSliderValueChanged:(UISlider *)sender
+{
+    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+}
+
+
+- (IBAction)volumeSliderValueChanged:(UISlider *)sender
+{
+    self.volume = sender.value;
+    [self.defaults setFloat:sender.value forKey:kVolumeValue];
+    [self.defaults synchronize];
+}
+
+
+- (IBAction)pitchSliderValueChanged:(UISlider *)sender
+{
+    self.pitch = sender.value;
+    [self.defaults setFloat:sender.value forKey:kPitchValue];
+    [self.defaults synchronize];
+}
+
+
+- (IBAction)rateSliderValueChanged:(UISlider *)sender
+{
+    self.rate = sender.value;
+    [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
+    [self.defaults synchronize];
+}
+
+
+- (void)stopSpeech
+{
+    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    
+    _selectedRange = NSMakeRange(0, 0);
+    self.textView.selectedRange = _selectedRange;
+    
+    if (_progressViewExpanded == YES) {
+        [self adjustProgressViewHeight];
+        _progressViewExpanded = NO;
+    }
+    
+    CGFloat duration = 0.25f;
+    _speechLocationPercentValueInWholeTexts = 0.0;
+    [UIView animateWithDuration:duration animations:^{
+        self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+        self.resetButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
+}
+
+
+- (void)pauseSpeech
+{
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.resetButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
 }
 
 
