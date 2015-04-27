@@ -223,12 +223,14 @@
 - (IBAction)speechText:(id)sender
 {
     if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight:0.0];
         _equalizerViewExpanded = NO;
+        [self adjustEqualizerViewHeight:0.0];
         
-    } else if (_progressViewExpanded == NO) {
-        [self adjustProgressViewHeight];
     }
+    
+//    else if (_progressViewExpanded == NO) {
+//        [self adjustProgressViewHeight];
+//    }
     
     
     self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
@@ -291,8 +293,8 @@
     [self stopSpeech];
     
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight:0.0];
         _equalizerViewExpanded = NO;
+        [self adjustEqualizerViewHeight:0.0];
 		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.0];
@@ -335,8 +337,8 @@
 	_paused = YES;
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight:0.0];
         _equalizerViewExpanded = NO;
+		[self adjustEqualizerViewHeight:0.0];
 		[self performSelector:@selector(action:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(action:) withObject:nil afterDelay:0.0];
@@ -362,8 +364,8 @@
     }completion:^(BOOL finished) { }];
     
     if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight:0.0];
         _equalizerViewExpanded = NO;
+        [self adjustEqualizerViewHeight:0.0];
     }
     
     if (_isTypeSelecting == YES) {
@@ -406,8 +408,8 @@
     [self stopSpeech];
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight:0.0];
         _equalizerViewExpanded = NO;
+		[self adjustEqualizerViewHeight:0.0];
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.0];
@@ -428,11 +430,11 @@
 {
     [self stopSpeech];
     if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight:0.0];
         _equalizerViewExpanded = NO;
+        [self adjustEqualizerViewHeight:0.0];
     } else {
-        [self adjustEqualizerViewHeight:150.0];
         _equalizerViewExpanded = YES;
+        [self adjustEqualizerViewHeight:150.0];
     }
 }
 
@@ -444,8 +446,8 @@
 	[self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight:0.0];
         _equalizerViewExpanded = NO;
+		[self adjustEqualizerViewHeight:0.0];
 		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.35];
 	} else {
 		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.0];
@@ -600,13 +602,14 @@
 {
     self.equalizerViewHeightConstraint.constant = height;
     
-    CGFloat duration = 0.45f;
-    CGFloat delay = 0.1f;
+    CGFloat duration = 0.25f;
+    CGFloat delay = 0.0f;
     [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
         
         [self.view layoutIfNeeded];
         
-        if (_equalizerViewExpanded == NO) {
+        if (_equalizerViewExpanded == YES) {
+            
             self.volumeLabel.alpha = 1.0;
             self.pitchLabel.alpha = 1.0;
             self.rateLabel.alpha = 1.0;
@@ -615,6 +618,7 @@
             self.rateSlider.alpha = 1.0;
             
         } else {
+            
             self.volumeLabel.alpha = 0.0;
             self.pitchLabel.alpha = 0.0;
             self.rateLabel.alpha = 0.0;
@@ -681,12 +685,12 @@
         self.rateSlider.alpha = 0.0;
     } completion:nil];
     
-    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
-        _progressViewExpanded = NO;
-        self.progressInfoViewHeightConstraint.constant = 0.0;
-        [self.view layoutIfNeeded];
-        self.progressSlider.alpha = 0.0;
-    } completion:nil];
+//    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+//        _progressViewExpanded = NO;
+//        self.progressInfoViewHeightConstraint.constant = 0.0;
+//        [self.view layoutIfNeeded];
+//        self.progressSlider.alpha = 0.0;
+//    } completion:nil];
 }
 
 
@@ -1147,10 +1151,10 @@
     _selectedRange = NSMakeRange(0, 0);
     self.textView.selectedRange = _selectedRange;
     
-    if (_progressViewExpanded == YES) {
-        [self adjustProgressViewHeight];
-        _progressViewExpanded = NO;
-    }
+//    if (_progressViewExpanded == YES) {
+//        [self adjustProgressViewHeight];
+//        _progressViewExpanded = NO;
+//    }
     
     CGFloat duration = 0.25f;
     _speechLocationPercentValueInWholeTexts = 0.0;
@@ -1181,14 +1185,14 @@
     
     [self setKeyboardWillShowAnimationBlock:^(CGRect keyboardFrame) {
     
-        [wself adjustEqualizerViewHeight:keyboardFrame.size.height];
         _equalizerViewExpanded = YES;
+        [wself adjustEqualizerViewHeight:keyboardFrame.size.height];
     }];
     
     [self setKeyboardWillHideAnimationBlock:^(CGRect keyboardFrame) {
         
-        [wself adjustEqualizerViewHeight:0.0];
         _equalizerViewExpanded = NO;
+        [wself adjustEqualizerViewHeight:0.0];
     }];
 }
 
@@ -1212,8 +1216,8 @@
     CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
     CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
     
-    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight];
     _equalizerViewExpanded = YES;
+    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight];
 }
 
 
@@ -1221,8 +1225,8 @@
 {
     //[self.textView keyboardWillHide:notification];
     
-    [self adjustEqualizerViewHeight:0.0];
     _equalizerViewExpanded = NO;
+    [self adjustEqualizerViewHeight:0.0];
 }
 
 
