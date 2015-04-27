@@ -36,10 +36,10 @@
 #import <CoreData/CoreData.h>
 #import "DocumentsForSpeech.h"
 #import "DataManager.h"
-#import "AttributedTextView.h"
+#import "KeiTextView.h"
 
 
-@interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate>
+@interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
@@ -75,7 +75,7 @@
 @property (weak, nonatomic) IBOutlet UIView *saveAlertView;
 @property (weak, nonatomic) IBOutlet UILabel *saveAlertLabel;
 
-@property (weak, nonatomic) IBOutlet AttributedTextView *textView;
+@property (weak, nonatomic) IBOutlet KeiTextView *textView;
 
 @property (weak, nonatomic) IBOutlet UIView *equalizerView;
 @property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
@@ -129,8 +129,11 @@
     self.isReceivedDocument = NO;
     _subString = self.textView.text;
     
-    self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
-    self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
+    self.textView.delegate = self;
+    
+    //키보드 숨길때 튕김현상 발생
+//    self.paragraphAttributes = [self paragraphAttributesWithColor:[UIColor darkTextColor]];
+//    self.textView.attributedText = [[NSAttributedString alloc] initWithString:self.textView.attributedText.string attributes:self.paragraphAttributes];
     
     [self hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation]; //화면에 보여주지 않기
 }
@@ -144,6 +147,7 @@
     [self configureSliderUI];
 	[self setInitialData]; //순서 바꾸지 말 것
     [self stopSpeech];
+    [self registerKeyboardNotifications];
     [self checkHasLaunchedOnce];
 	[self addPickedLanguageObserver];
 	[self addApplicationsStateObserver];
@@ -1185,6 +1189,46 @@
     [UIView animateWithDuration:duration animations:^{
         self.resetButton.alpha = 0.0;
     }completion:^(BOOL finished) { }];
+}
+
+
+#pragma mark - Keyboard handle
+
+- (void)registerKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification object:self.view.window];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification object:self.view.window];
+}
+
+
+- (void)keyboardWillShow:(NSNotification *)notification
+{
+    [self.textView keyboardWillShow:notification];
+}
+
+
+- (void)keyboardWillHide:(NSNotification*)notification
+{
+    [self.textView keyboardWillHide:notification];
+}
+
+
+#pragma mark - UITextView delegate method (optional)
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{
+    NSLog(@"textViewShouldBeginEditing");
+    return YES;
+}
+
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView
+{
+    NSLog(@"textViewShouldEndEditing");
+    return YES;
 }
 
 

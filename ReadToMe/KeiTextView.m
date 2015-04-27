@@ -1,14 +1,72 @@
 //
-//  AttributedTextView.m
+//  KeiTextView.m
 //  ReadToMe
 //
 //  Created by jun on 2015. 4. 13..
 //  Copyright (c) 2015년 keicoder. All rights reserved.
 //
 
-#import "AttributedTextView.h"
+#import <tgmath.h>
+#import "KeiTextView.h"
 
-@implementation AttributedTextView
+@implementation KeiTextView
+{
+    CGRect _keyboardRect;
+}
+
+
+#pragma mark 키보드 handle, 인셋 조정
+
+- (void)keyboardWillShow:(NSNotification *)notification
+{
+    NSDictionary *userInfoDictionary = notification.userInfo;
+    CGFloat duration = [[userInfoDictionary objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    int curve = [[userInfoDictionary objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
+    _keyboardRect = [[userInfoDictionary objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView animateWithDuration:duration delay:0.0 options:curve animations:^{
+        [self updateNoteTextViewInsetWithKeyboard:notification];
+    } completion:^(BOOL finished) {
+        [self scrollToVisibleCaretAnimated];
+    }];
+}
+
+
+- (void)updateNoteTextViewInsetWithKeyboard:(NSNotification*)notification
+{
+    CGFloat contentInsetBottom = 0.f;
+    contentInsetBottom = __tg_fmin(CGRectGetHeight(_keyboardRect), CGRectGetWidth(_keyboardRect));
+    UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, contentInsetBottom, 0);
+    self.contentInset = contentInset;
+}
+
+
+- (void)keyboardWillHide:(NSNotification*)notification
+{
+    NSDictionary *userInfoDictionary = notification.userInfo;
+    CGFloat duration = [[userInfoDictionary objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    int curve = [[userInfoDictionary objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
+    _keyboardRect = [[userInfoDictionary objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView animateWithDuration:duration delay:duration options:curve animations:^{
+        [self updateNoteTextViewInsetWithoutKeyboard];
+    } completion:^(BOOL finished) { }];
+}
+
+
+- (void)updateNoteTextViewInsetWithoutKeyboard
+{
+    UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    self.contentInset = contentInset;
+}
+
+
+#pragma mark delegate method (change selection, text)
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    return YES;
+}
 
 
 #pragma mark - 캐럿 위치 이동
@@ -39,6 +97,8 @@
     }
 }
 
+
+#pragma mark - Replace Attriuted Text
 
 - (void)replaceSelectionWithAttributedText:(NSAttributedString *)text
 {

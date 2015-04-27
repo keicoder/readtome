@@ -1,5 +1,5 @@
 //
-//  AttributedTextView.h
+//  KeiTextView.h
 //  ReadToMe
 //
 //  Created by jun on 2015. 4. 13..
@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AttributedTextView : UITextView
+@interface KeiTextView : UITextView
+
+- (void)keyboardWillShow:(NSNotification *)notification;
+- (void)keyboardWillHide:(NSNotification*)notification;
 
 - (void)scrollToVisibleCaretAnimated;
 

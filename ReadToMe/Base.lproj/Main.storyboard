@@ -117,31 +117,22 @@
                                     <constraint firstAttribute="height" constant="60" id="npb-29-jMO"/>
                                 </constraints>
                             </view>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" customClass="AttributedTextView">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" userLabel="KeiTextView" customClass="KeiTextView">
                                 <rect key="frame" x="20" y="140" width="560" height="210"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <attributedString key="attributedText">
-                                    <fragment>
-                                        <string key="content">There are no text to speech.
+                                <string key="text">There are no text to speech.
 
 Copy whatever you want to read, ReadToMe will read aloud for you.
 
 You can play, pause or replay whenever you want.
 
 Enjoy reading!</string>
-                                        <attributes>
-                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <font key="NSFont" size="20" name="HelveticaNeue-Light"/>
-                                            <integer key="NSLigature" value="0"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" defaultTabInterval="33.700000000000003">
-                                                <tabStops>
-                                                    <textTab alignment="left" location="33.700000762939453"/>
-                                                </tabStops>
-                                            </paragraphStyle>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
+                                <variation key="heightClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="22"/>
+                                </variation>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ch7-hb-2ah" userLabel="ProgressInfoView">
                                 <rect key="frame" x="0.0" y="350" width="600" height="40"/>
