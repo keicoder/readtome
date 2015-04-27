@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6724" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6711"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -43,7 +43,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8pi-Cu-ToX" userLabel="ArchiveButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="72" y="8" width="44" height="44"/>
                                         <color key="tintColor" red="0.95707070709999997" green="0.80975241769999995" blue="0.166872558" alpha="1" colorSpace="calibratedRGB"/>
-                                        <inset key="contentEdgeInsets" minX="10" minY="8" maxX="10" maxY="7"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="9" maxX="10" maxY="8"/>
                                         <state key="normal" image="save"/>
                                         <connections>
                                             <action selector="saveCurrentDocument:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0pA-ui-GOW"/>
@@ -79,7 +79,9 @@
                                 <constraints>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="6rW-tW-Hkj" secondAttribute="height" id="3R9-RV-EU8"/>
                                     <constraint firstItem="eMX-kn-ZVO" firstAttribute="width" secondItem="djw-qX-P0a" secondAttribute="width" id="4VU-kp-YJw"/>
-                                    <constraint firstAttribute="height" constant="60" id="4mi-Pe-nfX"/>
+                                    <constraint firstAttribute="height" constant="60" id="4mi-Pe-nfX">
+                                        <variation key="heightClass=compact" constant="44"/>
+                                    </constraint>
                                     <constraint firstItem="8pi-Cu-ToX" firstAttribute="centerY" secondItem="djw-qX-P0a" secondAttribute="centerY" id="8fc-Ed-n5q"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="centerY" secondItem="gGU-LD-ksn" secondAttribute="centerY" id="9Wl-MO-Bk6"/>
                                     <constraint firstItem="djw-qX-P0a" firstAttribute="height" secondItem="gGU-LD-ksn" secondAttribute="height" id="E0k-DI-JVQ"/>
@@ -152,7 +154,9 @@ Enjoy reading!</string>
                                 </subviews>
                                 <color key="backgroundColor" red="0.19215686269999999" green="0.66666666669999997" blue="0.22352941179999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="JUg-3N-Tig"/>
+                                    <constraint firstAttribute="height" constant="40" id="JUg-3N-Tig">
+                                        <variation key="heightClass=compact" constant="30"/>
+                                    </constraint>
                                     <constraint firstAttribute="trailing" secondItem="BVz-FP-Yrg" secondAttribute="trailing" constant="33" id="TOD-ke-Htg"/>
                                     <constraint firstAttribute="centerY" secondItem="BVz-FP-Yrg" secondAttribute="centerY" id="o5Y-eW-CHL"/>
                                     <constraint firstItem="BVz-FP-Yrg" firstAttribute="leading" secondItem="Ch7-hb-2ah" secondAttribute="leading" constant="33" id="uU6-Xp-oy4"/>
@@ -293,7 +297,9 @@ Enjoy reading!</string>
                                     <constraint firstItem="BhP-KP-gJu" firstAttribute="width" secondItem="UuS-46-ldZ" secondAttribute="width" id="Sif-Cr-ccy"/>
                                     <constraint firstItem="xtD-FV-k3Q" firstAttribute="centerY" secondItem="UuS-46-ldZ" secondAttribute="centerY" id="Zq8-yZ-hh6"/>
                                     <constraint firstAttribute="trailing" secondItem="BhP-KP-gJu" secondAttribute="trailing" constant="20" id="bZe-MZ-dvj"/>
-                                    <constraint firstAttribute="height" constant="60" id="del-jg-4jZ"/>
+                                    <constraint firstAttribute="height" constant="60" id="del-jg-4jZ">
+                                        <variation key="heightClass=compact" constant="44"/>
+                                    </constraint>
                                     <constraint firstItem="KQ5-vg-g0i" firstAttribute="leading" secondItem="Wws-1S-BRE" secondAttribute="leading" constant="20" id="eOr-J7-YOx"/>
                                     <constraint firstItem="xtD-FV-k3Q" firstAttribute="width" secondItem="UuS-46-ldZ" secondAttribute="width" id="f3f-8v-Z4l"/>
                                     <constraint firstItem="UuS-46-ldZ" firstAttribute="leading" secondItem="xtD-FV-k3Q" secondAttribute="trailing" constant="8" id="f6H-ac-Nhv">

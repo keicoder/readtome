@@ -1027,9 +1027,9 @@
 
 - (void)configureSliderUI
 {
-    UIImage *thumbImageNormal = [UIImage imageNamed:@"SliderThumb-Normal"];
+    UIImage *thumbImageNormal = [UIImage imageNamed:@"recordNormal"];
     [self.progressSlider setThumbImage:thumbImageNormal forState:UIControlStateNormal];
-    UIImage *thumbImageHighlighted = [UIImage imageNamed:@"SliderThumb-Highlighted"];
+    UIImage *thumbImageHighlighted = [UIImage imageNamed:@"record"];
     [self.progressSlider setThumbImage:thumbImageHighlighted forState:UIControlStateHighlighted];
     UIImage *trackLeftImage =
     [[UIImage imageNamed:@"SliderTrackLeft"]
