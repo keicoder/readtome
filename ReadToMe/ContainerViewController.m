@@ -70,6 +70,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 
+@property (weak, nonatomic) IBOutlet UIButton *keyboardDownButton;
+
 @property (weak, nonatomic) IBOutlet UIView *progressView;
 @property (weak, nonatomic) IBOutlet UISlider *progressSlider;
 
@@ -93,23 +95,16 @@
 @property (weak, nonatomic) IBOutlet UIButton *equalizerButton;
 @property (weak, nonatomic) IBOutlet UIButton *settingsButton;
 
-@property (nonatomic, assign) BOOL isReceivedDocument;
-
 @end
 
 
 @implementation ContainerViewController
 {
-    CGRect _keyboardRect;
-    
 	BOOL _paused;
     BOOL _isTypeSelecting;
-    BOOL _progressViewExpanded;
 	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
     NSRange _selectedRange;
-    int _spokenTextRangeLocation;
-    int _spokenTextRangeLength;
     NSString *_lastViewedDocument;
     NSString *_subString;
     float _speechLocationPercentValueInWholeTexts;
@@ -190,7 +185,7 @@
 
 - (void)checkToPasteText
 {
-    //NSLog (@"self.pasteBoard.string: %@\n", self.pasteBoard.string);
+    NSLog (@"checkToPasteText > self.pasteBoard.string: %@\n", self.pasteBoard.string);
     
     if (!self.pasteBoard.string) {
         
@@ -200,6 +195,7 @@
     } else if (self.isReceivedDocument == YES) {
       
         NSLog(@"Received Document");
+        self.textView.text = self.pasteBoard.string;
         
     } else {
         
@@ -208,6 +204,8 @@
         self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
         self.currentDocument.savedDocument = kNotSavedDocument;
         self.currentDocument.document = self.textView.text;
+        
+        self.isReceivedDocument = NO;
     }
     
     _selectedRange = NSMakeRange(0, 0);
@@ -222,17 +220,6 @@
 
 - (IBAction)speechText:(id)sender
 {
-    if (_equalizerViewExpanded == YES) {
-        _equalizerViewExpanded = NO;
-        [self adjustEqualizerViewHeight:0.0];
-        
-    }
-    
-//    else if (_progressViewExpanded == NO) {
-//        [self adjustProgressViewHeight];
-//    }
-    
-    
     self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
     self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
     self.utterance.volume = self.volume;
@@ -318,15 +305,10 @@
         self.resetButton.alpha = 0.0;
     }completion:^(BOOL finished) { }];
     
-	[self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    
-    _paused = YES;
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    
-    if (self.textView.editable == NO) {
-        self.textView.editable = YES;
-        [self.textView resignFirstResponder];
-    }
+//    if (self.textView.editable == NO) {
+//        self.textView.editable = YES;
+//        [self.textView resignFirstResponder];
+//    }
 }
 
 
@@ -354,14 +336,7 @@
 
 - (IBAction)selectionButtonTapped:(id)sender
 {
-    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
-    
-    CGFloat duration = 0.25f;
-    [UIView animateWithDuration:duration animations:^{
-        self.resetButton.alpha = 0.0;
-    }completion:^(BOOL finished) { }];
+    [self pauseSpeech];
     
     if (_equalizerViewExpanded == YES) {
         _equalizerViewExpanded = NO;
@@ -463,6 +438,13 @@
 }
 
 
+- (IBAction)keyboardDownButtonTapped:(id)sender
+{
+    [self.textView resignFirstResponder];
+}
+
+
+
 #pragma mark - AVSpeechSynthesizerDelegate
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
@@ -552,6 +534,8 @@
         [self.defaults setFloat:1.0 forKey:kVolumeValue];
         [self.defaults setFloat:1.0 forKey:kPitchValue];
         [self.defaults setFloat:0.07 forKey:kRateValue];
+        
+        _lastViewedDocument = @"";
     }
 }
 
@@ -631,36 +615,6 @@
 }
 
 
-
-#pragma mark - Show progress view when speech start
-
-- (void)adjustProgressViewHeight
-{
-	if (_progressViewExpanded == YES) {
-		self.progressInfoViewHeightConstraint.constant = 0.0;
-		_progressViewExpanded = NO;
-	} else {
-		self.progressInfoViewHeightConstraint.constant = 33.0;
-		_progressViewExpanded = YES;
-	}
-	
-	CGFloat duration = 0.25f;
-	CGFloat delay = 0.0f;
-	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
-		
-		[self.view layoutIfNeeded];
-		
-		if (_progressViewExpanded == YES) {
-			self.progressSlider.alpha = 1.0;
-			
-		} else {
-			self.progressSlider.alpha = 0.0;
-		}
-		
-	} completion:^(BOOL finished) { }];
-}
-
-
 #pragma mark - hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation
 
 - (void)hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation
@@ -684,13 +638,6 @@
         self.pitchSlider.alpha = 0.0;
         self.rateSlider.alpha = 0.0;
     } completion:nil];
-    
-//    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
-//        _progressViewExpanded = NO;
-//        self.progressInfoViewHeightConstraint.constant = 0.0;
-//        [self.view layoutIfNeeded];
-//        self.progressSlider.alpha = 0.0;
-//    } completion:nil];
 }
 
 
@@ -711,11 +658,13 @@
     self.currentDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
     
     self.pasteBoard.string = self.currentDocument.document;
-    //NSLog (@"[self.pasteBoard.string isEqualToString:self.currentDocument.document] : %@\n", [self.pasteBoard.string isEqualToString:self.currentDocument.document] ? @"YES" : @"NO");
+    _lastViewedDocument = self.currentDocument.document;
+    self.textView.text = self.currentDocument.document;
     
     self.isReceivedDocument = YES;
     self.textView.text = self.currentDocument.document;
     self.language = self.currentDocument.language;
+    
     self.volume = [self.currentDocument.volume floatValue];
     self.pitch = [self.currentDocument.pitch floatValue];
     self.rate = [self.currentDocument.rate floatValue];
@@ -724,6 +673,8 @@
     self.volumeSlider.value = [self.currentDocument.volume floatValue];
     self.pitchSlider.value = [self.currentDocument.pitch floatValue];
     self.rateSlider.value = [self.currentDocument.rate floatValue];
+    
+    [self showLog];
 }
 
 
@@ -846,20 +797,19 @@
 
 - (IBAction)saveCurrentDocument:(id)sender
 {
-    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
+    [self.textView resignFirstResponder];
+    [self pauseSpeech];
+    [self showLog];
     
-    
-    if (![self.textView.text isEqualToString:_lastViewedDocument]) {
+    if ([self.textView.text isEqualToString:_lastViewedDocument]) {
         
-        _lastViewedDocument = self.textView.text;
-        [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
-        [self.defaults synchronize];
+        NSLog(@"Nothing to Save");
+        [self adjustSlideViewHeightWithTitle:@"Nothing to Save" andColor:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
         
-        if (self.managedObjectContext == nil) {
-            self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-        }
+    } else {
+        
+        self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+        
         self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
         
         [self updateDocument];
@@ -867,37 +817,21 @@
         [self.managedObjectContext performBlock:^{
             NSError *error = nil;
             if ([self.managedObjectContext save:&error]) {
+                
                 NSLog (@"Save to coredata succeed");
+                
                 [self adjustSlideViewHeightWithTitle:@"Saved" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
+                
+                _lastViewedDocument = self.textView.text;
+                [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
+                [self.defaults synchronize];
+                NSLog(@"_lastViewedDocument texts updated");
+                
             } else {
+                
                 NSLog(@"Error saving to coredata: %@", error);
             }
         }];
-        
-    } else if (([self.textView.text isEqualToString:_lastViewedDocument] || self.isReceivedDocument == YES) && ([self.currentDocument.volume floatValue] != self.volumeSlider.value || [self.currentDocument.pitch floatValue] != self.pitchSlider.value || [self.currentDocument.rate floatValue] != self.rateSlider.value)) {
-        
-        if (self.managedObjectContext == nil) {
-            self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-        }
-        
-        [self updateDocument];
-        NSDate *now = [NSDate date];
-        self.currentDocument.modifiedDate = now;
-        
-        [self.managedObjectContext performBlock:^{
-            NSError *error = nil;
-            if ([self.managedObjectContext save:&error]) {
-                NSLog (@"Update to coredata succeed");
-                [self adjustSlideViewHeightWithTitle:@"Updated" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
-            } else {
-                NSLog(@"Error saving to coredata: %@", error);
-            }
-        }];
-        
-    } else {
-        
-        NSLog(@"Already Saved Document");
-        [self adjustSlideViewHeightWithTitle:@"Already Saved" andColor:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
     }
 }
 
@@ -999,8 +933,8 @@
 {
     self.menuView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.saveAlertView.backgroundColor = [UIColor colorWithRed:0.945 green:0.671 blue:0.686 alpha:1];
-    self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1];
+    self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     
     //Image View
@@ -1020,6 +954,12 @@
     self.actionButton.enabled = NO;
     self.actionButton.alpha = 0.0;
     self.resetButton.alpha = 0.0;
+    
+    //Keyboard Down Button
+    float cornerRadius = self.keyboardDownButton.bounds.size.height/2;
+    self.keyboardDownButton.layer.cornerRadius = cornerRadius;
+    self.keyboardDownButton.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:0.5];
+    self.keyboardDownButton.alpha = 0.0;
 }
 
 
@@ -1061,9 +1001,14 @@
 
 - (NSString *)lastViewedDocument
 {
-    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
-    //NSLog (@"_lastViewedDocument: %@\n", _lastViewedDocument);
-    return _lastViewedDocument;
+    if (self.isReceivedDocument == NO) {
+        _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
+        NSLog (@"viewWillAppear: self.isReceivedDocument == NO > _lastViewedDocument: %@\n", _lastViewedDocument);
+        return _lastViewedDocument;
+    } else {
+        NSLog (@"viewWillAppear: self.isReceivedDocument == YES > _lastViewedDocument: %@\n", _lastViewedDocument);
+        return _lastViewedDocument;
+    }
 }
 
 
@@ -1142,19 +1087,18 @@
 }
 
 
+#pragma mark - Speech State
+
 - (void)stopSpeech
 {
+    [self.textView resignFirstResponder];
+    
     [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     _paused = YES;
     
     _selectedRange = NSMakeRange(0, 0);
     self.textView.selectedRange = _selectedRange;
-    
-//    if (_progressViewExpanded == YES) {
-//        [self adjustProgressViewHeight];
-//        _progressViewExpanded = NO;
-//    }
     
     CGFloat duration = 0.25f;
     _speechLocationPercentValueInWholeTexts = 0.0;
@@ -1170,6 +1114,7 @@
     [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     _paused = YES;
+    
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
         self.resetButton.alpha = 0.0;
@@ -1177,24 +1122,27 @@
 }
 
 
-#pragma mark - Keyboard handle
+//#pragma mark - Keyboard handle
+//
+//- (void)setupKeyboardAnimations
+//{
+//    __weak typeof(self) wself = self;
+//    
+//    [self setKeyboardWillShowAnimationBlock:^(CGRect keyboardFrame) {
+//    
+//        _equalizerViewExpanded = YES;
+//        [wself adjustEqualizerViewHeight:keyboardFrame.size.height];
+//    }];
+//    
+//    [self setKeyboardWillHideAnimationBlock:^(CGRect keyboardFrame) {
+//        
+//        _equalizerViewExpanded = NO;
+//        [wself adjustEqualizerViewHeight:0.0];
+//    }];
+//}
 
-- (void)setupKeyboardAnimations
-{
-    __weak typeof(self) wself = self;
-    
-    [self setKeyboardWillShowAnimationBlock:^(CGRect keyboardFrame) {
-    
-        _equalizerViewExpanded = YES;
-        [wself adjustEqualizerViewHeight:keyboardFrame.size.height];
-    }];
-    
-    [self setKeyboardWillHideAnimationBlock:^(CGRect keyboardFrame) {
-        
-        _equalizerViewExpanded = NO;
-        [wself adjustEqualizerViewHeight:0.0];
-    }];
-}
+
+#pragma mark - Keyboard Handling
 
 
 - (void)registerKeyboardNotifications
@@ -1209,8 +1157,6 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-    //[self.textView keyboardWillShow:notification];
-    
     NSDictionary *info = [notification userInfo];
     CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
@@ -1218,15 +1164,31 @@
     
     _equalizerViewExpanded = YES;
     [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight];
+    
+    CGFloat duration = 0.35f;
+    [UIView animateWithDuration:duration animations:^{
+        self.keyboardDownButton.alpha = 1.0;
+    }completion:^(BOOL finished) { }];
 }
 
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-    //[self.textView keyboardWillHide:notification];
-    
     _equalizerViewExpanded = NO;
     [self adjustEqualizerViewHeight:0.0];
+    
+    CGFloat duration = 0.35f;
+    [UIView animateWithDuration:duration animations:^{
+        self.keyboardDownButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
+    
+    [self pauseSpeech];
+    
+    NSRange selectedRange = self.textView.selectedRange;
+    if (selectedRange.length > 0) {
+        selectedRange.length = 0;
+        self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+    }
 }
 
 
@@ -1235,15 +1197,66 @@
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
     NSLog(@"textViewShouldBeginEditing");
+    
     return YES;
+}
+
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    NSLog(@"textView shouldChangeTextInRange");
+    
+    _lastViewedDocument = self.textView.text;
+    
+    return YES;
+}
+
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+    NSLog(@"textView textViewDidChange");
+    
+    if ([_lastViewedDocument isEqualToString:self.textView.text]) {
+        
+        NSLog(@"Nothing Changed");
+        
+    } else {
+        
+        NSLog(@"TextView texts are changed");
+        
+        [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+        _paused = YES;
+    }
 }
 
 
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView
 {
     NSLog(@"textViewShouldEndEditing");
+    
     return YES;
 }
 
+
+#pragma mark - Show Log
+
+- (void)showLog
+{
+    NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
+    NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
+    NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
+    
+    NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
+    NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
+    NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
+    
+    NSLog (@"self.volume: %f\n", self.volume);
+    NSLog (@"self.pitch: %f\n", self.pitch);
+    NSLog (@"self.rate: %f\n", self.rate);
+    
+    NSLog (@"self.textView.text: %@\n", self.textView.text);
+    NSLog (@"_lastViewedDocument: %@\n", _lastViewedDocument);
+}
 
 @end

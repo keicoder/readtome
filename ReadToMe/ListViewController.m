@@ -237,6 +237,10 @@
 	[managedObjectContext deleteObject:managedObject];
 	NSError *error = nil;
 	[managedObjectContext save:&error];
+    
+    UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+    pasteBoard.persistent = YES;
+    pasteBoard.string = @"Copy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
 }
 
 

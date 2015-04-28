@@ -54,10 +54,7 @@
 
 - (void)awakeFromInsert
 {
-	if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-	
 	[super awakeFromInsert];
-	//[self updateDateValue];
 }
 
 

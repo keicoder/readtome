@@ -15,7 +15,37 @@
 }
 
 
-#pragma mark 키보드 handle, 인셋 조정
+#pragma mark - 캐럿 위치 이동
+
+- (void)scrollToVisibleCaretAnimated
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        [self scrollRectToVisibleConsideringInsets:[self caretRectForPosition:self.selectedTextRange.end] animated:NO];
+    }];
+}
+
+
+- (void)scrollRectToVisibleConsideringInsets:(CGRect)rect animated:(BOOL)animated
+{
+    UIEdgeInsets insets = UIEdgeInsetsMake(self.contentInset.top + self.textContainerInset.top,
+                                           self.contentInset.left + self.textContainerInset.left,
+                                           self.contentInset.bottom + self.textContainerInset.bottom,
+                                           self.contentInset.right + self.textContainerInset.right);
+    CGRect visibleRect = UIEdgeInsetsInsetRect(self.bounds, insets);
+    if (!CGRectContainsRect(visibleRect, rect)) {
+        CGPoint contentOffset = self.contentOffset;
+        if (CGRectGetMinY(rect) < CGRectGetMinY(visibleRect)) {
+            contentOffset.y = CGRectGetMinY(rect) - insets.top; //up
+        } else {
+            contentOffset.y = CGRectGetMaxY(rect) + insets.bottom - CGRectGetHeight(self.bounds); //down
+        }
+        [super setContentOffset:contentOffset animated:animated];
+    }
+}
+
+
+
+#pragma mark - 키보드 handle, 인셋 조정
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
@@ -66,35 +96,6 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     return YES;
-}
-
-
-#pragma mark - 캐럿 위치 이동
-
-- (void)scrollToVisibleCaretAnimated
-{
-    [UIView animateWithDuration:0.2 animations:^{
-        [self scrollRectToVisibleConsideringInsets:[self caretRectForPosition:self.selectedTextRange.end] animated:NO];
-    }];
-}
-
-
-- (void)scrollRectToVisibleConsideringInsets:(CGRect)rect animated:(BOOL)animated
-{
-    UIEdgeInsets insets = UIEdgeInsetsMake(self.contentInset.top + self.textContainerInset.top,
-                                           self.contentInset.left + self.textContainerInset.left,
-                                           self.contentInset.bottom + self.textContainerInset.bottom,
-                                           self.contentInset.right + self.textContainerInset.right);
-    CGRect visibleRect = UIEdgeInsetsInsetRect(self.bounds, insets);
-    if (!CGRectContainsRect(visibleRect, rect)) {
-        CGPoint contentOffset = self.contentOffset;
-        if (CGRectGetMinY(rect) < CGRectGetMinY(visibleRect)) {
-            contentOffset.y = CGRectGetMinY(rect) - insets.top;                                     //up
-        } else {
-            contentOffset.y = CGRectGetMaxY(rect) + insets.bottom - CGRectGetHeight(self.bounds);   //down
-        }
-        [super setContentOffset:contentOffset animated:animated];
-    }
 }
 
 
