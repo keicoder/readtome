@@ -968,14 +968,17 @@
 		NSLog(@"%@, %@", error, error.localizedDescription);
 		
 	} else {
-		
+        
 		NSLog (@"[self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
         
-        DocumentsForSpeech *savedDocument = [self.fetchedResultsController fetchedObjects][0];
-        NSLog (@"savedDocument.document: %@\n", savedDocument.document);
-        NSLog (@"savedDocument.uniqueIdString: %@\n", savedDocument.uniqueIdString);
-        self.currentDocument = savedDocument;
-        self.isSavedDocument = YES;
+        if ([self.fetchedResultsController fetchedObjects].count > 0) {
+            
+            DocumentsForSpeech *savedDocument = [self.fetchedResultsController fetchedObjects][0];
+            NSLog (@"savedDocument.document: %@\n", savedDocument.document);
+            NSLog (@"savedDocument.uniqueIdString: %@\n", savedDocument.uniqueIdString);
+            self.currentDocument = savedDocument;
+            self.isSavedDocument = YES;
+        }
 	}
 }
 
