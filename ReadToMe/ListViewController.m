@@ -62,7 +62,7 @@
 	{
 		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DocumentsForSpeech"];
 		
-		NSSortDescriptor *noteModifiedDateSort = [[NSSortDescriptor alloc] initWithKey:@"createdDate" ascending:NO];
+		NSSortDescriptor *noteModifiedDateSort = [[NSSortDescriptor alloc] initWithKey:@"modifiedDate" ascending:NO];
 		[fetchRequest setSortDescriptors: @[noteModifiedDateSort]];
 		
 		_fetchedResultsController = [[NSFetchedResultsController alloc]
@@ -85,10 +85,11 @@
 	if (![[self fetchedResultsController] performFetch:&error])
 	{
 		NSLog (@"executePerformFetch > error occurred");
-		//abort();
+        NSLog(@"%@, %@", error, error.localizedDescription);
+        
 	} else {
-		NSLog (@"self.fetchedResultsController: %@\n", self.fetchedResultsController);
-		NSLog (@"self.fetchedResultsController count: %lu\n", (unsigned long)[[self.fetchedResultsController sections] count]);
+		
+		NSLog (@"ListView > [self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
 	}
 }
 
@@ -250,10 +251,9 @@
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:documentsForSpeech forKey:@"DidSelectDocumentsForSpeechNotificationKey"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DidSelectDocumentsForSpeechNotification" object:nil userInfo:userInfo];
 	
-	UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
-	pasteBoard.persistent = YES;
-	pasteBoard.string = documentsForSpeech.document;
-	
+    ContainerViewController *controller = (ContainerViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
+    controller.isSavedDocument = YES;
+    
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	[self dismissViewControllerAnimated:YES completion:nil];
 }

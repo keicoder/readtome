@@ -14,6 +14,7 @@
 @property (strong, nonatomic) DocumentsForSpeech *currentDocument;
 @property (nonatomic, strong) NSString *language;
 @property (nonatomic, assign) BOOL isReceivedDocument;
+@property (nonatomic, assign) BOOL isSavedDocument;
 
 @end
 
