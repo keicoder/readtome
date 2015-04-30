@@ -6,6 +6,10 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
+#define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
+#define kIsSelectedDocumentFromListView         @"kIsSelectedDocumentFromListView"
+
+
 #import "ListViewController.h"
 #import "DataManager.h"
 #import "DocumentsForSpeech.h"
@@ -19,6 +23,8 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) DocumentsForSpeech *selectedDocumentsForSpeech;
+
+@property (nonatomic, strong) UIPasteboard *pasteBoard;
 
 @end
 
@@ -248,11 +254,23 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    //Shared Defaults
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
+    [sharedDefaults setBool:YES forKey:kIsSelectedDocumentFromListView];
+    [sharedDefaults synchronize];
+    
+    //PasteBoard
+    if (self.pasteBoard == nil) {
+        self.pasteBoard = [UIPasteboard generalPasteboard];
+        self.pasteBoard.persistent = YES;
+    }
+    
+    [self.pasteBoard setString:documentsForSpeech.document];
+    
+    
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:documentsForSpeech forKey:@"DidSelectDocumentsForSpeechNotificationKey"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DidSelectDocumentsForSpeechNotification" object:nil userInfo:userInfo];
-	
-    ContainerViewController *controller = (ContainerViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
-    controller.isSavedDocument = YES;
     
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	[self dismissViewControllerAnimated:YES completion:nil];

@@ -8,6 +8,15 @@
 
 #define debug                       1
 
+
+#define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
+#define kSharedDocument                         @"kSharedDocument"
+#define kIsSharedDocument                       @"kIsSharedDocument"
+#define kTodayDocument                          @"kTodayDocument"
+#define kIsTodayDocument                        @"kIsTodayDocument"
+#define kIsSelectedDocumentFromListView         @"kIsSelectedDocumentFromListView"
+
+
 #define kPause                      [UIImage imageNamed:@"pause"]
 #define kPlay                       [UIImage imageNamed:@"play"]
 
@@ -46,12 +55,14 @@
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSMutableArray *fetchedDocuments;
 
+@property (nonatomic, strong) NSUserDefaults *sharedDefaults;
+@property (nonatomic, strong) NSUserDefaults *defaults;
+
 @property (nonatomic, strong) NSDateFormatter *formatter;
 
 @property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
 @property (nonatomic, strong) AVSpeechUtterance *utterance;
 @property (nonatomic, strong) UIPasteboard *pasteBoard;
-@property (nonatomic, strong) NSUserDefaults *defaults;
 
 @property (nonatomic, assign) float volume;
 @property (nonatomic, assign) float pitch;
@@ -115,21 +126,20 @@
 
 - (void)setInitialData
 {
-	self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-    
 	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
 	self.synthesizer.delegate = self;
+    
 	self.pasteBoard = [UIPasteboard generalPasteboard];
 	self.pasteBoard.persistent = YES;
-	self.defaults = [NSUserDefaults standardUserDefaults];
+	
+    self.defaults = [NSUserDefaults standardUserDefaults];
     
     _paused = YES;
-    self.isReceivedDocument = NO;
-    _subString = self.textView.text;
+    //_subString = self.textView.text;
     
     self.textView.delegate = self;
     
-    [self hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation]; //화면에 보여주지 않기
+    [self hideSaveAlertViewEqualizerViewWithNoAnimation]; //화면에 보여주지 않기
 }
 
 
@@ -161,22 +171,18 @@
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
 	[super viewWillAppear:animated];
+    
+    [self setPasteBoardString];
+    
     [self lastViewedDocument];
-    [self checkToPasteText];
+    
     [self speechLanguage];
     [self typeSelecting];
     [self volumeValue];
     [self pitchValue];
     [self rateValue];
-    [self executePerformFetch];
-}
-
-
--(void)viewDidAppear:(BOOL)animated
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    [super viewDidAppear:animated];
+    [self checkToPasteText];
 }
 
 
@@ -193,42 +199,74 @@
 
 - (void)checkToPasteText
 {
-    if (self.isSavedDocument == NO) {
+    if (!self.sharedDefaults) {
+        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
+    }
+    
+    self.isSharedDocument = [self.sharedDefaults boolForKey:kIsSharedDocument];
+    self.isTodayDocument = [self.sharedDefaults boolForKey:kIsTodayDocument];
+    self.isSelectedDocumentFromListView = [self.sharedDefaults boolForKey:kIsSelectedDocumentFromListView];
+    
+    NSLog (@"viewWillAppear > checkToPasteText > self.isSharedDocument: %@\n", self.isSharedDocument ? @"YES" : @"NO");
+    NSLog (@"viewWillAppear > checkToPasteText > self.isTodayDocument: %@\n", self.isTodayDocument ? @"YES" : @"NO");
+    NSLog (@"viewWillAppear > checkToPasteText > self.isSelectedDocumentFromListView: %@\n", self.isSelectedDocumentFromListView ? @"YES" : @"NO");
+    
+    
+    if (self.isSharedDocument) {
         
-        NSLog(@"checkToPasteText > self.isSavedDocument == NO");
+        NSLog(@"viewWillAppear > checkToPasteText > isSharedDocument > self.textView.text = kSharedDocument");
+        self.textView.text = [self.sharedDefaults objectForKey:kSharedDocument];
         
-        if (!self.pasteBoard.string) {
-            
-            self.pasteBoard.string = @"There are no text to speech.\n\nCopy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
-            self.textView.text = self.pasteBoard.string;
-            
-        } else if (self.isReceivedDocument == YES) {
-            
-            NSLog(@"Received Document");
-            self.textView.text = self.pasteBoard.string;
-            
-        } else {
-            
-            self.textView.text = self.pasteBoard.string;
-            
-            self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
-            self.currentDocument.savedDocument = kNotSavedDocument;
-            self.currentDocument.document = self.textView.text;
-            
-            self.isReceivedDocument = NO;
-        }
+        [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
+        [self.sharedDefaults synchronize];
+        self.isSharedDocument = NO;
         
-        _selectedRange = NSMakeRange(0, 0);
-        self.textView.selectedRange = _selectedRange;
+        NSLog (@"viewWillAppear > checkToPasteText > self.isSharedDocument: %@\n", self.isSharedDocument ? @"YES" : @"NO");
         
-        [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-        _paused = YES;
+    } else if (self.isTodayDocument) {
+        
+        NSLog(@"viewWillAppear > checkToPasteText > isTodayDocument > self.textView.text = kTodayDocument");
+        self.textView.text = [self.sharedDefaults objectForKey:kTodayDocument];
+        
+        [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
+        [self.sharedDefaults synchronize];
+        self.isTodayDocument = NO;
+        
+        NSLog (@"viewWillAppear > checkToPasteText > self.isSharedDocument: %@\n", self.isSharedDocument ? @"YES" : @"NO");
+        
+    } else if (self.isSelectedDocumentFromListView) {
+        
+        NSLog(@"viewWillAppear > checkToPasteText > isSelectedDocumentFromListView > handle rest of logic by didReceivedSelectDocumentsForSpeechNotification");
+        
+        [self.sharedDefaults setBool:NO forKey:kIsSelectedDocumentFromListView];
+        [self.sharedDefaults synchronize];
+        self.isSelectedDocumentFromListView = NO;
+        
+        NSLog (@"viewWillAppear > checkToPasteText > self.isSelectedDocumentFromListView: %@\n", self.isSelectedDocumentFromListView ? @"YES" : @"NO");
         
     } else {
         
-        NSLog(@"checkToPasteText > self.isSavedDocument == YES");
+        NSLog(@"viewWillAppear > checkToPasteText > !isSharedDocument, !isTodayDocument, !isSelectedDocumentFromListView > self.textView.text = self.pasteBoard.string");
+        self.textView.text = self.pasteBoard.string;
         
     }
+    
+//    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+//    _paused = YES;
+    
+    _selectedRange = NSMakeRange(0, 0);
+    self.textView.selectedRange = _selectedRange;
+}
+
+
+- (NSString *)setPasteBoardString
+{
+    if (!self.pasteBoard.string) {
+        
+        self.pasteBoard.string = @"Copy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
+    }
+    
+    return self.pasteBoard.string;
 }
 
 
@@ -631,9 +669,9 @@
 }
 
 
-#pragma mark - hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation
+#pragma mark - hideSaveAlertViewEqualizerViewWithNoAnimation
 
-- (void)hideSaveAlertViewEqualizerViewAndProgressViewWithNoAnimation
+- (void)hideSaveAlertViewEqualizerViewWithNoAnimation
 {
     [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         _saveAlertViewExpanded = NO;
@@ -770,7 +808,7 @@
     self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
     
     if (self.currentDocument.uniqueIdString == nil) {
-        NSString *uniqueIDString = [NSString stringWithFormat:@"%li", (long)arc4random() % 999999999999999999];
+        NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
         self.currentDocument.uniqueIdString = uniqueIDString;
     }
     
@@ -818,11 +856,12 @@
 }
 
 
+#pragma mark Save Document
+
 - (IBAction)saveCurrentDocument:(id)sender
 {
     [self.textView resignFirstResponder];
     [self pauseSpeech];
-    [self showLog];
     
     if (self.isSavedDocument == NO) {
         
@@ -833,7 +872,9 @@
             
         } else {
             
-            self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+            if (self.managedObjectContext == nil) {
+                self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+            }
             
             self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
             
@@ -853,6 +894,8 @@
                     NSLog(@"_lastViewedDocument texts updated");
                     
                     [self executePerformFetch];
+                    
+                    //[self showLog];
                     
                 } else {
                     
@@ -861,7 +904,7 @@
             }];
         }
         
-    } else {
+    } else { //isSavedDocument
         
         if ([self.textView.text isEqualToString:_lastViewedDocument]) {
             
@@ -870,17 +913,13 @@
             
         } else {
             
-            self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-            
-            self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-            
             [self updateDocument];
             
             [self.managedObjectContext performBlock:^{
                 NSError *error = nil;
                 if ([self.managedObjectContext save:&error]) {
                     
-                    NSLog (@"Save to coredata succeed");
+                    NSLog (@"Save updated document to coredata succeed");
                     
                     [self adjustSlideViewHeightWithTitle:@"Saved" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
                     
@@ -891,9 +930,11 @@
                     
                     [self executePerformFetch];
                     
+                    //[self showLog];
+                    
                 } else {
                     
-                    NSLog(@"Error saving to coredata: %@", error);
+                    NSLog(@"Error updating to coredata: %@", error);
                 }
             }];
         }
@@ -974,8 +1015,8 @@
         if ([self.fetchedResultsController fetchedObjects].count > 0) {
             
             DocumentsForSpeech *savedDocument = [self.fetchedResultsController fetchedObjects][0];
-            NSLog (@"savedDocument.document: %@\n", savedDocument.document);
-            NSLog (@"savedDocument.uniqueIdString: %@\n", savedDocument.uniqueIdString);
+            //NSLog (@"savedDocument.document: %@\n", savedDocument.document);
+            //NSLog (@"savedDocument.uniqueIdString: %@\n", savedDocument.uniqueIdString);
             self.currentDocument = savedDocument;
             self.isSavedDocument = YES;
         }
@@ -1059,10 +1100,10 @@
 {
     if (self.isSavedDocument == NO) {
         _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
-        NSLog (@"viewWillAppear: self.isSavedDocument == NO > _lastViewedDocument: %@\n", _lastViewedDocument);
+        NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == NO > _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument]");
         return _lastViewedDocument;
     } else {
-        NSLog (@"viewWillAppear: self.isReceivedDocument == YES > _lastViewedDocument: %@\n", _lastViewedDocument);
+        NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == YES > _lastViewedDocument = _lastViewedDocument");
         return _lastViewedDocument;
     }
 }
