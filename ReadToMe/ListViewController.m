@@ -6,8 +6,14 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
+#define debug 1
+
 #define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
 #define kIsSelectedDocumentFromListView         @"kIsSelectedDocumentFromListView"
+#define kIsSharedDocument                       @"kIsSharedDocument"
+#define kIsTodayDocument                        @"kIsTodayDocument"
+#define kIsNewDocument                          @"kIsNewDocument"
+#define kIsSavedDocument                        @"kIsSavedDocument"
 
 
 #import "ListViewController.h"
@@ -23,6 +29,8 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) DocumentsForSpeech *selectedDocumentsForSpeech;
+
+@property (nonatomic, strong) NSUserDefaults *sharedDefaults;
 
 @property (nonatomic, strong) UIPasteboard *pasteBoard;
 
@@ -245,20 +253,43 @@
 	NSError *error = nil;
 	[managedObjectContext save:&error];
     
-    UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
-    pasteBoard.persistent = YES;
-    pasteBoard.string = @"Copy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
+    NSIndexPath *zeroIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    //NSManagedObject *firstObject = [self.fetchedResultsController objectAtIndexPath:zeroIndexPath];
+    
+    if (indexPath == zeroIndexPath) {
+        
+        NSLog(@"Deleted zeroIndexPath document");
+        
+        if (!self.pasteBoard) {
+            
+            self.pasteBoard = [UIPasteboard generalPasteboard];
+            self.pasteBoard.persistent = YES;
+        }
+        
+        self.pasteBoard.string = @"Copy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
+    }
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
 	DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     //Shared Defaults
-    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
-    [sharedDefaults setBool:YES forKey:kIsSelectedDocumentFromListView];
-    [sharedDefaults synchronize];
+    if (!self.sharedDefaults) {
+        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
+    }
+    
+    [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
+    [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
+    [self.sharedDefaults setBool:YES forKey:kIsSelectedDocumentFromListView];
+    [self.sharedDefaults setBool:NO forKey:kIsNewDocument];
+    [self.sharedDefaults setBool:YES forKey:kIsSavedDocument];
+    [self.sharedDefaults synchronize];
+    
+    [self showLog];
     
     //PasteBoard
     if (self.pasteBoard == nil) {
@@ -336,5 +367,22 @@
 	NSLog(@"VC: %@", NSStringFromSelector(_cmd));
 }
 
+
+#pragma mark - Show Log
+
+- (void)showLog
+{
+    NSLog (@"\n");
+    
+    [self.sharedDefaults setBool:YES forKey:kIsSelectedDocumentFromListView];
+    [self.sharedDefaults setBool:NO forKey:kIsNewDocument];
+    [self.sharedDefaults setBool:YES forKey:kIsSavedDocument];
+    
+    NSLog (@"isSharedDocument: %@\n", [self.sharedDefaults boolForKey:kIsSharedDocument] ? @"YES" : @"NO");
+    NSLog (@"isTodayDocument: %@\n", [self.sharedDefaults boolForKey:kIsTodayDocument] ? @"YES" : @"NO");
+    NSLog (@"isSelectedDocumentFromListView: %@\n", [self.sharedDefaults boolForKey:kIsSelectedDocumentFromListView] ? @"YES" : @"NO");
+    NSLog (@"isNewDocument: %@\n", [self.sharedDefaults boolForKey:kIsNewDocument] ? @"YES" : @"NO");
+    NSLog (@"isSavedDocument: %@\n", [self.sharedDefaults boolForKey:kIsSavedDocument] ? @"YES" : @"NO");
+}
 
 @end

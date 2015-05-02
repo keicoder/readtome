@@ -60,7 +60,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="speechText:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9FP-Ab-cUp"/>
+                                            <action selector="playPauseButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="jVM-L3-wUU"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGU-LD-ksn" userLabel="ResetButton" customClass="PopAnimationClearButton">
@@ -241,7 +241,7 @@ Enjoy reading!</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KQ5-vg-g0i" userLabel="SelectionButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="20" y="8" width="44" height="44"/>
+                                        <rect key="frame" x="72" y="8" width="44" height="44"/>
                                         <inset key="contentEdgeInsets" minX="5" minY="7" maxX="5" maxY="8"/>
                                         <state key="normal" image="selection">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -293,6 +293,9 @@ Enjoy reading!</string>
                                     <constraint firstItem="pn8-Lw-nUq" firstAttribute="width" secondItem="KQ5-vg-g0i" secondAttribute="width" id="E9s-4M-zCQ"/>
                                     <constraint firstItem="pn8-Lw-nUq" firstAttribute="centerY" secondItem="xtD-FV-k3Q" secondAttribute="centerY" id="I2s-DN-1F8"/>
                                     <constraint firstItem="pn8-Lw-nUq" firstAttribute="leading" secondItem="Wws-1S-BRE" secondAttribute="leading" constant="20" id="I5L-J2-U4L"/>
+                                    <constraint firstItem="KQ5-vg-g0i" firstAttribute="leading" secondItem="pn8-Lw-nUq" secondAttribute="trailing" constant="8" id="L4f-74-ci5">
+                                        <variation key="heightClass=compact" constant="20"/>
+                                    </constraint>
                                     <constraint firstItem="pn8-Lw-nUq" firstAttribute="centerY" secondItem="KQ5-vg-g0i" secondAttribute="centerY" id="RWm-0L-XQF"/>
                                     <constraint firstItem="BhP-KP-gJu" firstAttribute="width" secondItem="UuS-46-ldZ" secondAttribute="width" id="Sif-Cr-ccy"/>
                                     <constraint firstItem="xtD-FV-k3Q" firstAttribute="centerY" secondItem="UuS-46-ldZ" secondAttribute="centerY" id="Zq8-yZ-hh6"/>
@@ -300,7 +303,6 @@ Enjoy reading!</string>
                                     <constraint firstAttribute="height" constant="60" id="del-jg-4jZ">
                                         <variation key="heightClass=compact" constant="44"/>
                                     </constraint>
-                                    <constraint firstItem="KQ5-vg-g0i" firstAttribute="leading" secondItem="Wws-1S-BRE" secondAttribute="leading" constant="20" id="eOr-J7-YOx"/>
                                     <constraint firstItem="xtD-FV-k3Q" firstAttribute="width" secondItem="UuS-46-ldZ" secondAttribute="width" id="f3f-8v-Z4l"/>
                                     <constraint firstItem="UuS-46-ldZ" firstAttribute="leading" secondItem="xtD-FV-k3Q" secondAttribute="trailing" constant="8" id="f6H-ac-Nhv">
                                         <variation key="heightClass=compact" constant="20"/>

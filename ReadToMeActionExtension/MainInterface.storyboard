@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14E11f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ObA-dk-sSI">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+    </dependencies>
+    <scenes>
+        <!--Image-->
+        <scene sceneID="7MM-of-jgj">
+            <objects>
+                <viewController title="Image" id="ObA-dk-sSI" customClass="ActionViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qkL-Od-lgU"/>
+                        <viewControllerLayoutGuide type="bottom" id="n38-gi-rB5"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="zMn-AG-sqS">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" text="Lorem ipsum" translatesAutoresizingMaskIntoConstraints="NO" id="RjK-tq-YEc" userLabel="TextView">
+                                <rect key="frame" x="20" y="20" width="560" height="520"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pRz-up-fGL" userLabel="MenuView">
+                                <rect key="frame" x="0.0" y="540" width="600" height="60"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RKa-dC-pdT" userLabel="BackButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="20" y="8" width="44" height="44"/>
+                                        <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                                        <state key="normal" image="circle-down">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jp5-Bn-pT8" userLabel="PlayButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="278" y="8" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="F16-Es-nbT"/>
+                                            <constraint firstAttribute="height" constant="44" id="t2H-ap-laj"/>
+                                        </constraints>
+                                        <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                                        <state key="normal" image="play">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.1684957651" green="0.72803117559999997" blue="0.95202020200000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="RKa-dC-pdT" firstAttribute="height" secondItem="Jp5-Bn-pT8" secondAttribute="height" id="R3b-37-dHg"/>
+                                    <constraint firstAttribute="centerX" secondItem="Jp5-Bn-pT8" secondAttribute="centerX" id="Rw6-Vf-2Sh"/>
+                                    <constraint firstItem="RKa-dC-pdT" firstAttribute="centerY" secondItem="Jp5-Bn-pT8" secondAttribute="centerY" id="S6C-dh-BZv"/>
+                                    <constraint firstAttribute="centerY" secondItem="Jp5-Bn-pT8" secondAttribute="centerY" id="SNr-DH-fyY"/>
+                                    <constraint firstItem="RKa-dC-pdT" firstAttribute="width" secondItem="Jp5-Bn-pT8" secondAttribute="width" id="WB8-qY-x23"/>
+                                    <constraint firstItem="RKa-dC-pdT" firstAttribute="leading" secondItem="pRz-up-fGL" secondAttribute="leading" constant="20" id="bGg-ll-w9Z"/>
+                                    <constraint firstAttribute="height" constant="60" id="rmb-Yd-ZYa"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="n38-gi-rB5" firstAttribute="top" secondItem="pRz-up-fGL" secondAttribute="bottom" id="E0R-vR-gAM"/>
+                            <constraint firstAttribute="trailing" secondItem="RjK-tq-YEc" secondAttribute="trailing" constant="20" id="Gow-iL-nK9"/>
+                            <constraint firstItem="pRz-up-fGL" firstAttribute="top" secondItem="RjK-tq-YEc" secondAttribute="bottom" id="IHo-bq-hWe"/>
+                            <constraint firstItem="RjK-tq-YEc" firstAttribute="leading" secondItem="zMn-AG-sqS" secondAttribute="leading" constant="20" id="Iqy-g1-24I"/>
+                            <constraint firstItem="pRz-up-fGL" firstAttribute="leading" secondItem="zMn-AG-sqS" secondAttribute="leading" id="NjZ-Hr-BHj"/>
+                            <constraint firstAttribute="trailing" secondItem="pRz-up-fGL" secondAttribute="trailing" id="QNq-8E-XXO"/>
+                            <constraint firstItem="RjK-tq-YEc" firstAttribute="top" secondItem="qkL-Od-lgU" secondAttribute="bottom" id="a2R-1W-m7f"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="textView" destination="RjK-tq-YEc" id="Swq-qQ-3PU"/>
+                        <outlet property="view" destination="zMn-AG-sqS" id="Qma-de-2ek"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X47-rx-isc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="472" y="-131"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="circle-down" width="32" height="32"/>
+        <image name="play" width="21" height="33"/>
+    </resources>
+</document>

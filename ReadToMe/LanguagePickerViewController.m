@@ -115,9 +115,13 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
 	self.currentLanguage = [self.languageCodes objectAtIndex:row];
-	NSUserDefaults *defults = [NSUserDefaults standardUserDefaults];
-	[defults setObject:self.currentLanguage forKey:kLanguage];
-	[defults synchronize];
+	
+    
+    if (self.defaults == nil) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+	[self.defaults setObject:self.currentLanguage forKey:kLanguage];
+	[self.defaults synchronize];
 	
 	//Post a notification when picked
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DidPickedLanguageNotification" object:nil userInfo:nil];

@@ -9,20 +9,25 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>ReadToMeActionExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
 		<key>ReadToMeKit.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>1</integer>
 		</dict>
 		<key>ReadToMeShareExtension.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>2</integer>
 		</dict>
 		<key>ReadToMeTodayExtension.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>3</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -38,6 +43,11 @@
 			<true/>
 		</dict>
 		<key>32281F701AD8B0AB00584E4A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>323C1CAD1AF4746A00EB8689</key>
 		<dict>
 			<key>primary</key>
 			<true/>

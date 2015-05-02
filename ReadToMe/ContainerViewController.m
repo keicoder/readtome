@@ -15,7 +15,8 @@
 #define kTodayDocument                          @"kTodayDocument"
 #define kIsTodayDocument                        @"kIsTodayDocument"
 #define kIsSelectedDocumentFromListView         @"kIsSelectedDocumentFromListView"
-
+#define kIsNewDocument                          @"Already Saved Document"
+#define kIsSavedDocument                        @"kIsSavedDocument"
 
 #define kPause                      [UIImage imageNamed:@"pause"]
 #define kPlay                       [UIImage imageNamed:@"play"]
@@ -152,7 +153,7 @@
 	[self configureUI];
     [self configureSliderUI];
 	[self setInitialData]; //순서 바꾸지 말 것
-    [self stopSpeech];
+    [self stopSpeaking];
 //    [self setupKeyboardAnimations];
     [self registerKeyboardNotifications];
     [self checkHasLaunchedOnce];
@@ -206,10 +207,10 @@
     self.isSharedDocument = [self.sharedDefaults boolForKey:kIsSharedDocument];
     self.isTodayDocument = [self.sharedDefaults boolForKey:kIsTodayDocument];
     self.isSelectedDocumentFromListView = [self.sharedDefaults boolForKey:kIsSelectedDocumentFromListView];
+    self.isNewDocument = [self.sharedDefaults boolForKey:kIsNewDocument];
+    self.isSavedDocument = [self.sharedDefaults boolForKey:kIsSavedDocument];
     
-    NSLog (@"viewWillAppear > checkToPasteText > self.isSharedDocument: %@\n", self.isSharedDocument ? @"YES" : @"NO");
-    NSLog (@"viewWillAppear > checkToPasteText > self.isTodayDocument: %@\n", self.isTodayDocument ? @"YES" : @"NO");
-    NSLog (@"viewWillAppear > checkToPasteText > self.isSelectedDocumentFromListView: %@\n", self.isSelectedDocumentFromListView ? @"YES" : @"NO");
+    [self showLog];
     
     
     if (self.isSharedDocument) {
@@ -218,10 +219,10 @@
         self.textView.text = [self.sharedDefaults objectForKey:kSharedDocument];
         
         [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
+        [self.sharedDefaults setBool:YES forKey:kIsNewDocument];
         [self.sharedDefaults synchronize];
         self.isSharedDocument = NO;
-        
-        NSLog (@"viewWillAppear > checkToPasteText > self.isSharedDocument: %@\n", self.isSharedDocument ? @"YES" : @"NO");
+        self.isNewDocument = YES;
         
     } else if (self.isTodayDocument) {
         
@@ -229,27 +230,36 @@
         self.textView.text = [self.sharedDefaults objectForKey:kTodayDocument];
         
         [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
+        [self.sharedDefaults setBool:YES forKey:kIsNewDocument];
         [self.sharedDefaults synchronize];
         self.isTodayDocument = NO;
-        
-        NSLog (@"viewWillAppear > checkToPasteText > self.isSharedDocument: %@\n", self.isSharedDocument ? @"YES" : @"NO");
+        self.isNewDocument = YES;
         
     } else if (self.isSelectedDocumentFromListView) {
         
         NSLog(@"viewWillAppear > checkToPasteText > isSelectedDocumentFromListView > handle rest of logic by didReceivedSelectDocumentsForSpeechNotification");
         
         [self.sharedDefaults setBool:NO forKey:kIsSelectedDocumentFromListView];
+        [self.sharedDefaults setBool:NO forKey:kIsNewDocument];
+        [self.sharedDefaults setBool:YES forKey:kIsSavedDocument];
         [self.sharedDefaults synchronize];
         self.isSelectedDocumentFromListView = NO;
-        
-        NSLog (@"viewWillAppear > checkToPasteText > self.isSelectedDocumentFromListView: %@\n", self.isSelectedDocumentFromListView ? @"YES" : @"NO");
+        self.isNewDocument = NO;
+        self.isSavedDocument = YES;
         
     } else {
         
         NSLog(@"viewWillAppear > checkToPasteText > !isSharedDocument, !isTodayDocument, !isSelectedDocumentFromListView > self.textView.text = self.pasteBoard.string");
         self.textView.text = self.pasteBoard.string;
         
+        [self.sharedDefaults setBool:YES forKey:kIsNewDocument];
+        [self.sharedDefaults setBool:YES forKey:kIsSavedDocument];
+        [self.sharedDefaults synchronize];
+        self.isNewDocument = YES;
+        self.isSavedDocument = NO;
     }
+    
+    [self showLog];
     
 //    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
 //    _paused = YES;
@@ -269,10 +279,9 @@
     return self.pasteBoard.string;
 }
 
+#pragma mark - Utterance
 
-#pragma mark - Speech
-
-- (IBAction)speechText:(id)sender
+- (void)setupUtterance
 {
     self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
     self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
@@ -281,57 +290,111 @@
     self.utterance.rate = self.rate;
     self.utterance.preUtteranceDelay = 0.3f;
     self.utterance.postUtteranceDelay = 0.3f;
-    
-    
-    CGFloat duration = 0.25f;
-    
-    if (_paused == YES) {
-        
-        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-        _paused = NO;
-        
-        [self.synthesizer continueSpeaking];
-        
-        [UIView animateWithDuration:duration animations:^{
-            self.resetButton.alpha = 1.0;
-        }completion:^(BOOL finished) { }];
-        
-    } else {
-        
-        [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-        _paused = YES;
-        
-        [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-        
-        [UIView animateWithDuration:duration animations:^{
-            self.resetButton.alpha = 0.0;
-        }completion:^(BOOL finished) { }];
-    }
-    
-    if (self.synthesizer.isSpeaking == NO) {
-        
-        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-        _paused = NO;
-        
-        [self.synthesizer speakUtterance:self.utterance];
-        
-        [UIView animateWithDuration:duration animations:^{
-            self.resetButton.alpha = 1.0;
-        }completion:^(BOOL finished) { }];
-    }
-    
-    
-    if (_isTypeSelecting == YES) {
-        [self selectWord];
-    }
 }
 
 
 #pragma mark - Button Action Methods
 
+- (IBAction)playPauseButtonTapped:(id)sender
+{
+    [self setupUtterance];
+    
+    if (_paused == YES) {
+        
+        [self continueSpeaking];
+        
+    } else {
+        
+        [self pauseSpeaking];
+    }
+    
+    if (self.synthesizer.isSpeaking == NO) {
+        
+        [self speaking];
+    }
+    
+    if (_isTypeSelecting == YES) {
+        self.textView.editable = NO;
+        [self selectWord];
+    }
+}
+
+
+#pragma mark Speech State
+
+- (void)speaking
+{
+    if (!self.utterance) {
+        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+    }
+    
+    if (!self.synthesizer) {
+        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+        self.synthesizer.delegate = self;
+    }
+    
+    [self.synthesizer speakUtterance:self.utterance];
+    [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+    _paused = NO;
+    
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.resetButton.alpha = 1.0;
+    }completion:^(BOOL finished) { }];
+}
+
+
+- (void)pauseSpeaking
+{
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.resetButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
+}
+
+
+- (void)continueSpeaking
+{
+    [self.synthesizer continueSpeaking];
+    [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
+    _paused = NO;
+    
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.resetButton.alpha = 1.0;
+    }completion:^(BOOL finished) { }];
+}
+
+
+- (void)stopSpeaking
+{
+    [self.textView resignFirstResponder];
+    
+    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    _paused = YES;
+    
+    _selectedRange = NSMakeRange(0, 0);
+    self.textView.selectedRange = _selectedRange;
+    
+    CGFloat duration = 0.25f;
+    _speechLocationPercentValueInWholeTexts = 0.0;
+    [UIView animateWithDuration:duration animations:^{
+        self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+        self.resetButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
+}
+
+
+#pragma mark Other Buttons Action Methods
+
 - (IBAction)listButtonTapped:(id)sender
 {
-    [self stopSpeech];
+    [self stopSpeaking];
     
 	if (_equalizerViewExpanded == YES) {
         _equalizerViewExpanded = NO;
@@ -352,7 +415,7 @@
 
 - (IBAction)resetButtonTapped:(id)sender
 {
-    [self stopSpeech];
+    [self stopSpeaking];
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -385,12 +448,14 @@
 - (void)action:(id)sender
 {
 	NSLog(@"Action");
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.textView.text] applicationActivities:nil];
+    [self presentViewController:activityVC animated:YES completion:nil];
 }
 
 
 - (IBAction)selectionButtonTapped:(id)sender
 {
-    [self pauseSpeech];
+    [self pauseSpeaking];
     
     if (_equalizerViewExpanded == YES) {
         _equalizerViewExpanded = NO;
@@ -407,11 +472,11 @@
         
         [self typeSelecting];
         
-        NSRange selectedRange = self.textView.selectedRange;
-        if (selectedRange.length > 0) {
-            selectedRange.length = 0;
-            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
-        }
+//        NSRange selectedRange = self.textView.selectedRange;
+//        if (selectedRange.length > 0) {
+//            selectedRange.length = 0;
+//            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+//        }
         
     } else {
         
@@ -423,18 +488,18 @@
         
         [self typeSelecting];
         
-        NSRange selectedRange = self.textView.selectedRange;
-        if (selectedRange.length > 0) {
-            selectedRange.length = 0;
-            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
-        }
+//        NSRange selectedRange = self.textView.selectedRange;
+//        if (selectedRange.length > 0) {
+//            selectedRange.length = 0;
+//            self.textView.selectedRange = NSMakeRange(selectedRange.location, selectedRange.length);
+//        }
     }
 }
 
 
 - (IBAction)languageButtonTapped:(id)sender
 {
-    [self stopSpeech];
+    [self stopSpeaking];
 	
 	if (_equalizerViewExpanded == YES) {
         _equalizerViewExpanded = NO;
@@ -457,7 +522,7 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
-    [self stopSpeech];
+    [self stopSpeaking];
     if (_equalizerViewExpanded == YES) {
         _equalizerViewExpanded = NO;
         [self adjustEqualizerViewHeight:0.0];
@@ -533,7 +598,7 @@
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
     NSLog(@"speechSynthesizer didFinishSpeechUtterance");
-    [self stopSpeech];
+    [self stopSpeaking];
 }
 
 
@@ -708,21 +773,15 @@
 {
     NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
     
-    NSLog (@"didReceivedSelectDocumentsForSpeechNotification > self.isSavedDocument: %@\n", self.isSavedDocument ? @"YES" : @"NO");
-    
     NSDictionary *userInfo = notification.userInfo;
-    
     DocumentsForSpeech *receivedDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
     
     self.currentDocument = receivedDocument;
-    //self.isSavedDocument = YES;
-    
     
     self.pasteBoard.string = self.currentDocument.document;
     _lastViewedDocument = self.currentDocument.document;
     self.textView.text = self.currentDocument.document;
     
-    self.isReceivedDocument = YES;
     self.textView.text = self.currentDocument.document;
     self.language = self.currentDocument.language;
     
@@ -731,9 +790,9 @@
     self.rate = [self.currentDocument.rate floatValue];
     
     //Slider Value
-    self.volumeSlider.value = [self.currentDocument.volume floatValue];
-    self.pitchSlider.value = [self.currentDocument.pitch floatValue];
-    self.rateSlider.value = [self.currentDocument.rate floatValue];
+    self.volumeSlider.value = self.volume;
+    self.pitchSlider.value = self.pitch;
+    self.rateSlider.value = self.rate;
     
     [self showLog];
 }
@@ -748,6 +807,12 @@
 - (void)didPickedLanguageNotification:(NSNotification *)notification
 {
 	NSLog(@"DidPickedLanguageNotification Recieved");
+    
+    if (self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    
+    self.language = [self.defaults objectForKey:kLanguage];
 	self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
 }
 
@@ -757,6 +822,7 @@
 - (void)addApplicationsStateObserver
 {
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    
 	[center addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
 	[center addObserver:self selector:@selector(applicationDidBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
 	[center addObserver:self selector:@selector(applicationDidEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -861,7 +927,9 @@
 - (IBAction)saveCurrentDocument:(id)sender
 {
     [self.textView resignFirstResponder];
-    [self pauseSpeech];
+    [self pauseSpeaking];
+    
+    NSLog (@"self.currentDocument.savedDocument: %@\n", self.currentDocument.savedDocument);
     
     if (self.isSavedDocument == NO) {
         
@@ -1048,8 +1116,8 @@
     //Button
     self.logoButton.enabled = NO;
     self.logoButton.alpha = 0.0;
-    self.actionButton.enabled = NO;
-    self.actionButton.alpha = 0.0;
+//    self.actionButton.enabled = NO;
+//    self.actionButton.alpha = 0.0;
     self.resetButton.alpha = 0.0;
     
     //Keyboard Down Button
@@ -1081,16 +1149,17 @@
 
 - (void)selectWord
 {
+//    [self.textView select:self];
     _selectedRange = self.textView.selectedRange;
-
-    if ([self.textView hasText] && _selectedRange.length == 0) {
-        
-        [self.textView select:self];
-        
-    } else if ([self.textView hasText] && _selectedRange.length > 0) {
-        
-        self.textView.selectedRange = _selectedRange;
-    }
+    [self.textView select:self];
+//    if ([self.textView hasText] && _selectedRange.length == 0) {
+//        
+//        [self.textView select:self];
+//        
+//    } else if ([self.textView hasText] && _selectedRange.length > 0) {
+//        
+//        self.textView.selectedRange = _selectedRange;
+//    }
 }
 
 
@@ -1184,41 +1253,6 @@
 }
 
 
-#pragma mark - Speech State
-
-- (void)stopSpeech
-{
-    [self.textView resignFirstResponder];
-    
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
-    
-    _selectedRange = NSMakeRange(0, 0);
-    self.textView.selectedRange = _selectedRange;
-    
-    CGFloat duration = 0.25f;
-    _speechLocationPercentValueInWholeTexts = 0.0;
-    [UIView animateWithDuration:duration animations:^{
-        self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
-        self.resetButton.alpha = 0.0;
-    }completion:^(BOOL finished) { }];
-}
-
-
-- (void)pauseSpeech
-{
-    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
-    
-    CGFloat duration = 0.25f;
-    [UIView animateWithDuration:duration animations:^{
-        self.resetButton.alpha = 0.0;
-    }completion:^(BOOL finished) { }];
-}
-
-
 //#pragma mark - Keyboard handle
 //
 //- (void)setupKeyboardAnimations
@@ -1279,7 +1313,7 @@
         self.keyboardDownButton.alpha = 0.0;
     }completion:^(BOOL finished) { }];
     
-    [self pauseSpeech];
+    [self pauseSpeaking];
     
     NSRange selectedRange = self.textView.selectedRange;
     if (selectedRange.length > 0) {
@@ -1294,7 +1328,6 @@
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
     NSLog(@"textViewShouldBeginEditing");
-    
     return YES;
 }
 
@@ -1302,9 +1335,6 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     NSLog(@"textView shouldChangeTextInRange");
-    
-    _lastViewedDocument = self.textView.text;
-    
     return YES;
 }
 
@@ -1320,7 +1350,6 @@
     } else {
         
         NSLog(@"TextView texts are changed");
-        
         [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
         [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
         _paused = YES;
@@ -1331,7 +1360,6 @@
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView
 {
     NSLog(@"textViewShouldEndEditing");
-    
     return YES;
 }
 
@@ -1340,19 +1368,24 @@
 
 - (void)showLog
 {
+    NSLog (@"\n");
+    NSLog (@"self.isSharedDocument: %@\n", self.isSharedDocument ? @"YES" : @"NO");
+    NSLog (@"self.isTodayDocument: %@\n", self.isTodayDocument ? @"YES" : @"NO");
+    NSLog (@"self.isSelectedDocumentFromListView: %@\n", self.isSelectedDocumentFromListView ? @"YES" : @"NO");
+    NSLog (@"self.isNewDocument: %@\n", self.isNewDocument ? @"YES" : @"NO");
     NSLog (@"self.isSavedDocument: %@\n", self.isSavedDocument ? @"YES" : @"NO");
     
-    NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
-    NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
-    NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
-    
-    NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
-    NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
-    NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
-    
-    NSLog (@"self.volume: %f\n", self.volume);
-    NSLog (@"self.pitch: %f\n", self.pitch);
-    NSLog (@"self.rate: %f\n", self.rate);
+//    NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
+//    NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
+//    NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
+//    
+//    NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
+//    NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
+//    NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
+//    
+//    NSLog (@"self.volume: %f\n", self.volume);
+//    NSLog (@"self.pitch: %f\n", self.pitch);
+//    NSLog (@"self.rate: %f\n", self.rate);
     
 //    NSLog (@"self.textView.text: %@\n", self.textView.text);
 //    NSLog (@"_lastViewedDocument: %@\n", _lastViewedDocument);
