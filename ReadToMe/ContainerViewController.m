@@ -210,52 +210,36 @@
     if (self.isSharedDocument) {
         
         NSLog(@"viewWillAppear > checkToPasteText > isSharedDocument > self.textView.text = kSharedDocument");
-        self.textView.text = [self.sharedDefaults objectForKey:kSharedDocument];
         
-        [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
-        [self.sharedDefaults setBool:YES forKey:kIsNewDocument];
-        [self.sharedDefaults synchronize];
-        self.isSharedDocument = NO;
-        self.isNewDocument = YES;
+        self.textView.text = [self.sharedDefaults objectForKey:kSharedDocument];
+        [self saveToSharedDefaultsDocumentIsNew];
         
     } else if (self.isTodayDocument) {
         
         NSLog(@"viewWillAppear > checkToPasteText > isTodayDocument > self.textView.text = kTodayDocument");
-        self.textView.text = [self.sharedDefaults objectForKey:kTodayDocument];
         
-        [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
-        [self.sharedDefaults setBool:YES forKey:kIsNewDocument];
-        [self.sharedDefaults synchronize];
-        self.isTodayDocument = NO;
-        self.isNewDocument = YES;
+        self.textView.text = [self.sharedDefaults objectForKey:kTodayDocument];
+        [self saveToSharedDefaultsDocumentIsNew];
         
     } else if (self.isSelectedDocumentFromListView) {
         
         NSLog(@"viewWillAppear > checkToPasteText > isSelectedDocumentFromListView > handle rest of logic by didReceivedSelectDocumentsForSpeechNotification");
         
-        [self.sharedDefaults setBool:NO forKey:kIsSelectedDocumentFromListView];
-        [self.sharedDefaults setBool:NO forKey:kIsNewDocument];
-        [self.sharedDefaults setBool:YES forKey:kIsSavedDocument];
-        [self.sharedDefaults synchronize];
-        self.isSelectedDocumentFromListView = NO;
-        self.isNewDocument = NO;
-        self.isSavedDocument = YES;
+        [self saveToSharedDefaultsDocumentDidAlreadySave];
         
     } else {
         
         NSLog(@"viewWillAppear > checkToPasteText > !isSharedDocument, !isTodayDocument, !isSelectedDocumentFromListView > self.textView.text = self.pasteBoard.string");
-        self.textView.text = self.pasteBoard.string;
         
-        [self.sharedDefaults setBool:YES forKey:kIsNewDocument];
-        [self.sharedDefaults setBool:YES forKey:kIsSavedDocument];
-        [self.sharedDefaults synchronize];
-        self.isNewDocument = YES;
-        self.isSavedDocument = NO;
+        self.textView.text = self.pasteBoard.string;
+        [self saveToSharedDefaultsDocumentIsNew];
     }
     
     [self showLog];
 }
 
+
+#pragma mark Set PasteBoard String
 
 - (NSString *)setPasteBoardString
 {
@@ -469,10 +453,6 @@
 
 - (IBAction)selectionButtonTapped:(id)sender
 {
-    [self pauseSpeaking];
-    self.textView.editable = NO;
-    [self.textView resignFirstResponder];
-    
     if (_equalizerViewExpanded == YES) {
         
         [self adjustEqualizerViewHeight:0.0];
@@ -480,22 +460,14 @@
     
     if (_isTypeSelecting == YES) {
         
-        _isTypeSelecting = NO;
-        [self.defaults setBool:NO forKey:kTypeSelecting];
-        [self.defaults synchronize];
+        [self changeSelectionButtonColorForTurnOnAndOff:NO];
         
-        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" andColor:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
         
     } else {
         
-        _isTypeSelecting = YES;
-        [self.defaults setBool:YES forKey:kTypeSelecting];
-        [self.defaults synchronize];
-        
-        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" andColor:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
+        [self changeSelectionButtonColorForTurnOnAndOff:YES];
+        [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.1];
     }
-    
-    self.textView.editable = YES;
 }
 
 
@@ -526,7 +498,7 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
-    [self pauseSpeaking];
+//    [self pauseSpeaking];
     
     if (_equalizerViewExpanded == YES) {
         
@@ -655,7 +627,7 @@
 
 - (void)adjustSlideViewHeightWithTitle:(NSString *)string andColor:(UIColor *)color withSender:(UIButton *)button
 {
-	CGFloat duration = 0.2f;
+	CGFloat duration = 0.3f;
 	CGFloat delay = 0.0f;
 	
     _saveAlertViewExpanded = YES;
@@ -672,7 +644,7 @@
 	} completion:^(BOOL finished) {
 		
         //Dispatch After
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.6 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
             
             _saveAlertViewExpanded = NO;
             self.saveAlertViewHeightConstraint.constant = 0.0;
@@ -702,7 +674,7 @@
         
         [self.view layoutIfNeeded];
         
-        if (_equalizerViewExpanded == YES) {
+        if (height == 0) {
             
             _equalizerViewExpanded = NO;
             
@@ -830,7 +802,7 @@
     
     NSLog (@"self.currentDocument.savedDocument: %@\n", self.currentDocument.savedDocument);
     
-    if (self.isSavedDocument == NO) {
+    if (self.isNewDocument == YES) {
         
         if ([self.textView.text isEqualToString:_lastViewedDocument]) {
             
@@ -854,6 +826,9 @@
                     NSLog (@"Save to coredata succeed");
                     
                     [self adjustSlideViewHeightWithTitle:@"Saved" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
+                    
+                    self.isNewDocument = NO;
+                    self.isSavedDocument = YES;
                     
                     _lastViewedDocument = self.textView.text;
                     [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
@@ -991,59 +966,6 @@
 }
 
 
-#pragma mark - Configure UI
-
-- (void)configureUI
-{
-    self.menuView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
-    self.saveAlertView.backgroundColor = [UIColor colorWithRed:0.945 green:0.671 blue:0.686 alpha:1];
-    self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1];
-    self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
-    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
-    
-    //Image View
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    
-    //Equalizer View
-    self.volumeLabel.alpha = 0.0;
-    self.pitchLabel.alpha = 0.0;
-    self.rateLabel.alpha = 0.0;
-    self.volumeSlider.alpha = 0.0;
-    self.pitchSlider.alpha = 0.0;
-    self.rateSlider.alpha = 0.0;
-    
-    //Button
-    self.logoButton.enabled = NO;
-    self.logoButton.alpha = 0.0;
-//    self.actionButton.enabled = NO;
-//    self.actionButton.alpha = 0.0;
-    self.resetButton.alpha = 0.0;
-    
-    //Keyboard Down Button
-    float cornerRadius = self.keyboardDownButton.bounds.size.height/2;
-    self.keyboardDownButton.layer.cornerRadius = cornerRadius;
-    self.keyboardDownButton.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:0.5];
-    self.keyboardDownButton.alpha = 0.0;
-}
-
-
-#pragma mark - Configure Slider UI
-
-- (void)configureSliderUI
-{
-    UIImage *thumbImageNormal = [UIImage imageNamed:@"recordNormal"];
-    [self.progressSlider setThumbImage:thumbImageNormal forState:UIControlStateNormal];
-    UIImage *thumbImageHighlighted = [UIImage imageNamed:@"record"];
-    [self.progressSlider setThumbImage:thumbImageHighlighted forState:UIControlStateHighlighted];
-    UIImage *trackLeftImage =
-    [[UIImage imageNamed:@"SliderTrackLeft"]
-     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
-    [self.progressSlider setMinimumTrackImage:trackLeftImage forState:UIControlStateNormal];
-    UIImage *trackRightImage = [[UIImage imageNamed:@"SliderTrackRight"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
-    [self.progressSlider setMaximumTrackImage:trackRightImage forState:UIControlStateNormal];
-}
-
-
 #pragma mark - Select Word
 
 - (void)selectWord
@@ -1123,6 +1045,16 @@
 {
     _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
     //NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    
+    if (_isTypeSelecting == YES) {
+        
+        [self changeSelectionButtonColorForTurnOnAndOff:YES];
+        
+    } else {
+        
+        [self changeSelectionButtonColorForTurnOnAndOff:NO];
+    }
+    
     return _isTypeSelecting;
 }
 
@@ -1365,6 +1297,133 @@
         
         NSLog(@"Nothing Changed");
     }
+}
+
+
+#pragma mark - Change Selection Button Color For TurnOn or TurnOff
+
+- (void)changeSelectionButtonColorForTurnOnAndOff:(BOOL)didTurnOn
+{
+    if (didTurnOn == YES) {
+        
+        _isTypeSelecting = YES;
+        [self.defaults setBool:YES forKey:kTypeSelecting];
+        [self.defaults synchronize];
+        
+        CGFloat duration = 0.35f;
+        [UIView animateWithDuration:duration animations:^{
+            
+            UIImage *image = [UIImage imageForChangingColor:@"selection" color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1]];
+            [self.selectionButton setImage:image forState:UIControlStateNormal];
+            
+        }completion:^(BOOL finished) { }];
+        
+        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" andColor:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
+        
+    } else {
+        
+        _isTypeSelecting = NO;
+        [self.defaults setBool:NO forKey:kTypeSelecting];
+        [self.defaults synchronize];
+        
+        CGFloat duration = 0.35f;
+        [UIView animateWithDuration:duration animations:^{
+            
+            UIImage *image = [UIImage imageForChangingColor:@"selection" color:[UIColor whiteColor]];
+            [self.selectionButton setImage:image forState:UIControlStateNormal];
+            
+        }completion:^(BOOL finished) { }];
+        
+        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" andColor:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
+    }
+    
+}
+
+
+#pragma mark - Save To SharedDefaults Document Is New or Did Already Save
+
+- (void)saveToSharedDefaultsDocumentIsNew
+{
+    [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
+    [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
+    [self.sharedDefaults setBool:NO forKey:kIsSelectedDocumentFromListView];
+    [self.sharedDefaults setBool:YES forKey:kIsNewDocument];
+    [self.sharedDefaults setBool:NO forKey:kIsSavedDocument];
+    [self.sharedDefaults synchronize];
+    self.isSharedDocument = NO;
+    self.isTodayDocument = NO;
+    self.isSelectedDocumentFromListView = NO;
+    self.isNewDocument = YES;
+    self.isSavedDocument = NO;
+}
+
+
+- (void)saveToSharedDefaultsDocumentDidAlreadySave
+{
+    [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
+    [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
+    [self.sharedDefaults setBool:NO forKey:kIsSelectedDocumentFromListView];
+    [self.sharedDefaults setBool:NO forKey:kIsNewDocument];
+    [self.sharedDefaults setBool:YES forKey:kIsSavedDocument];
+    [self.sharedDefaults synchronize];
+    self.isSharedDocument = NO;
+    self.isTodayDocument = NO;
+    self.isSelectedDocumentFromListView = NO;
+    self.isNewDocument = NO;
+    self.isSavedDocument = YES;
+}
+
+
+#pragma mark - Configure UI
+
+- (void)configureUI
+{
+    self.menuView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    self.saveAlertView.backgroundColor = [UIColor colorWithRed:0.945 green:0.671 blue:0.686 alpha:1];
+    self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1];
+    self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    
+    //Image View
+    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    
+    //Equalizer View
+    self.volumeLabel.alpha = 0.0;
+    self.pitchLabel.alpha = 0.0;
+    self.rateLabel.alpha = 0.0;
+    self.volumeSlider.alpha = 0.0;
+    self.pitchSlider.alpha = 0.0;
+    self.rateSlider.alpha = 0.0;
+    
+    //Button
+    self.logoButton.enabled = NO;
+    self.logoButton.alpha = 0.0;
+    self.actionButton.enabled = NO;
+    self.actionButton.alpha = 0.0;
+    self.resetButton.alpha = 0.0;
+    
+    //Keyboard Down Button
+    float cornerRadius = self.keyboardDownButton.bounds.size.height/2;
+    self.keyboardDownButton.layer.cornerRadius = cornerRadius;
+    self.keyboardDownButton.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:0.5];
+    self.keyboardDownButton.alpha = 0.0;
+}
+
+
+#pragma mark - Configure Slider UI
+
+- (void)configureSliderUI
+{
+    UIImage *thumbImageNormal = [UIImage imageNamed:@"recordNormal"];
+    [self.progressSlider setThumbImage:thumbImageNormal forState:UIControlStateNormal];
+    UIImage *thumbImageHighlighted = [UIImage imageNamed:@"record"];
+    [self.progressSlider setThumbImage:thumbImageHighlighted forState:UIControlStateHighlighted];
+    UIImage *trackLeftImage =
+    [[UIImage imageNamed:@"SliderTrackLeft"]
+     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
+    [self.progressSlider setMinimumTrackImage:trackLeftImage forState:UIControlStateNormal];
+    UIImage *trackRightImage = [[UIImage imageNamed:@"SliderTrackRight"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
+    [self.progressSlider setMaximumTrackImage:trackRightImage forState:UIControlStateNormal];
 }
 
 
