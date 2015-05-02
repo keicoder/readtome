@@ -91,14 +91,6 @@
 }
 
 
-#pragma mark delegate method (change selection, text)
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
-    return YES;
-}
-
-
 #pragma mark - Replace Attriuted Text
 
 - (void)replaceSelectionWithAttributedText:(NSAttributedString *)text

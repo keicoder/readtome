@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
     <scenes>
-        <!--Image-->
+        <!--ActionViewController-->
         <scene sceneID="7MM-of-jgj">
             <objects>
-                <viewController title="Image" id="ObA-dk-sSI" customClass="ActionViewController" sceneMemberID="viewController">
+                <viewController title="ActionViewController" id="ObA-dk-sSI" customClass="ActionViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="qkL-Od-lgU"/>
                         <viewControllerLayoutGuide type="bottom" id="n38-gi-rB5"/>
@@ -27,10 +27,14 @@
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RKa-dC-pdT" userLabel="BackButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="20" y="8" width="44" height="44"/>
+                                        <color key="backgroundColor" red="0.32644865740000001" green="0.83118764850000004" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" image="circle-down">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="done" destination="ObA-dk-sSI" eventType="touchUpInside" id="W7v-y7-wrB"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jp5-Bn-pT8" userLabel="PlayButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="278" y="8" width="44" height="44"/>
@@ -44,7 +48,7 @@
                                         </state>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.1684957651" green="0.72803117559999997" blue="0.95202020200000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.95707070709999997" green="0.80975241769999995" blue="0.166872558" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="RKa-dC-pdT" firstAttribute="height" secondItem="Jp5-Bn-pT8" secondAttribute="height" id="R3b-37-dHg"/>
                                     <constraint firstAttribute="centerX" secondItem="Jp5-Bn-pT8" secondAttribute="centerX" id="Rw6-Vf-2Sh"/>
@@ -69,7 +73,6 @@
                     </view>
                     <connections>
                         <outlet property="textView" destination="RjK-tq-YEc" id="Swq-qQ-3PU"/>
-                        <outlet property="view" destination="zMn-AG-sqS" id="Qma-de-2ek"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X47-rx-isc" userLabel="First Responder" sceneMemberID="firstResponder"/>
