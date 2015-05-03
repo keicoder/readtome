@@ -21,37 +21,32 @@
 #define kSelectedRangeLocation                  @"kSelectedRangeLocation"
 #define kSelectedRangeLength                    @"kSelectedRangeLength"
 
+#define kSlideViewHeight                        40.0
 
-#define kPause                      [UIImage imageNamed:@"pause"]
-#define kPlay                       [UIImage imageNamed:@"play"]
+#define kPause                                  [UIImage imageNamed:@"pause"]
+#define kPlay                                   [UIImage imageNamed:@"play"]
 
-#define kHasLaunchedOnce            @"kHasLaunchedOnce"
-#define kTypeSelecting              @"kTypeSelecting"
-#define kLanguage                   @"kLanguage"
-#define kVolumeValue                @"kVolumeValue"
-#define kPitchValue                 @"kPitchValue"
-#define kRateValue                  @"kRateValue"
+#define kHasLaunchedOnce                        @"kHasLaunchedOnce"
+#define kTypeSelecting                          @"kTypeSelecting"
+#define kLanguage                               @"kLanguage"
+#define kVolumeValue                            @"kVolumeValue"
+#define kPitchValue                             @"kPitchValue"
+#define kRateValue                              @"kRateValue"
 
-#define kLastViewedDocument         @"kLastViewedDocument"
-#define kSavedDocument              @"kSavedDocument"
-#define kNotSavedDocument           @"kNotSavedDocument"
-
-#define kFontName                   @"HelveticaNeue-Light"
-#define kFontSizeiPhone             20.0
-#define kFontSizeiPad               22.0
+#define kLastViewedDocument                     @"kLastViewedDocument"
+#define kSavedDocument                          @"kSavedDocument"
 
 
-#import "ContainerViewController.h"
 @import AVFoundation;
+#import <CoreData/CoreData.h>
+#import "ContainerViewController.h"
+#import "DocumentsForSpeech.h"
+#import "DataManager.h"
+#import "KeiTextView.h"
 #import "UIImage+ChangeColor.h"
 #import "SettingsViewController.h"
 #import "LanguagePickerViewController.h"
 #import "ListViewController.h"
-#import <CoreData/CoreData.h>
-#import "DocumentsForSpeech.h"
-#import "DataManager.h"
-#import "KeiTextView.h"
-#import "UIViewController+BHTKeyboardNotifications.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate, UITextViewDelegate>
@@ -59,11 +54,10 @@
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSMutableArray *fetchedDocuments;
+@property (nonatomic, strong) NSDateFormatter *formatter;
 
 @property (nonatomic, strong) NSUserDefaults *sharedDefaults;
 @property (nonatomic, strong) NSUserDefaults *defaults;
-
-@property (nonatomic, strong) NSDateFormatter *formatter;
 
 @property (nonatomic, strong) AVSpeechSynthesizer *synthesizer;
 @property (nonatomic, strong) AVSpeechUtterance *utterance;
@@ -174,17 +168,19 @@
         self.synthesizer = [[AVSpeechSynthesizer alloc]init];
         self.synthesizer.delegate = self;
     }
-    self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-    self.synthesizer.delegate = self;
     
-    self.pasteBoard = [UIPasteboard generalPasteboard];
-    self.pasteBoard.persistent = YES;
+    if (!self.pasteBoard) {
+        self.pasteBoard = [UIPasteboard generalPasteboard];
+        self.pasteBoard.persistent = YES;
+    }
     
-    self.defaults = [NSUserDefaults standardUserDefaults];
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
     
     self.textView.delegate = self;
     
-    [self hideSaveAlertViewEqualizerViewWithNoAnimation]; //화면에 보여주지 않기
+    [self hideSlideViewAndEqualizerViewWithNoAnimation];
 }
 
 
@@ -259,8 +255,6 @@
         self.utterance.volume = self.volume;
         self.utterance.pitchMultiplier = self.pitch;
         self.utterance.rate = self.rate;
-        self.utterance.preUtteranceDelay = 0.3f;
-        self.utterance.postUtteranceDelay = 0.3f;
         
     } else {
         
@@ -269,9 +263,10 @@
         self.utterance.volume = [self.currentDocument.volume floatValue];
         self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
         self.utterance.rate = [self.currentDocument.rate floatValue];
-        self.utterance.preUtteranceDelay = 0.3f;
-        self.utterance.postUtteranceDelay = 0.3f;
     }
+    
+    self.utterance.preUtteranceDelay = 0.3f;
+    self.utterance.postUtteranceDelay = 0.3f;
 }
 
 
@@ -293,6 +288,11 @@
 - (void)startPauseContinueStopSpeaking:(id)sender
 {
     [self setupUtterance];
+    
+    if (!self.synthesizer) {
+        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+        self.synthesizer.delegate = self;
+    }
     
     if (_paused == YES) {
         
@@ -329,15 +329,6 @@
     
     self.textView.editable = NO;
     [self.textView resignFirstResponder];
-    
-    if (!self.utterance) {
-        [self setupUtterance];
-    }
-    
-    if (!self.synthesizer) {
-        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-        self.synthesizer.delegate = self;
-    }
     
     [self.synthesizer speakUtterance:self.utterance];
     [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
@@ -567,7 +558,7 @@
         if ([self.textView.text isEqualToString:_lastViewedDocument]) {
             
             NSLog(@"Nothing to Save");
-            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:60.0 color:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
+            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
             
         } else {
             
@@ -585,19 +576,20 @@
                     
                     NSLog (@"Save to coredata succeed");
                     
-                    [self adjustSlideViewHeightWithTitle:@"Saved" height:60.0 color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
+                    [self adjustSlideViewHeightWithTitle:@"Saved" height:kSlideViewHeight color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
                     
-                    self.isNewDocument = NO;
-                    self.isSavedDocument = YES;
-                    
-                    _lastViewedDocument = self.textView.text;
-                    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
-                    [self.defaults synchronize];
-                    NSLog(@"_lastViewedDocument texts updated");
-                    
+                    [self saveToSharedDefaultsDocumentDidAlreadySave];
+                    [self saveToDefaultsLastViewedDocument];
                     [self executePerformFetch];
+                    [self showLog];
                     
-                    //[self showLog];
+                    NSLog (@"[self.isNewDocument > Saved > self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
+                    
+                    if ([self.fetchedResultsController fetchedObjects].count > 0) {
+                        
+                        DocumentsForSpeech *savedDocument = [self.fetchedResultsController fetchedObjects][0];
+                        self.currentDocument = savedDocument;
+                    }
                     
                 } else {
                     
@@ -612,7 +604,7 @@
             
             NSLog(@"Nothing to Save");
             
-            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:60.0 color:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
+            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
             
         } else {
             
@@ -624,7 +616,7 @@
                     
                     NSLog (@"Save updated document to coredata succeed");
                     
-                    [self adjustSlideViewHeightWithTitle:@"Saved" height:60.0 color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
+                    [self adjustSlideViewHeightWithTitle:@"Saved" height:kSlideViewHeight color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
                     
                     _lastViewedDocument = self.textView.text;
                     [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
@@ -632,8 +624,7 @@
                     NSLog(@"_lastViewedDocument texts updated");
                     
                     [self executePerformFetch];
-                    
-                    //[self showLog];
+                    [self showLog];
                     
                 } else {
                     
@@ -653,7 +644,7 @@
     self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
     
     if (self.currentDocument.uniqueIdString == nil) {
-        NSString *uniqueIDString = [NSString stringWithFormat:@"%li", arc4random() % 999999999999999999];
+        NSString *uniqueIDString = [NSString stringWithFormat:@"%li", (long)(arc4random() % 999999999999999999)];
         self.currentDocument.uniqueIdString = uniqueIDString;
     }
     
@@ -701,17 +692,6 @@
 }
 
 
-#pragma mark Formatter
-
-- (NSDateFormatter *)formatter
-{
-    if (!_formatter) {
-        _formatter = [[NSDateFormatter alloc] init];
-    }
-    return _formatter;
-}
-
-
 #pragma mark 첫째 라인만 가져오기
 
 - (NSString *)retrieveFirstLineOfStringForTitle:(NSString *)string
@@ -739,6 +719,17 @@
     }
     
     return firstLine;
+}
+
+
+#pragma mark Formatter
+
+- (NSDateFormatter *)formatter
+{
+    if (!_formatter) {
+        _formatter = [[NSDateFormatter alloc] init];
+    }
+    return _formatter;
 }
 
 
@@ -780,16 +771,7 @@
 		
 	} else {
         
-		NSLog (@"[self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
-        
-        if ([self.fetchedResultsController fetchedObjects].count > 0) {
-            
-            DocumentsForSpeech *savedDocument = [self.fetchedResultsController fetchedObjects][0];
-            //NSLog (@"savedDocument.document: %@\n", savedDocument.document);
-            //NSLog (@"savedDocument.uniqueIdString: %@\n", savedDocument.uniqueIdString);
-            self.currentDocument = savedDocument;
-            self.isSavedDocument = YES;
-        }
+		NSLog (@"[executePerformFetch > self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
 	}
 }
 
@@ -1009,7 +991,7 @@
     }
     
     self.language = [self.defaults objectForKey:kLanguage];
-    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
+    [self setupUtterance];
 }
 
 
@@ -1161,7 +1143,7 @@
             
         }completion:^(BOOL finished) { }];
         
-        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:40.0 color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
         
     } else {
         
@@ -1177,7 +1159,7 @@
             
         }completion:^(BOOL finished) { }];
         
-        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:40.0 color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
     }
     
 }
@@ -1214,6 +1196,15 @@
     self.isSelectedDocumentFromListView = NO;
     self.isNewDocument = NO;
     self.isSavedDocument = YES;
+}
+
+
+- (void)saveToDefaultsLastViewedDocument
+{
+    _lastViewedDocument = self.textView.text;
+    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
+    [self.defaults synchronize];
+    NSLog(@"_lastViewedDocument texts updated");
 }
 
 
@@ -1352,9 +1343,9 @@
 }
 
 
-#pragma mark - hideSaveAlertViewEqualizerViewWithNoAnimation
+#pragma mark - hideSlideViewAndEqualizerViewWithNoAnimation
 
-- (void)hideSaveAlertViewEqualizerViewWithNoAnimation
+- (void)hideSlideViewAndEqualizerViewWithNoAnimation
 {
     [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         self.saveAlertViewHeightConstraint.constant = 0.0;
@@ -1412,8 +1403,6 @@
     self.keyboardDownButton.alpha = 0.0;
 }
 
-
-#pragma mark - Configure Slider UI
 
 - (void)configureSliderUI
 {
