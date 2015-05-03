@@ -244,7 +244,9 @@
 }
 
 
-#pragma mark - Utterance
+#pragma mark - Speech Synthesizer
+
+#pragma mark Utterance
 
 - (void)setupUtterance
 {
@@ -267,57 +269,6 @@
     
     self.utterance.preUtteranceDelay = 0.3f;
     self.utterance.postUtteranceDelay = 0.3f;
-}
-
-
-#pragma mark - Button Action Methods
-
-- (IBAction)playPauseButtonTapped:(id)sender
-{
-    if (_equalizerViewExpanded == YES) {
-        
-        [self adjustEqualizerViewHeight:0.0];
-        [self performSelector:@selector(startPauseContinueStopSpeaking:) withObject:nil afterDelay:0.35];
-        
-    } else {
-        [self performSelector:@selector(startPauseContinueStopSpeaking:) withObject:nil afterDelay:0.0];
-    }
-}
-
-
-- (void)startPauseContinueStopSpeaking:(id)sender
-{
-    [self setupUtterance];
-    
-    if (!self.synthesizer) {
-        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-        self.synthesizer.delegate = self;
-    }
-    
-    if (_paused == YES) {
-        
-        [self continueSpeaking];
-        
-    } else {
-        
-        [self pauseSpeaking];
-    }
-    
-    if (self.synthesizer.isSpeaking == NO) {
-        
-        [self startSpeaking];
-    }
-    
-    if (_isTypeSelecting == YES) {
-        
-        [self selectWord];
-    }
-    
-    if (_paused == YES) {
-        
-        self.textView.editable = YES;
-        [self.textView resignFirstResponder];
-    }
 }
 
 
@@ -399,7 +350,58 @@
 }
 
 
-#pragma mark - Other Buttons Action Methods
+#pragma mark - Button Action Methods
+
+- (IBAction)playPauseButtonTapped:(id)sender
+{
+    if (_equalizerViewExpanded == YES) {
+        
+        [self adjustEqualizerViewHeight:0.0];
+        [self performSelector:@selector(startPauseContinueStopSpeaking:) withObject:nil afterDelay:0.35];
+        
+    } else {
+        [self performSelector:@selector(startPauseContinueStopSpeaking:) withObject:nil afterDelay:0.0];
+    }
+}
+
+
+- (void)startPauseContinueStopSpeaking:(id)sender
+{
+    [self setupUtterance];
+    
+    if (!self.synthesizer) {
+        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+        self.synthesizer.delegate = self;
+    }
+    
+    if (_paused == YES) {
+        
+        [self continueSpeaking];
+        
+    } else {
+        
+        [self pauseSpeaking];
+    }
+    
+    if (self.synthesizer.isSpeaking == NO) {
+        
+        [self startSpeaking];
+    }
+    
+    if (_isTypeSelecting == YES) {
+        
+        [self selectWord];
+    }
+    
+    if (_paused == YES) {
+        
+        self.textView.editable = YES;
+        [self.textView resignFirstResponder];
+    }
+}
+
+
+#pragma mark Other Buttons Action Methods
 
 - (IBAction)listButtonTapped:(id)sender
 {
@@ -757,8 +759,6 @@
 	return _fetchedResultsController;
 }
 
-
-#pragma mark Perform Fetch
 
 - (void)executePerformFetch
 {
