@@ -118,7 +118,6 @@
 {
 	BOOL _paused;
     BOOL _isTypeSelecting;
-	BOOL _saveAlertViewExpanded;
 	BOOL _equalizerViewExpanded;
     NSRange _selectedRange;
     NSString *_lastViewedDocument;
@@ -128,26 +127,6 @@
 
 
 #pragma mark - View life cycle
-
-- (void)setInitialData
-{
-    if (!self.synthesizer) {
-        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-        self.synthesizer.delegate = self;
-    }
-	self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-	self.synthesizer.delegate = self;
-    
-	self.pasteBoard = [UIPasteboard generalPasteboard];
-	self.pasteBoard.persistent = YES;
-	
-    self.defaults = [NSUserDefaults standardUserDefaults];
-    
-    self.textView.delegate = self;
-    
-    [self hideSaveAlertViewEqualizerViewWithNoAnimation]; //화면에 보여주지 않기
-}
-
 
 - (void)viewDidLoad
 {
@@ -160,6 +139,7 @@
     [self configureSliderUI];
     [self stopSpeaking];
     [self checkHasLaunchedOnce];
+    [self typeSelecting];
     [self addObserver];
 }
 
@@ -171,11 +151,7 @@
 	[super viewWillAppear:animated];
     
     [self setPasteBoardString];
-    [self speechLanguage];
-    [self typeSelecting];
-    [self volumeValue];
-    [self pitchValue];
-    [self rateValue];
+    [self retrieveSpeechAttributes];
     [self lastViewedDocument];
     [self checkToPasteText];
 }
@@ -187,6 +163,39 @@
     
 	[super viewWillDisappear:YES];
 	//_fetchedResultsController = nil;
+}
+
+
+#pragma mark - Set Initial Data
+
+- (void)setInitialData
+{
+    if (!self.synthesizer) {
+        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+        self.synthesizer.delegate = self;
+    }
+    self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+    self.synthesizer.delegate = self;
+    
+    self.pasteBoard = [UIPasteboard generalPasteboard];
+    self.pasteBoard.persistent = YES;
+    
+    self.defaults = [NSUserDefaults standardUserDefaults];
+    
+    self.textView.delegate = self;
+    
+    [self hideSaveAlertViewEqualizerViewWithNoAnimation]; //화면에 보여주지 않기
+}
+
+
+- (NSString *)setPasteBoardString
+{
+    if (!self.pasteBoard.string) {
+        
+        self.pasteBoard.string = @"Copy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
+    }
+    
+    return self.pasteBoard.string;
 }
 
 
@@ -239,29 +248,30 @@
 }
 
 
-#pragma mark Set PasteBoard String
-
-- (NSString *)setPasteBoardString
-{
-    if (!self.pasteBoard.string) {
-        
-        self.pasteBoard.string = @"Copy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
-    }
-    
-    return self.pasteBoard.string;
-}
-
 #pragma mark - Utterance
 
 - (void)setupUtterance
 {
-    self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
-    self.utterance.volume = self.volume;
-    self.utterance.pitchMultiplier = self.pitch;
-    self.utterance.rate = self.rate;
-    self.utterance.preUtteranceDelay = 0.3f;
-    self.utterance.postUtteranceDelay = 0.3f;
+    if (self.isNewDocument) {
+        
+        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
+        self.utterance.volume = self.volume;
+        self.utterance.pitchMultiplier = self.pitch;
+        self.utterance.rate = self.rate;
+        self.utterance.preUtteranceDelay = 0.3f;
+        self.utterance.postUtteranceDelay = 0.3f;
+        
+    } else {
+        
+        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
+        self.utterance.volume = [self.currentDocument.volume floatValue];
+        self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
+        self.utterance.rate = [self.currentDocument.rate floatValue];
+        self.utterance.preUtteranceDelay = 0.3f;
+        self.utterance.postUtteranceDelay = 0.3f;
+    }
 }
 
 
@@ -272,15 +282,15 @@
     if (_equalizerViewExpanded == YES) {
         
         [self adjustEqualizerViewHeight:0.0];
-        [self performSelector:@selector(playingPausingSpeak:) withObject:nil afterDelay:0.35];
+        [self performSelector:@selector(startPauseContinueStopSpeaking:) withObject:nil afterDelay:0.35];
         
     } else {
-        [self performSelector:@selector(playingPausingSpeak:) withObject:nil afterDelay:0.0];
+        [self performSelector:@selector(startPauseContinueStopSpeaking:) withObject:nil afterDelay:0.0];
     }
 }
 
 
-- (void)playingPausingSpeak:(id)sender
+- (void)startPauseContinueStopSpeaking:(id)sender
 {
     [self setupUtterance];
     
@@ -466,7 +476,7 @@
     } else {
         
         [self changeSelectionButtonColorForTurnOnAndOff:YES];
-        [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.1];
+        [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.4];
     }
 }
 
@@ -498,7 +508,7 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
-//    [self pauseSpeaking];
+    [self pauseSpeaking];
     
     if (_equalizerViewExpanded == YES) {
         
@@ -541,201 +551,99 @@
 }
 
 
-#pragma mark - AVSpeechSynthesizerDelegate
+#pragma mark - Save Current Documents For Speech
 
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
+#pragma mark Save Document
+
+- (IBAction)saveCurrentDocument:(id)sender
 {
-    NSRange rangeInTotalText;
-    
-    if (_isTypeSelecting == YES) {
-        
-        rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length);
-        
-    } else {
-        
-        rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length  - characterRange.length);
-    }
-    
-    self.textView.selectedRange = rangeInTotalText;
-    [self.textView scrollToVisibleCaretAnimated];
-    
-    
-    float entireTextLength = (float)[self.textView.text length];
-    float location = (float)rangeInTotalText.location;
-    _speechLocationPercentValueInWholeTexts = (location / entireTextLength) * 100;
-    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
-}
-
-
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didStartSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-    NSLog(@"speechSynthesizer didStartSpeechUtterance");
-}
-
-
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-    NSLog(@"speechSynthesizer didFinishSpeechUtterance");
-    [self stopSpeaking];
-}
-
-
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-    NSLog(@"speechSynthesizer didPauseSpeechUtterance");
+    [self.textView resignFirstResponder];
     [self pauseSpeaking];
-}
-
-
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-    NSLog(@"speechSynthesizer didContinueSpeechUtterance");
-}
-
-
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-    NSLog(@"speechSynthesizer didCancelSpeechUtterance");
-    [self stopSpeaking];
-}
-
-
-#pragma mark - 앱 처음 실행인지 체크 > Volume, Pitch, Rate 기본값 적용
-
-- (void)checkHasLaunchedOnce
-{
-    if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
-        
-        [self.defaults setBool:YES forKey:kHasLaunchedOnce];
-        
-        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
-        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
-        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
-        
-        [self.defaults setObject:defaultLanguageName forKey:kLanguage];
-        [self.defaults setBool:YES forKey:kTypeSelecting];
-        [self.defaults setFloat:1.0 forKey:kVolumeValue];
-        [self.defaults setFloat:1.0 forKey:kPitchValue];
-        [self.defaults setFloat:0.07 forKey:kRateValue];
-        
-        _lastViewedDocument = @"";
-    }
-}
-
-
-#pragma mark - Adjust SlideView height when user touches equivalent button
-
-- (void)adjustSlideViewHeightWithTitle:(NSString *)string andColor:(UIColor *)color withSender:(UIButton *)button
-{
-	CGFloat duration = 0.3f;
-	CGFloat delay = 0.0f;
-	
-    _saveAlertViewExpanded = YES;
-    self.saveAlertViewHeightConstraint.constant = 60.0;
-    button.enabled = NO;
-    self.saveAlertView.backgroundColor = color;
     
-	[UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
-		
-        [self.view layoutIfNeeded];
-		self.saveAlertLabel.alpha = 1.0;
-        self.saveAlertLabel.text = string;
-		
-	} completion:^(BOOL finished) {
-		
-        //Dispatch After
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.6 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-            
-            _saveAlertViewExpanded = NO;
-            self.saveAlertViewHeightConstraint.constant = 0.0;
-            
-            [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
-                
-                [self.view layoutIfNeeded];
-                self.saveAlertLabel.alpha = 0.0;
-                
-            } completion:^(BOOL finished) {
-                button.enabled = YES;
-            }];
-        });
-	}];
-}
-
-
-#pragma mark - Show equalizer view when user touches equalizer button
-
-- (void)adjustEqualizerViewHeight:(float)height
-{
-    self.equalizerViewHeightConstraint.constant = height;
+    NSLog (@"self.currentDocument.savedDocument: %@\n", self.currentDocument.savedDocument);
     
-    CGFloat duration = 0.25f;
-    CGFloat delay = 0.0f;
-    [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+    if (self.isNewDocument == YES) {
         
-        [self.view layoutIfNeeded];
-        
-        if (height == 0) {
+        if ([self.textView.text isEqualToString:_lastViewedDocument]) {
             
-            _equalizerViewExpanded = NO;
-            
-            self.volumeLabel.alpha = 0.0;
-            self.pitchLabel.alpha = 0.0;
-            self.rateLabel.alpha = 0.0;
-            self.volumeSlider.alpha = 0.0;
-            self.pitchSlider.alpha = 0.0;
-            self.rateSlider.alpha = 0.0;
+            NSLog(@"Nothing to Save");
+            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:60.0 color:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
             
         } else {
             
-            _equalizerViewExpanded = YES;
+            if (self.managedObjectContext == nil) {
+                self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
+            }
             
-            self.volumeLabel.alpha = 1.0;
-            self.pitchLabel.alpha = 1.0;
-            self.rateLabel.alpha = 1.0;
-            self.volumeSlider.alpha = 1.0;
-            self.pitchSlider.alpha = 1.0;
-            self.rateSlider.alpha = 1.0;
+            self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
+            
+            [self updateDocument];
+            
+            [self.managedObjectContext performBlock:^{
+                NSError *error = nil;
+                if ([self.managedObjectContext save:&error]) {
+                    
+                    NSLog (@"Save to coredata succeed");
+                    
+                    [self adjustSlideViewHeightWithTitle:@"Saved" height:60.0 color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
+                    
+                    self.isNewDocument = NO;
+                    self.isSavedDocument = YES;
+                    
+                    _lastViewedDocument = self.textView.text;
+                    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
+                    [self.defaults synchronize];
+                    NSLog(@"_lastViewedDocument texts updated");
+                    
+                    [self executePerformFetch];
+                    
+                    //[self showLog];
+                    
+                } else {
+                    
+                    NSLog(@"Error saving to coredata: %@", error);
+                }
+            }];
         }
         
-    } completion:^(BOOL finished) { }];
-}
-
-
-#pragma mark - hideSaveAlertViewEqualizerViewWithNoAnimation
-
-- (void)hideSaveAlertViewEqualizerViewWithNoAnimation
-{
-    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
-        _saveAlertViewExpanded = NO;
-        self.saveAlertViewHeightConstraint.constant = 0.0;
-        [self.view layoutIfNeeded];
-        self.archiveButton.enabled = YES;
-        self.saveAlertLabel.alpha = 0.0;
-    } completion:nil];
-    
-    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
-        _equalizerViewExpanded = NO;
-        self.equalizerViewHeightConstraint.constant = 0.0;
-        [self.view layoutIfNeeded];
-        self.volumeLabel.alpha = 0.0;
-        self.pitchLabel.alpha = 0.0;
-        self.rateLabel.alpha = 0.0;
-        self.volumeSlider.alpha = 0.0;
-        self.pitchSlider.alpha = 0.0;
-        self.rateSlider.alpha = 0.0;
-    } completion:nil];
-}
-
-
-#pragma mark - Save Current Documents For Speech
-
-- (NSDateFormatter *)formatter
-{
-    if (!_formatter) {
-        _formatter = [[NSDateFormatter alloc] init];
+    } else { //isSavedDocument
+        
+        if ([self.textView.text isEqualToString:_lastViewedDocument]) {
+            
+            NSLog(@"Nothing to Save");
+            
+            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:60.0 color:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
+            
+        } else {
+            
+            [self updateDocument];
+            
+            [self.managedObjectContext performBlock:^{
+                NSError *error = nil;
+                if ([self.managedObjectContext save:&error]) {
+                    
+                    NSLog (@"Save updated document to coredata succeed");
+                    
+                    [self adjustSlideViewHeightWithTitle:@"Saved" height:60.0 color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
+                    
+                    _lastViewedDocument = self.textView.text;
+                    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
+                    [self.defaults synchronize];
+                    NSLog(@"_lastViewedDocument texts updated");
+                    
+                    [self executePerformFetch];
+                    
+                    //[self showLog];
+                    
+                } else {
+                    
+                    NSLog(@"Error updating to coredata: %@", error);
+                }
+            }];
+        }
     }
-    return _formatter;
 }
+
 
 - (void)updateDocument
 {
@@ -793,94 +701,14 @@
 }
 
 
-#pragma mark Save Document
+#pragma mark Formatter
 
-- (IBAction)saveCurrentDocument:(id)sender
+- (NSDateFormatter *)formatter
 {
-    [self.textView resignFirstResponder];
-    [self pauseSpeaking];
-    
-    NSLog (@"self.currentDocument.savedDocument: %@\n", self.currentDocument.savedDocument);
-    
-    if (self.isNewDocument == YES) {
-        
-        if ([self.textView.text isEqualToString:_lastViewedDocument]) {
-            
-            NSLog(@"Nothing to Save");
-            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" andColor:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
-            
-        } else {
-            
-            if (self.managedObjectContext == nil) {
-                self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-            }
-            
-            self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-            
-            [self updateDocument];
-            
-            [self.managedObjectContext performBlock:^{
-                NSError *error = nil;
-                if ([self.managedObjectContext save:&error]) {
-                    
-                    NSLog (@"Save to coredata succeed");
-                    
-                    [self adjustSlideViewHeightWithTitle:@"Saved" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
-                    
-                    self.isNewDocument = NO;
-                    self.isSavedDocument = YES;
-                    
-                    _lastViewedDocument = self.textView.text;
-                    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
-                    [self.defaults synchronize];
-                    NSLog(@"_lastViewedDocument texts updated");
-                    
-                    [self executePerformFetch];
-                    
-                    //[self showLog];
-                    
-                } else {
-                    
-                    NSLog(@"Error saving to coredata: %@", error);
-                }
-            }];
-        }
-        
-    } else { //isSavedDocument
-        
-        if ([self.textView.text isEqualToString:_lastViewedDocument]) {
-            
-            NSLog(@"Nothing to Save");
-            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" andColor:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
-            
-        } else {
-            
-            [self updateDocument];
-            
-            [self.managedObjectContext performBlock:^{
-                NSError *error = nil;
-                if ([self.managedObjectContext save:&error]) {
-                    
-                    NSLog (@"Save updated document to coredata succeed");
-                    
-                    [self adjustSlideViewHeightWithTitle:@"Saved" andColor:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
-                    
-                    _lastViewedDocument = self.textView.text;
-                    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
-                    [self.defaults synchronize];
-                    NSLog(@"_lastViewedDocument texts updated");
-                    
-                    [self executePerformFetch];
-                    
-                    //[self showLog];
-                    
-                } else {
-                    
-                    NSLog(@"Error updating to coredata: %@", error);
-                }
-            }];
-        }
+    if (!_formatter) {
+        _formatter = [[NSDateFormatter alloc] init];
     }
+    return _formatter;
 }
 
 
@@ -1020,31 +848,40 @@
 
 #pragma mark - State Restoration
 
-- (NSString *)lastViewedDocument
+- (void)retrieveSpeechAttributes
 {
-    if (self.isSavedDocument == NO) {
-        _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
-        NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == NO > _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument]");
-        return _lastViewedDocument;
+    if (self.isNewDocument == YES) {
+        
+        self.language = [self.defaults objectForKey:kLanguage];
+        
+        self.volume = [self.defaults floatForKey:kVolumeValue];
+        self.pitch = [self.defaults floatForKey:kPitchValue];
+        self.rate = [self.defaults floatForKey:kRateValue];
+        
+        self.volumeSlider.value = self.volume;
+        self.pitchSlider.value = self.pitch;
+        self.rateSlider.value = self.rate;
+        
     } else {
-        NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == YES > _lastViewedDocument = _lastViewedDocument");
-        return _lastViewedDocument;
+        
+        NSLog(@"Saved Document > use Speech Attributes in the self.currentDocument");
+        
     }
-}
-
-
-- (NSString *)speechLanguage
-{
-    self.language = [self.defaults objectForKey:kLanguage];
-    NSLog (@"self.language: %@\n", self.language);
-    return self.language;
+    
 }
 
 
 - (BOOL)typeSelecting
 {
-    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    //NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    if (!_isTypeSelecting) {
+        
+        _isTypeSelecting = YES;
+        
+    } else {
+        
+        _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    }
+    
     
     if (_isTypeSelecting == YES) {
         
@@ -1059,68 +896,74 @@
 }
 
 
-- (CGFloat)volumeValue
+- (NSString *)lastViewedDocument
 {
-    self.volume = [self.defaults floatForKey:kVolumeValue];
-    self.volumeSlider.value = self.volume;
-    //NSLog (@"self.volume: %f\n", self.volume);
-    return self.volume;
-}
-
-
-- (CGFloat)pitchValue
-{
-    self.pitch = [self.defaults floatForKey:kPitchValue];
-    self.pitchSlider.value = self.pitch;
-    //NSLog (@"self.pitch: %f\n", self.pitch);
-    return self.pitch;
-}
-
-
-- (CGFloat)rateValue
-{
-    self.rate = [self.defaults floatForKey:kRateValue];
-    self.rateSlider.value = self.rate;
-    //NSLog (@"self.rate: %f\n", self.rate);
-    return self.rate;
+    if (self.isNewDocument == YES) {
+        _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
+        NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == NO > _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument]");
+        return _lastViewedDocument;
+    } else {
+        NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == YES > _lastViewedDocument = _lastViewedDocument");
+        return _lastViewedDocument;
+    }
 }
 
 
 #pragma mark - Slider value changed
 
-- (IBAction)progressSliderValueChanged:(UISlider *)sender
+- (IBAction)sliderValueChanged:(UISlider *)sender
 {
-    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+    if (sender == self.progressSlider) {
+        
+        self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+        
+    } else if (sender == self.volumeSlider) {
+        
+        [self stopSpeaking];
+        
+        self.volume = sender.value;
+        [self.defaults setFloat:sender.value forKey:kVolumeValue];
+        [self.defaults synchronize];
+        
+    } else if (sender == self.pitchSlider) {
+        
+        [self stopSpeaking];
+        
+        self.pitch = sender.value;
+        [self.defaults setFloat:sender.value forKey:kPitchValue];
+        [self.defaults synchronize];
+        
+    } else if (sender == self.rateSlider) {
+        
+        [self stopSpeaking];
+        
+        self.rate = sender.value;
+        [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
+        [self.defaults synchronize];
+    }
 }
 
 
-- (IBAction)volumeSliderValueChanged:(UISlider *)sender
+#pragma mark - 앱 처음 실행인지 체크 > Volume, Pitch, Rate 기본값 적용
+
+- (void)checkHasLaunchedOnce
 {
-    [self stopSpeaking];
-    
-    self.volume = sender.value;
-    [self.defaults setFloat:sender.value forKey:kVolumeValue];
-    [self.defaults synchronize];
-}
-
-
-- (IBAction)pitchSliderValueChanged:(UISlider *)sender
-{
-    [self stopSpeaking];
-    
-    self.pitch = sender.value;
-    [self.defaults setFloat:sender.value forKey:kPitchValue];
-    [self.defaults synchronize];
-}
-
-
-- (IBAction)rateSliderValueChanged:(UISlider *)sender
-{
-    [self stopSpeaking];
-    
-    self.rate = sender.value;
-    [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
-    [self.defaults synchronize];
+    if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
+        
+        [self.defaults setBool:YES forKey:kHasLaunchedOnce];
+        
+        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
+        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
+        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
+        
+        [self.defaults setObject:defaultLanguageName forKey:kLanguage];
+        [self.defaults setBool:YES forKey:kTypeSelecting];
+        [self.defaults setFloat:1.0 forKey:kVolumeValue];
+        [self.defaults setFloat:1.0 forKey:kPitchValue];
+        [self.defaults setFloat:0.07 forKey:kRateValue];
+        
+        _lastViewedDocument = @"";
+    }
 }
 
 
@@ -1318,7 +1161,7 @@
             
         }completion:^(BOOL finished) { }];
         
-        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" andColor:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:40.0 color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
         
     } else {
         
@@ -1334,7 +1177,7 @@
             
         }completion:^(BOOL finished) { }];
         
-        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" andColor:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:40.0 color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
     }
     
 }
@@ -1371,6 +1214,166 @@
     self.isSelectedDocumentFromListView = NO;
     self.isNewDocument = NO;
     self.isSavedDocument = YES;
+}
+
+
+#pragma mark - AVSpeechSynthesizerDelegate
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
+{
+    NSRange rangeInTotalText;
+    
+    if (_isTypeSelecting == YES) {
+        
+        rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length);
+        
+    } else {
+        
+        rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length  - characterRange.length);
+    }
+    
+    self.textView.selectedRange = rangeInTotalText;
+    [self.textView scrollToVisibleCaretAnimated];
+    
+    
+    float entireTextLength = (float)[self.textView.text length];
+    float location = (float)rangeInTotalText.location;
+    _speechLocationPercentValueInWholeTexts = (location / entireTextLength) * 100;
+    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didStartSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    NSLog(@"speechSynthesizer didStartSpeechUtterance");
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    NSLog(@"speechSynthesizer didFinishSpeechUtterance");
+    [self stopSpeaking];
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    NSLog(@"speechSynthesizer didPauseSpeechUtterance");
+    [self pauseSpeaking];
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    NSLog(@"speechSynthesizer didContinueSpeechUtterance");
+}
+
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance
+{
+    NSLog(@"speechSynthesizer didCancelSpeechUtterance");
+    [self stopSpeaking];
+}
+
+
+#pragma mark - Adjust SlideView height when user touches equivalent button
+
+- (void)adjustSlideViewHeightWithTitle:(NSString *)string height:(float)height color:(UIColor *)color withSender:(UIButton *)button
+{
+    CGFloat duration = 0.3f;
+    CGFloat delay = 0.0f;
+    
+    self.saveAlertViewHeightConstraint.constant = height;
+    button.enabled = NO;
+    self.saveAlertView.backgroundColor = color;
+    
+    [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        [self.view layoutIfNeeded];
+        self.saveAlertLabel.alpha = 1.0;
+        self.saveAlertLabel.text = string;
+        
+    } completion:^(BOOL finished) {
+        
+        //Dispatch After
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.6 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+            
+            self.saveAlertViewHeightConstraint.constant = 0.0;
+            
+            [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+                
+                [self.view layoutIfNeeded];
+                self.saveAlertLabel.alpha = 0.0;
+                
+            } completion:^(BOOL finished) {
+                button.enabled = YES;
+            }];
+        });
+    }];
+}
+
+
+#pragma mark - Show equalizer view when user touches equalizer button
+
+- (void)adjustEqualizerViewHeight:(float)height
+{
+    self.equalizerViewHeightConstraint.constant = height;
+    
+    CGFloat duration = 0.25f;
+    CGFloat delay = 0.0f;
+    [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        [self.view layoutIfNeeded];
+        
+        if (height == 0) {
+            
+            _equalizerViewExpanded = NO;
+            
+            self.volumeLabel.alpha = 0.0;
+            self.pitchLabel.alpha = 0.0;
+            self.rateLabel.alpha = 0.0;
+            self.volumeSlider.alpha = 0.0;
+            self.pitchSlider.alpha = 0.0;
+            self.rateSlider.alpha = 0.0;
+            
+        } else {
+            
+            _equalizerViewExpanded = YES;
+            
+            self.volumeLabel.alpha = 1.0;
+            self.pitchLabel.alpha = 1.0;
+            self.rateLabel.alpha = 1.0;
+            self.volumeSlider.alpha = 1.0;
+            self.pitchSlider.alpha = 1.0;
+            self.rateSlider.alpha = 1.0;
+        }
+        
+    } completion:^(BOOL finished) { }];
+}
+
+
+#pragma mark - hideSaveAlertViewEqualizerViewWithNoAnimation
+
+- (void)hideSaveAlertViewEqualizerViewWithNoAnimation
+{
+    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.saveAlertViewHeightConstraint.constant = 0.0;
+        [self.view layoutIfNeeded];
+        self.archiveButton.enabled = YES;
+        self.saveAlertLabel.alpha = 0.0;
+    } completion:nil];
+    
+    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        _equalizerViewExpanded = NO;
+        self.equalizerViewHeightConstraint.constant = 0.0;
+        [self.view layoutIfNeeded];
+        self.volumeLabel.alpha = 0.0;
+        self.pitchLabel.alpha = 0.0;
+        self.rateLabel.alpha = 0.0;
+        self.volumeSlider.alpha = 0.0;
+        self.pitchSlider.alpha = 0.0;
+        self.rateSlider.alpha = 0.0;
+    } completion:nil];
 }
 
 
