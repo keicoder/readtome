@@ -130,10 +130,8 @@
 	
     [self setInitialData];
 	[self configureUI];
-    [self configureSliderUI];
     [self stopSpeaking];
     [self checkHasLaunchedOnce];
-    [self typeSelecting];
     [self addObserver];
 }
 
@@ -146,17 +144,9 @@
     
     [self setPasteBoardString];
     [self retrieveSpeechAttributes];
+    [self typeSelecting];
     [self lastViewedDocument];
     [self checkToPasteText];
-}
-
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-	[super viewWillDisappear:YES];
-	//_fetchedResultsController = nil;
 }
 
 
@@ -164,6 +154,8 @@
 
 - (void)setInitialData
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     if (!self.synthesizer) {
         self.synthesizer = [[AVSpeechSynthesizer alloc]init];
         self.synthesizer.delegate = self;
@@ -186,6 +178,8 @@
 
 - (NSString *)setPasteBoardString
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     if (!self.pasteBoard.string) {
         
         self.pasteBoard.string = @"Copy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
@@ -208,9 +202,6 @@
     self.isSelectedDocumentFromListView = [self.sharedDefaults boolForKey:kIsSelectedDocumentFromListView];
     self.isNewDocument = [self.sharedDefaults boolForKey:kIsNewDocument];
     self.isSavedDocument = [self.sharedDefaults boolForKey:kIsSavedDocument];
-    
-    [self showLog];
-    
     
     if (self.isSharedDocument) {
         
@@ -254,9 +245,9 @@
         
         self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
         self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
-        self.utterance.volume = self.volume;
-        self.utterance.pitchMultiplier = self.pitch;
-        self.utterance.rate = self.rate;
+        self.utterance.volume = self.volumeSlider.value;
+        self.utterance.pitchMultiplier = self.pitchSlider.value;
+        self.utterance.rate = self.rateSlider.value;
         
     } else {
         
@@ -277,6 +268,14 @@
 - (void)startSpeaking
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    [self stopSpeaking];
+    [self setupUtterance];
+    
+    if (!self.synthesizer) {
+        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+        self.synthesizer.delegate = self;
+    }
     
     self.textView.editable = NO;
     [self.textView resignFirstResponder];
@@ -469,7 +468,11 @@
     } else {
         
         [self changeSelectionButtonColorForTurnOnAndOff:YES];
-        [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.4];
+        
+        if (self.synthesizer.isSpeaking == YES) {
+            
+            [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.2];
+        }
     }
 }
 
@@ -494,7 +497,13 @@
 {
 	LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
 	[self presentViewController:controller animated:YES completion:^{
-        self.language = controller.currentLanguage;
+        if (self.isNewDocument == YES) {
+            NSLog(@"showLanguagePickerView > isNewDocument > controller.currentLanguage = self.language");
+            controller.currentLanguage = self.language;
+        } else {
+            NSLog(@"showLanguagePickerView > isSavedDocument > controller.currentLanguage = self.currentDocument.language");
+            controller.currentLanguage = self.currentDocument.language;
+        }
     }];
 }
 
@@ -785,10 +794,10 @@
     if (_isTypeSelecting == YES) {
         
         if (self.synthesizer.continueSpeaking == YES) {
+            
             [self retrieveSelectedRangeValue];
+            [self.textView select:self];
         }
-        
-        [self.textView select:self];
     }
 }
 
@@ -802,7 +811,6 @@
     }
     
     UITextPosition* beginning = self.textView.beginningOfDocument;
-    
     UITextRange* selectedRange = self.textView.selectedTextRange;
     UITextPosition* selectionStart = selectedRange.start;
     UITextPosition* selectionEnd = selectedRange.end;
@@ -832,6 +840,8 @@
 
 - (void)retrieveSpeechAttributes
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     if (self.isNewDocument == YES) {
         
         self.language = [self.defaults objectForKey:kLanguage];
@@ -855,6 +865,8 @@
 
 - (BOOL)typeSelecting
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     if (!_isTypeSelecting) {
         
         _isTypeSelecting = YES;
@@ -880,6 +892,8 @@
 
 - (NSString *)lastViewedDocument
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     if (self.isNewDocument == YES) {
         _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
         NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == NO > _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument]");
@@ -903,7 +917,7 @@
         
         [self stopSpeaking];
         
-        self.volume = sender.value;
+        self.volume = self.volumeSlider.value;
         [self.defaults setFloat:sender.value forKey:kVolumeValue];
         [self.defaults synchronize];
         
@@ -912,7 +926,7 @@
         [self stopSpeaking];
         
         self.pitch = sender.value;
-        [self.defaults setFloat:sender.value forKey:kPitchValue];
+        [self.defaults setFloat:self.pitchSlider.value forKey:kPitchValue];
         [self.defaults synchronize];
         
     } else if (sender == self.rateSlider) {
@@ -923,6 +937,8 @@
         [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
         [self.defaults synchronize];
     }
+    
+    [self showLog];
 }
 
 
@@ -930,6 +946,8 @@
 
 - (void)checkHasLaunchedOnce
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
         
         [self.defaults setBool:YES forKey:kHasLaunchedOnce];
@@ -1143,7 +1161,7 @@
             
         }completion:^(BOOL finished) { }];
         
-        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
+        //[self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
         
     } else {
         
@@ -1159,7 +1177,7 @@
             
         }completion:^(BOOL finished) { }];
         
-        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
+        //[self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
     }
     
 }
@@ -1372,6 +1390,8 @@
 
 - (void)configureUI
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     self.menuView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.saveAlertView.backgroundColor = [UIColor colorWithRed:0.945 green:0.671 blue:0.686 alpha:1];
     self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1];
@@ -1390,8 +1410,12 @@
     self.rateSlider.alpha = 0.0;
     
     //Button
-    self.logoButton.enabled = NO;
-    self.logoButton.alpha = 0.0;
+    self.listButton.enabled = NO;
+    self.listButton.alpha = 0.0;
+    self.archiveButton.enabled = NO;
+    self.archiveButton.alpha = 0.0;
+    self.logoButton.enabled = YES;
+    self.logoButton.alpha = 1.0;
     self.actionButton.enabled = NO;
     self.actionButton.alpha = 0.0;
     self.resetButton.alpha = 0.0;
@@ -1401,11 +1425,9 @@
     self.keyboardDownButton.layer.cornerRadius = cornerRadius;
     self.keyboardDownButton.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:0.5];
     self.keyboardDownButton.alpha = 0.0;
-}
-
-
-- (void)configureSliderUI
-{
+    
+    
+    //Slider UI
     UIImage *thumbImageNormal = [UIImage imageNamed:@"recordNormal"];
     [self.progressSlider setThumbImage:thumbImageNormal forState:UIControlStateNormal];
     UIImage *thumbImageHighlighted = [UIImage imageNamed:@"record"];
@@ -1438,17 +1460,17 @@
     NSLog (@"self.isNewDocument: %@\n", self.isNewDocument ? @"YES" : @"NO");
     NSLog (@"self.isSavedDocument: %@\n", self.isSavedDocument ? @"YES" : @"NO");
     
-//    NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
-//    NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
-//    NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
-//    
-//    NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
-//    NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
-//    NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
-//    
-//    NSLog (@"self.volume: %f\n", self.volume);
-//    NSLog (@"self.pitch: %f\n", self.pitch);
-//    NSLog (@"self.rate: %f\n", self.rate);
+    NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
+    NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
+    NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
+    
+    NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
+    NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
+    NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
+    
+    NSLog (@"self.volume: %f\n", self.volume);
+    NSLog (@"self.pitch: %f\n", self.pitch);
+    NSLog (@"self.rate: %f\n", self.rate);
     
 //    NSLog (@"self.textView.text: %@\n", self.textView.text);
 //    NSLog (@"_lastViewedDocument: %@\n", _lastViewedDocument);
