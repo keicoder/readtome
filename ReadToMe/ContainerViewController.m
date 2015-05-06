@@ -143,9 +143,7 @@
 	[super viewWillAppear:animated];
     
     [self setPasteBoardString];
-    [self retrieveSpeechAttributes];
-    [self typeSelecting];
-    [self lastViewedDocument];
+    [self retrieveDataForSpeech];
     [self checkToPasteText];
 }
 
@@ -462,12 +460,12 @@
     
     if (_isTypeSelecting == YES) {
         
-        [self changeSelectionButtonColorForTurnOnAndOff:NO];
+        [self changeSelectionButtonColor:NO];
         
         
     } else {
         
-        [self changeSelectionButtonColorForTurnOnAndOff:YES];
+        [self changeSelectionButtonColor:YES];
         
         if (self.synthesizer.isSpeaking == YES) {
             
@@ -838,70 +836,29 @@
 
 #pragma mark - State Restoration
 
-- (void)retrieveSpeechAttributes
+- (void)retrieveDataForSpeech
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    if (self.isNewDocument == YES) {
-        
-        self.language = [self.defaults objectForKey:kLanguage];
-        
-        self.volume = [self.defaults floatForKey:kVolumeValue];
-        self.pitch = [self.defaults floatForKey:kPitchValue];
-        self.rate = [self.defaults floatForKey:kRateValue];
-        
-        self.volumeSlider.value = self.volume;
-        self.pitchSlider.value = self.pitch;
-        self.rateSlider.value = self.rate;
-        
-    } else {
-        
-        NSLog(@"Saved Document > use Speech Attributes in the self.currentDocument");
-        
-    }
+    self.language = [self.defaults objectForKey:kLanguage];
     
-}
-
-
-- (BOOL)typeSelecting
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    self.volume = [self.defaults floatForKey:kVolumeValue];
+    self.pitch = [self.defaults floatForKey:kPitchValue];
+    self.rate = [self.defaults floatForKey:kRateValue];
     
-    if (!_isTypeSelecting) {
-        
-        _isTypeSelecting = YES;
-        
-    } else {
-        
-        _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    }
+    self.volumeSlider.value = self.volume;
+    self.pitchSlider.value = self.pitch;
+    self.rateSlider.value = self.rate;
     
+    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
     
     if (_isTypeSelecting == YES) {
-        
-        [self changeSelectionButtonColorForTurnOnAndOff:YES];
-        
+        [self changeSelectionButtonColor:YES];
     } else {
-        
-        [self changeSelectionButtonColorForTurnOnAndOff:NO];
+        [self changeSelectionButtonColor:NO];
     }
     
-    return _isTypeSelecting;
-}
-
-
-- (NSString *)lastViewedDocument
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (self.isNewDocument == YES) {
-        _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
-        NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == NO > _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument]");
-        return _lastViewedDocument;
-    } else {
-        NSLog (@"viewWillAppear > lastViewedDocument > self.isSavedDocument == YES > _lastViewedDocument = _lastViewedDocument");
-        return _lastViewedDocument;
-    }
+    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
 }
 
 
@@ -939,31 +896,6 @@
     }
     
     [self showLog];
-}
-
-
-#pragma mark - 앱 처음 실행인지 체크 > Volume, Pitch, Rate 기본값 적용
-
-- (void)checkHasLaunchedOnce
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
-        
-        [self.defaults setBool:YES forKey:kHasLaunchedOnce];
-        
-        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
-        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
-        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
-        
-        [self.defaults setObject:defaultLanguageName forKey:kLanguage];
-        [self.defaults setBool:YES forKey:kTypeSelecting];
-        [self.defaults setFloat:1.0 forKey:kVolumeValue];
-        [self.defaults setFloat:1.0 forKey:kPitchValue];
-        [self.defaults setFloat:0.07 forKey:kRateValue];
-        
-        _lastViewedDocument = @"";
-    }
 }
 
 
@@ -1145,7 +1077,7 @@
 
 #pragma mark - Change Selection Button Color For TurnOn or TurnOff
 
-- (void)changeSelectionButtonColorForTurnOnAndOff:(BOOL)didTurnOn
+- (void)changeSelectionButtonColor:(BOOL)didTurnOn
 {
     if (didTurnOn == YES) {
         
@@ -1386,6 +1318,31 @@
 }
 
 
+#pragma mark - 앱 처음 실행인지 체크 > Volume, Pitch, Rate 기본값 적용
+
+- (void)checkHasLaunchedOnce
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
+        
+        [self.defaults setBool:YES forKey:kHasLaunchedOnce];
+        
+        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
+        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
+        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
+        
+        [self.defaults setObject:defaultLanguageName forKey:kLanguage];
+        [self.defaults setBool:YES forKey:kTypeSelecting];
+        [self.defaults setFloat:1.0 forKey:kVolumeValue];
+        [self.defaults setFloat:1.0 forKey:kPitchValue];
+        [self.defaults setFloat:0.07 forKey:kRateValue];
+        
+        _lastViewedDocument = @"";
+    }
+}
+
+
 #pragma mark - Configure UI
 
 - (void)configureUI
@@ -1460,17 +1417,26 @@
     NSLog (@"self.isNewDocument: %@\n", self.isNewDocument ? @"YES" : @"NO");
     NSLog (@"self.isSavedDocument: %@\n", self.isSavedDocument ? @"YES" : @"NO");
     
+    NSLog(@"\n");
+    NSLog (@"self.currentDocument.language: %@\n", self.currentDocument.language);
     NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
     NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
     NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
+    
+    NSLog(@"\n");
     
     NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
     NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
     NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
     
+    NSLog(@"\n");
+    NSLog (@"self.language: %@\n", self.language);
     NSLog (@"self.volume: %f\n", self.volume);
     NSLog (@"self.pitch: %f\n", self.pitch);
     NSLog (@"self.rate: %f\n", self.rate);
+    
+    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    NSLog(@"\n");
     
 //    NSLog (@"self.textView.text: %@\n", self.textView.text);
 //    NSLog (@"_lastViewedDocument: %@\n", _lastViewedDocument);
