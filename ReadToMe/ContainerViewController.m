@@ -127,9 +127,9 @@
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
 	[super viewDidLoad];
-	
-    [self setInitialData];
+    
 	[self configureUI];
+    [self setInitialObjectsForSpeech];
     [self stopSpeaking];
     [self checkHasLaunchedOnce];
     [self addObserver];
@@ -150,7 +150,7 @@
 
 #pragma mark - Set Initial Data
 
-- (void)setInitialData
+- (void)setInitialObjectsForSpeech
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
@@ -187,7 +187,7 @@
 }
 
 
-#pragma mark - Paste Text
+#pragma mark Paste Text
 
 - (void)checkToPasteText
 {
@@ -508,7 +508,7 @@
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
-    [self pauseSpeaking];
+    //[self pauseSpeaking];
     
     if (_equalizerViewExpanded == YES) {
         
@@ -875,6 +875,7 @@
         [self stopSpeaking];
         
         self.volume = self.volumeSlider.value;
+        self.utterance.volume = self.volumeSlider.value;
         [self.defaults setFloat:sender.value forKey:kVolumeValue];
         [self.defaults synchronize];
         
@@ -1057,9 +1058,17 @@
 }
 
 
-#pragma mark - UITextView delegate method (optional)
+#pragma mark - UITextView delegate method
 
-- (void)textViewDidChange:(UITextView *)textView
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    _lastViewedDocument = self.textView.text;
+}
+
+
+- (void)textViewDidEndEditing:(UITextView *)textView
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
@@ -1067,6 +1076,7 @@
         
         NSLog(@"TextView texts are changed");
         [self stopSpeaking];
+        self.pasteBoard.string = self.textView.text;
         
     } else {
         
