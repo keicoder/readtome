@@ -454,23 +454,15 @@
 - (IBAction)selectionButtonTapped:(id)sender
 {
     if (_equalizerViewExpanded == YES) {
-        
         [self adjustEqualizerViewHeight:0.0];
     }
     
     if (_isTypeSelecting == YES) {
-        
         [self changeSelectionButtonColor:NO];
         
-        
     } else {
-        
         [self changeSelectionButtonColor:YES];
-        
-        if (self.synthesizer.isSpeaking == YES) {
-            
-            [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.2];
-        }
+        [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.2];
     }
 }
 
