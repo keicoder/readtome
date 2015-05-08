@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7703" systemVersion="14E11f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14E11f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6711"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -119,9 +119,8 @@
                                     <constraint firstAttribute="height" constant="60" id="npb-29-jMO"/>
                                 </constraints>
                             </view>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" userLabel="KeiTextView" customClass="KeiTextView">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" userLabel="KeiTextView" customClass="KeiTextView">
                                 <rect key="frame" x="20" y="140" width="560" height="210"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <string key="text">There are no text to speech.
 
 Copy whatever you want to read, ReadToMe will read aloud for you.
@@ -316,28 +315,11 @@ Enjoy reading!</string>
                                     <constraint firstAttribute="centerY" secondItem="BhP-KP-gJu" secondAttribute="centerY" id="xO7-lX-vCB"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3bs-2t-1ON" userLabel="KeyboardDownButton" customClass="PopAnimationClearButton">
-                                <rect key="frame" x="536" y="302" width="44" height="44"/>
-                                <color key="backgroundColor" red="0.95707070709999997" green="0.80975241769999995" blue="0.166872558" alpha="1" colorSpace="calibratedRGB"/>
-                                <accessibility key="accessibilityConfiguration" label="ResetButton"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="44" id="cEL-jZ-XEO"/>
-                                    <constraint firstAttribute="height" constant="44" id="yER-wX-mZG"/>
-                                </constraints>
-                                <inset key="contentEdgeInsets" minX="8" minY="12" maxX="8" maxY="8"/>
-                                <state key="normal" image="keyboardDown">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="keyboardDownButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="JqD-ac-uLi"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Wws-1S-BRE" firstAttribute="top" secondItem="ofM-O5-Xtc" secondAttribute="bottom" id="6ce-Bk-3cm"/>
                             <constraint firstItem="Ch7-hb-2ah" firstAttribute="top" secondItem="VWj-si-BKE" secondAttribute="bottom" id="GyC-Tt-Kc7"/>
-                            <constraint firstAttribute="trailing" secondItem="3bs-2t-1ON" secondAttribute="trailing" constant="20" id="KnY-dV-mZw"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="top" secondItem="Ch7-hb-2ah" secondAttribute="bottom" id="Nwa-xG-UAS"/>
                             <constraint firstAttribute="trailing" secondItem="ofM-O5-Xtc" secondAttribute="trailing" id="SD7-8q-EfJ"/>
                             <constraint firstItem="VWj-si-BKE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="VQs-zH-cqK">
@@ -358,7 +340,6 @@ Enjoy reading!</string>
                                 <variation key="heightClass=compact" constant="80"/>
                                 <variation key="heightClass=regular-widthClass=regular" constant="100"/>
                             </constraint>
-                            <constraint firstItem="Ch7-hb-2ah" firstAttribute="top" secondItem="3bs-2t-1ON" secondAttribute="bottom" constant="4" id="kU0-qz-wJl"/>
                             <constraint firstItem="VWj-si-BKE" firstAttribute="top" secondItem="EqM-jD-gG9" secondAttribute="bottom" id="kpU-5r-Lg3">
                                 <variation key="heightClass=regular-widthClass=regular" constant="20"/>
                             </constraint>
@@ -369,6 +350,7 @@ Enjoy reading!</string>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="width" secondItem="Ch7-hb-2ah" secondAttribute="width" id="vgk-rd-lYL"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
                     <connections>
                         <outlet property="actionButton" destination="pn8-Lw-nUq" id="boN-N5-OxI"/>
                         <outlet property="archiveButton" destination="8pi-Cu-ToX" id="MCT-rL-mw9"/>
@@ -376,11 +358,13 @@ Enjoy reading!</string>
                         <outlet property="equalizerButton" destination="UuS-46-ldZ" id="UlX-Wi-kb0"/>
                         <outlet property="equalizerView" destination="ofM-O5-Xtc" id="7sj-mZ-m5G"/>
                         <outlet property="equalizerViewHeightConstraint" destination="obj-XC-AMD" id="0Jo-8k-N3d"/>
-                        <outlet property="keyboardDownButton" destination="3bs-2t-1ON" id="p3w-hG-wPo"/>
+                        <outlet property="keyboardAccessoryView" destination="VZL-r4-3US" id="NP0-pG-43U"/>
+                        <outlet property="keyboardDownButton" destination="0QO-2L-ztB" id="bju-AI-3wi"/>
                         <outlet property="languageButton" destination="xtD-FV-k3Q" id="rcL-Vr-d3H"/>
                         <outlet property="listButton" destination="6rW-tW-Hkj" id="evV-nU-ao9"/>
                         <outlet property="logoButton" destination="eMX-kn-ZVO" id="1dX-QJ-uMJ"/>
                         <outlet property="menuView" destination="U9H-OM-Fxj" id="SLX-Bo-y7O"/>
+                        <outlet property="menuViewHeightConstraint" destination="4mi-Pe-nfX" id="kve-ol-G7J"/>
                         <outlet property="pitchLabel" destination="OwE-xb-ztj" id="itK-un-8IC"/>
                         <outlet property="pitchSlider" destination="PDz-gG-Mvc" id="Lye-RR-NeI"/>
                         <outlet property="playPauseButton" destination="djw-qX-P0a" id="o9K-Lj-sya"/>
@@ -401,8 +385,33 @@ Enjoy reading!</string>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="VZL-r4-3US" userLabel="KeyboardAccessoryView">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="50"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0QO-2L-ztB" userLabel="KeyboardDownButton" customClass="PopAnimationClearButton">
+                            <rect key="frame" x="278" y="3" width="44" height="44"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="44" id="19N-2K-Rzj"/>
+                                <constraint firstAttribute="height" constant="44" id="xD9-24-YXN"/>
+                            </constraints>
+                            <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                            <state key="normal" image="keyboardDown">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="keyboardDownButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="36z-mT-4UX"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="0.95707070709999997" green="0.80975241769999995" blue="0.166872558" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="centerY" secondItem="0QO-2L-ztB" secondAttribute="centerY" id="VUT-WO-rco"/>
+                        <constraint firstAttribute="centerX" secondItem="0QO-2L-ztB" secondAttribute="centerX" id="aTV-ez-QCK"/>
+                    </constraints>
+                </view>
             </objects>
-            <point key="canvasLocation" x="208" y="460"/>
+            <point key="canvasLocation" x="208" y="339"/>
         </scene>
         <!--List View Controller-->
         <scene sceneID="7tp-AH-W2X">
@@ -532,7 +541,7 @@ Enjoy reading!</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S9d-sP-Nqk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="208" y="1096"/>
+            <point key="canvasLocation" x="208" y="1106"/>
         </scene>
         <!--Settings View Controller-->
         <scene sceneID="BKq-NA-Kxm">

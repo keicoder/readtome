@@ -69,6 +69,7 @@
 
 @property (strong, nonatomic) NSDictionary *paragraphAttributes;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *menuViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *saveAlertViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *progressInfoViewHeightConstraint;
@@ -80,8 +81,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 
-@property (weak, nonatomic) IBOutlet UIButton *keyboardDownButton;
-
 @property (weak, nonatomic) IBOutlet UIView *progressView;
 @property (weak, nonatomic) IBOutlet UISlider *progressSlider;
 
@@ -89,6 +88,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *saveAlertLabel;
 
 @property (weak, nonatomic) IBOutlet KeiTextView *textView;
+
+@property (weak, nonatomic) IBOutlet UIView *keyboardAccessoryView;
+@property (weak, nonatomic) IBOutlet UIButton *keyboardDownButton;
 
 @property (weak, nonatomic) IBOutlet UIView *equalizerView;
 @property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
@@ -984,30 +986,34 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-    NSDictionary *info = [notification userInfo];
-    CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
-    CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
+//    NSDictionary *info = [notification userInfo];
+//    CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//    CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
+//    CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
+//    
+//    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight];
     
-    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight];
+    [self.textView keyboardWillShow:notification];
     
-    CGFloat duration = 0.35f;
-    [UIView animateWithDuration:duration animations:^{
-        self.keyboardDownButton.alpha = 1.0;
-    }completion:^(BOOL finished) { }];
+//    CGFloat duration = 0.35f;
+//    [UIView animateWithDuration:duration animations:^{
+//        self.keyboardDownButton.alpha = 1.0;
+//    }completion:^(BOOL finished) { }];
 }
 
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-    [self adjustEqualizerViewHeight:0.0];
+//    [self adjustEqualizerViewHeight:0.0];
     
-    CGFloat duration = 0.35f;
-    [UIView animateWithDuration:duration animations:^{
-        self.keyboardDownButton.alpha = 0.0;
-    }completion:^(BOOL finished) { }];
+    [self.textView keyboardWillHide:notification];
     
-    [self pauseSpeaking];
+//    CGFloat duration = 0.35f;
+//    [UIView animateWithDuration:duration animations:^{
+//        self.keyboardDownButton.alpha = 0.0;
+//    }completion:^(BOOL finished) { }];
+    
+//    [self pauseSpeaking];
 }
 
 
@@ -1052,11 +1058,51 @@
 
 #pragma mark - UITextView delegate method
 
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+    
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if (self.textView.inputAccessoryView == nil) {
+        self.textView.inputAccessoryView = self.keyboardAccessoryView;
+        self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    }
+    
+    self.menuViewHeightConstraint.constant = 0.0;
+    
+    CGFloat duration = 0.3f;
+    [UIView animateWithDuration:duration animations:^{
+        [self.view layoutIfNeeded];
+        self.logoButton.alpha = 0.0;
+        self.playPauseButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
+    
+    return YES;
+}
+
+
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     _lastViewedDocument = self.textView.text;
+}
+
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
+    
+    [textView resignFirstResponder];
+    [self.keyboardAccessoryView removeFromSuperview];
+    
+    self.menuViewHeightConstraint.constant = 60.0;
+    
+    CGFloat duration = 0.3f;
+    [UIView animateWithDuration:duration animations:^{
+        [self.view layoutIfNeeded];
+        self.logoButton.alpha = 1.0;
+        self.playPauseButton.alpha = 1.0;
+    }completion:^(BOOL finished) { }];
+    
+    return YES;
 }
 
 
@@ -1379,21 +1425,12 @@
     self.actionButton.alpha = 0.0;
     self.resetButton.alpha = 0.0;
     
-    //Keyboard Down Button
-    float cornerRadius = self.keyboardDownButton.bounds.size.height/2;
-    self.keyboardDownButton.layer.cornerRadius = cornerRadius;
-    self.keyboardDownButton.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:0.5];
-    self.keyboardDownButton.alpha = 0.0;
-    
-    
     //Slider UI
     UIImage *thumbImageNormal = [UIImage imageNamed:@"recordNormal"];
     [self.progressSlider setThumbImage:thumbImageNormal forState:UIControlStateNormal];
     UIImage *thumbImageHighlighted = [UIImage imageNamed:@"record"];
     [self.progressSlider setThumbImage:thumbImageHighlighted forState:UIControlStateHighlighted];
-    UIImage *trackLeftImage =
-    [[UIImage imageNamed:@"SliderTrackLeft"]
-     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
+    UIImage *trackLeftImage = [[UIImage imageNamed:@"SliderTrackLeft"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
     [self.progressSlider setMinimumTrackImage:trackLeftImage forState:UIControlStateNormal];
     UIImage *trackRightImage = [[UIImage imageNamed:@"SliderTrackRight"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
     [self.progressSlider setMaximumTrackImage:trackRightImage forState:UIControlStateNormal];

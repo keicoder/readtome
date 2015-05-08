@@ -11,8 +11,7 @@
 @interface KeiTextView : UITextView
 
 - (void)scrollToVisibleCaretAnimated;
-
-- (void)replaceSelectionWithAttributedText:(NSAttributedString *)text;
-- (void)replaceRange:(NSRange)range withAttributedText:(NSAttributedString *)text;
+- (void)keyboardWillShow:(NSNotification *)notification;
+- (void)keyboardWillHide:(NSNotification*)notification;
 
 @end

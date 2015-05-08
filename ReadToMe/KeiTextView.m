@@ -66,7 +66,7 @@
 {
     CGFloat contentInsetBottom = 0.f;
     contentInsetBottom = __tg_fmin(CGRectGetHeight(_keyboardRect), CGRectGetWidth(_keyboardRect));
-    UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, contentInsetBottom - 56, 0);
+    UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, contentInsetBottom - 74, 0);
     self.contentInset = contentInset;
 }
 
@@ -88,28 +88,6 @@
 {
     UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
     self.contentInset = contentInset;
-}
-
-
-#pragma mark - Replace Attriuted Text
-
-- (void)replaceSelectionWithAttributedText:(NSAttributedString *)text
-{
-    [self replaceRange:self.selectedRange withAttributedText:text];
-}
-
-
-- (void)replaceRange:(NSRange)range withAttributedText:(NSAttributedString *)text
-{
-    [self replaceRange:range withAttributedText:text andSelectRange:NSMakeRange(range.location, text.length)];
-}
-
-
-- (void)replaceRange:(NSRange)range withAttributedText:(NSAttributedString *)text andSelectRange:(NSRange)selection
-{
-    [[self.undoManager prepareWithInvocationTarget:self] replaceRange:NSMakeRange(range.location, text.length) withAttributedText:[self.attributedText attributedSubstringFromRange:range] andSelectRange:self.selectedRange];
-    [self.textStorage replaceCharactersInRange:range withAttributedString:text];
-    self.selectedRange = selection;
 }
 
 
