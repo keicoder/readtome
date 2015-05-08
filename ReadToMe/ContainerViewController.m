@@ -93,8 +93,9 @@
 @property (weak, nonatomic) IBOutlet KeiTextView *textView;
 
 @property (weak, nonatomic) IBOutlet UIView *keyboardAccessoryView;
-@property (weak, nonatomic) IBOutlet UIButton *keyboardDownButton;
 @property (weak, nonatomic) IBOutlet UIButton *previousButton;
+@property (weak, nonatomic) IBOutlet UIButton *keyboardDownButton;
+@property (weak, nonatomic) IBOutlet UIButton *selectButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
 
 @property (nonatomic, strong) NSTimer *previousButtonTimer;
@@ -564,16 +565,9 @@
 
 #pragma mark Keyboard Accessory Buttons Action Methods
 
-- (IBAction)keyboardDownButtonTapped:(id)sender
-{
-    [self.textView resignFirstResponder];
-}
-
-
-
 - (IBAction)previousButtonTapped:(id)sender
 {
-    self.previousButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(previousCharacter:) userInfo:nil repeats:YES];
+    self.previousButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previousCharacter:) userInfo:nil repeats:YES];
     [self.previousButtonTimer fire];
 }
 
@@ -598,9 +592,36 @@
 }
 
 
+- (IBAction)keyboardDownButtonTapped:(id)sender
+{
+    [self.textView resignFirstResponder];
+}
+
+
+- (IBAction)selectButtonTapped:(id)sender
+{
+    NSRange selectedRange = self.textView.selectedRange;
+    
+    if (![self.textView hasText])
+    {
+        [self.textView select:self];
+    }
+    else if ([self.textView hasText] && selectedRange.length == 0)
+    {
+        [self.textView select:self];
+    }
+    else if ([self.textView hasText] && selectedRange.length > 0)
+    {
+        selectedRange.location = selectedRange.location + selectedRange.length;
+        selectedRange.length = 0;
+        self.textView.selectedRange = selectedRange;
+    }
+}
+
+
 - (IBAction)nextButtonTapped:(id)sender
 {
-    self.nextButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(nextCharacter:) userInfo:nil repeats:YES];
+    self.nextButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(nextCharacter:) userInfo:nil repeats:YES];
     [self.nextButtonTimer fire];
 }
 
