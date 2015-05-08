@@ -1475,7 +1475,8 @@
     self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     
-    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    //키보드 액세서리 뷰
+    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.71 green:0.714 blue:0.722 alpha:1];
     
     //Image View
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
