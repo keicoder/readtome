@@ -11,7 +11,5 @@
 @interface KeiTextView : UITextView
 
 - (void)scrollToVisibleCaretAnimated;
-- (void)keyboardWillShow:(NSNotification *)notification;
-- (void)keyboardWillHide:(NSNotification*)notification;
 
 @end

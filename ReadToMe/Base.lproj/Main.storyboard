@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14E11f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7703" systemVersion="14E11f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6711"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -28,6 +28,9 @@
                                         <state key="normal" image="readtome100">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="logoButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8iq-CT-O8q"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rW-tW-Hkj" userLabel="ListButton" customClass="PopAnimationClearButton">
                                         <rect key="frame" x="20" y="8" width="44" height="44"/>
@@ -103,10 +106,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EqM-jD-gG9" userLabel="SaveAlertView">
-                                <rect key="frame" x="0.0" y="80" width="600" height="60"/>
+                                <rect key="frame" x="0.0" y="80" width="600" height="40"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saved" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ja-D3-AWW" userLabel="SaveAlertLabel">
-                                        <rect key="frame" x="271" y="18" width="59" height="24"/>
+                                        <rect key="frame" x="271" y="8" width="59" height="24"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -116,11 +119,11 @@
                                 <constraints>
                                     <constraint firstAttribute="centerY" secondItem="9ja-D3-AWW" secondAttribute="centerY" id="6Io-bH-ZW5"/>
                                     <constraint firstAttribute="centerX" secondItem="9ja-D3-AWW" secondAttribute="centerX" id="DQW-Eh-vTH"/>
-                                    <constraint firstAttribute="height" constant="60" id="npb-29-jMO"/>
+                                    <constraint firstAttribute="height" constant="40" id="npb-29-jMO"/>
                                 </constraints>
                             </view>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" userLabel="KeiTextView" customClass="KeiTextView">
-                                <rect key="frame" x="20" y="140" width="560" height="210"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VWj-si-BKE" userLabel="KeiTextView" customClass="KeiTextView">
+                                <rect key="frame" x="20" y="120" width="560" height="186"/>
                                 <string key="text">There are no text to speech.
 
 Copy whatever you want to read, ReadToMe will read aloud for you.
@@ -153,9 +156,7 @@ Enjoy reading!</string>
                                 </subviews>
                                 <color key="backgroundColor" red="0.19215686269999999" green="0.66666666669999997" blue="0.22352941179999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="JUg-3N-Tig">
-                                        <variation key="heightClass=compact" constant="30"/>
-                                    </constraint>
+                                    <constraint firstAttribute="height" constant="40" id="JUg-3N-Tig"/>
                                     <constraint firstAttribute="trailing" secondItem="BVz-FP-Yrg" secondAttribute="trailing" constant="33" id="TOD-ke-Htg"/>
                                     <constraint firstAttribute="centerY" secondItem="BVz-FP-Yrg" secondAttribute="centerY" id="o5Y-eW-CHL"/>
                                     <constraint firstItem="BVz-FP-Yrg" firstAttribute="leading" secondItem="Ch7-hb-2ah" secondAttribute="leading" constant="33" id="uU6-Xp-oy4"/>
@@ -315,11 +316,36 @@ Enjoy reading!</string>
                                     <constraint firstAttribute="centerY" secondItem="BhP-KP-gJu" secondAttribute="centerY" id="xO7-lX-vCB"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VZL-r4-3US" userLabel="KeyboardAccessoryView">
+                                <rect key="frame" x="0.0" y="306" width="600" height="44"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0QO-2L-ztB" userLabel="KeyboardDownButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="278" y="0.0" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="6De-lN-vQd"/>
+                                            <constraint firstAttribute="width" constant="44" id="DK7-Jx-BXg"/>
+                                        </constraints>
+                                        <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                                        <state key="normal" image="keyboardDown">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="keyboardDownButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="36z-mT-4UX"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.95707070709999997" green="0.80975241769999995" blue="0.166872558" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="centerX" secondItem="0QO-2L-ztB" secondAttribute="centerX" id="59b-Ys-xsQ"/>
+                                    <constraint firstAttribute="height" constant="44" id="Kg7-QS-CI0"/>
+                                    <constraint firstAttribute="centerY" secondItem="0QO-2L-ztB" secondAttribute="centerY" id="Qr2-Yt-jJ0"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Wws-1S-BRE" firstAttribute="top" secondItem="ofM-O5-Xtc" secondAttribute="bottom" id="6ce-Bk-3cm"/>
-                            <constraint firstItem="Ch7-hb-2ah" firstAttribute="top" secondItem="VWj-si-BKE" secondAttribute="bottom" id="GyC-Tt-Kc7"/>
+                            <constraint firstItem="VZL-r4-3US" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="6ne-Ia-D7n"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="top" secondItem="Ch7-hb-2ah" secondAttribute="bottom" id="Nwa-xG-UAS"/>
                             <constraint firstAttribute="trailing" secondItem="ofM-O5-Xtc" secondAttribute="trailing" id="SD7-8q-EfJ"/>
                             <constraint firstItem="VWj-si-BKE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="VQs-zH-cqK">
@@ -330,10 +356,11 @@ Enjoy reading!</string>
                             <constraint firstItem="U9H-OM-Fxj" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Zp3-x1-6KE"/>
                             <constraint firstAttribute="trailing" secondItem="U9H-OM-Fxj" secondAttribute="trailing" id="afN-Hm-tih"/>
                             <constraint firstItem="VWj-si-BKE" firstAttribute="centerX" secondItem="EqM-jD-gG9" secondAttribute="centerX" id="b8X-wn-sZM"/>
-                            <constraint firstItem="ofM-O5-Xtc" firstAttribute="centerX" secondItem="VWj-si-BKE" secondAttribute="centerX" id="f8O-rB-XGB"/>
+                            <constraint firstItem="Ch7-hb-2ah" firstAttribute="top" secondItem="VZL-r4-3US" secondAttribute="bottom" id="dih-Fp-gJx"/>
                             <constraint firstItem="U9H-OM-Fxj" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="gXP-uu-Z7y"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Wws-1S-BRE" secondAttribute="bottom" id="gih-Rt-fXt"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="centerX" secondItem="Ch7-hb-2ah" secondAttribute="centerX" id="gvJ-fO-sX1"/>
+                            <constraint firstItem="VZL-r4-3US" firstAttribute="top" secondItem="VWj-si-BKE" secondAttribute="bottom" id="iSm-lV-iUW"/>
                             <constraint firstItem="Wws-1S-BRE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ivy-fO-u87"/>
                             <constraint firstItem="EqM-jD-gG9" firstAttribute="width" secondItem="U9H-OM-Fxj" secondAttribute="width" id="j1H-75-zyd"/>
                             <constraint firstAttribute="trailing" secondItem="VWj-si-BKE" secondAttribute="trailing" constant="20" id="jbw-yu-czq">
@@ -345,8 +372,10 @@ Enjoy reading!</string>
                             </constraint>
                             <constraint firstItem="EqM-jD-gG9" firstAttribute="top" secondItem="U9H-OM-Fxj" secondAttribute="bottom" id="nLy-v4-DTc"/>
                             <constraint firstItem="EqM-jD-gG9" firstAttribute="centerX" secondItem="U9H-OM-Fxj" secondAttribute="centerX" id="ncy-u1-hbL"/>
+                            <constraint firstAttribute="trailing" secondItem="VZL-r4-3US" secondAttribute="trailing" id="o3n-y4-gsx"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pP0-hC-9TR"/>
                             <constraint firstAttribute="trailing" secondItem="Wws-1S-BRE" secondAttribute="trailing" id="qW3-oK-nqN"/>
+                            <constraint firstItem="VZL-r4-3US" firstAttribute="centerX" secondItem="Ch7-hb-2ah" secondAttribute="centerX" id="rHU-4k-qJf"/>
                             <constraint firstItem="ofM-O5-Xtc" firstAttribute="width" secondItem="Ch7-hb-2ah" secondAttribute="width" id="vgk-rd-lYL"/>
                         </constraints>
                     </view>
@@ -355,10 +384,12 @@ Enjoy reading!</string>
                         <outlet property="actionButton" destination="pn8-Lw-nUq" id="boN-N5-OxI"/>
                         <outlet property="archiveButton" destination="8pi-Cu-ToX" id="MCT-rL-mw9"/>
                         <outlet property="bottomView" destination="Wws-1S-BRE" id="fjh-w7-D5G"/>
+                        <outlet property="bottomViewHeightConstraint" destination="del-jg-4jZ" id="DOc-6C-4dY"/>
                         <outlet property="equalizerButton" destination="UuS-46-ldZ" id="UlX-Wi-kb0"/>
                         <outlet property="equalizerView" destination="ofM-O5-Xtc" id="7sj-mZ-m5G"/>
                         <outlet property="equalizerViewHeightConstraint" destination="obj-XC-AMD" id="0Jo-8k-N3d"/>
                         <outlet property="keyboardAccessoryView" destination="VZL-r4-3US" id="NP0-pG-43U"/>
+                        <outlet property="keyboardAccessoryViewHeightConstraint" destination="Kg7-QS-CI0" id="cZY-Pq-6UQ"/>
                         <outlet property="keyboardDownButton" destination="0QO-2L-ztB" id="bju-AI-3wi"/>
                         <outlet property="languageButton" destination="xtD-FV-k3Q" id="rcL-Vr-d3H"/>
                         <outlet property="listButton" destination="6rW-tW-Hkj" id="evV-nU-ao9"/>
@@ -376,7 +407,7 @@ Enjoy reading!</string>
                         <outlet property="resetButton" destination="gGU-LD-ksn" id="yg3-KX-RbJ"/>
                         <outlet property="saveAlertLabel" destination="9ja-D3-AWW" id="cX9-Zw-Sao"/>
                         <outlet property="saveAlertView" destination="EqM-jD-gG9" id="jFJ-cr-VFr"/>
-                        <outlet property="saveAlertViewHeightConstraint" destination="npb-29-jMO" id="wwL-La-Gai"/>
+                        <outlet property="saveAlertViewHeightConstraint" destination="npb-29-jMO" id="hBt-ZI-RZF"/>
                         <outlet property="selectionButton" destination="KQ5-vg-g0i" id="RDy-kT-bIz"/>
                         <outlet property="settingsButton" destination="BhP-KP-gJu" id="aay-xx-vIw"/>
                         <outlet property="textView" destination="VWj-si-BKE" id="TKZ-9Q-pKe"/>
@@ -385,31 +416,6 @@ Enjoy reading!</string>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <view contentMode="scaleToFill" id="VZL-r4-3US" userLabel="KeyboardAccessoryView">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="50"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0QO-2L-ztB" userLabel="KeyboardDownButton" customClass="PopAnimationClearButton">
-                            <rect key="frame" x="278" y="3" width="44" height="44"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="44" id="19N-2K-Rzj"/>
-                                <constraint firstAttribute="height" constant="44" id="xD9-24-YXN"/>
-                            </constraints>
-                            <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
-                            <state key="normal" image="keyboardDown">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="keyboardDownButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="36z-mT-4UX"/>
-                            </connections>
-                        </button>
-                    </subviews>
-                    <color key="backgroundColor" red="0.95707070709999997" green="0.80975241769999995" blue="0.166872558" alpha="1" colorSpace="calibratedRGB"/>
-                    <constraints>
-                        <constraint firstAttribute="centerY" secondItem="0QO-2L-ztB" secondAttribute="centerY" id="VUT-WO-rco"/>
-                        <constraint firstAttribute="centerX" secondItem="0QO-2L-ztB" secondAttribute="centerX" id="aTV-ez-QCK"/>
-                    </constraints>
-                </view>
             </objects>
             <point key="canvasLocation" x="208" y="339"/>
         </scene>

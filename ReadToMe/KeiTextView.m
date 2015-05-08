@@ -6,8 +6,12 @@
 //  Copyright (c) 2015년 keicoder. All rights reserved.
 //
 
+#define debug 1
+
+
 #import <tgmath.h>
 #import "KeiTextView.h"
+
 
 @implementation KeiTextView
 {
@@ -44,11 +48,12 @@
 }
 
 
-
 #pragma mark - 키보드 handle, 인셋 조정
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     NSDictionary *userInfoDictionary = notification.userInfo;
     CGFloat duration = [[userInfoDictionary objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     int curve = [[userInfoDictionary objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
@@ -64,15 +69,19 @@
 
 - (void)updateNoteTextViewInsetWithKeyboard:(NSNotification*)notification
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     CGFloat contentInsetBottom = 0.f;
     contentInsetBottom = __tg_fmin(CGRectGetHeight(_keyboardRect), CGRectGetWidth(_keyboardRect));
-    UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, contentInsetBottom - 74, 0);
+    UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, contentInsetBottom - 72.0, 0);
     self.contentInset = contentInset;
 }
 
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     NSDictionary *userInfoDictionary = notification.userInfo;
     CGFloat duration = [[userInfoDictionary objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     int curve = [[userInfoDictionary objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
@@ -86,8 +95,18 @@
 
 - (void)updateNoteTextViewInsetWithoutKeyboard
 {
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
     self.contentInset = contentInset;
+}
+
+
+#pragma mark - Dealloc
+
+- (void)dealloc
+{
+    NSLog(@"dealloc %@", self);
 }
 
 

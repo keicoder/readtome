@@ -70,9 +70,12 @@
 @property (strong, nonatomic) NSDictionary *paragraphAttributes;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *menuViewHeightConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *saveAlertViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyboardAccessoryViewHeightConstraint;
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *progressInfoViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeightConstraint;
 
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIButton *listButton;
@@ -545,6 +548,22 @@
 }
 
 
+
+- (IBAction)logoButtonTapped:(id)sender
+{
+    //Open URL
+    UIResponder* responder = self;
+    while ((responder = [responder nextResponder]) != nil)
+    {
+        NSLog(@"responder = %@", responder);
+        if([responder respondsToSelector:@selector(openURL:)] == YES)
+        {
+            [responder performSelector:@selector(openURL:) withObject:[NSURL URLWithString:@"https://itunes.apple.com/us/app/talk-to-me-world/id985869735?l=ko&ls=1&mt=8"]];
+        }
+    }
+}
+
+
 #pragma mark - Save Current Documents For Speech
 
 #pragma mark Save Document
@@ -986,34 +1005,68 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-//    NSDictionary *info = [notification userInfo];
-//    CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-//    CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
-//    CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
-//    
-//    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight];
+    NSDictionary *info = [notification userInfo];
+    CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
+    CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
+    CGFloat progressViewHeight = CGRectGetHeight(self.progressView.frame);
     
-    [self.textView keyboardWillShow:notification];
+    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight - progressViewHeight];
     
-//    CGFloat duration = 0.35f;
-//    [UIView animateWithDuration:duration animations:^{
-//        self.keyboardDownButton.alpha = 1.0;
-//    }completion:^(BOOL finished) { }];
+    self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
+    [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        [self.view layoutIfNeeded];
+        self.keyboardDownButton.alpha = 1.0;
+    } completion:^(BOOL finished) { }];
 }
 
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-//    [self adjustEqualizerViewHeight:0.0];
+    [self adjustEqualizerViewHeight:0.0];
     
-    [self.textView keyboardWillHide:notification];
+    self.keyboardAccessoryViewHeightConstraint.constant = 0.0;
+    [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        [self.view layoutIfNeeded];
+        self.keyboardDownButton.alpha = 0.0;
+    } completion:nil];
+}
+
+
+#pragma mark - UITextView delegate method
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-//    CGFloat duration = 0.35f;
-//    [UIView animateWithDuration:duration animations:^{
-//        self.keyboardDownButton.alpha = 0.0;
-//    }completion:^(BOOL finished) { }];
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.playPauseButton.alpha = 0.0;
+    }completion:^(BOOL finished) { }];
     
-//    [self pauseSpeaking];
+    _lastViewedDocument = self.textView.text;
+}
+
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    [textView resignFirstResponder];
+    
+    CGFloat duration = 0.25f;
+    [UIView animateWithDuration:duration animations:^{
+        self.playPauseButton.alpha = 1.0;
+    }completion:^(BOOL finished) { }];
+    
+    if (![_lastViewedDocument isEqualToString:self.textView.text]) {
+        NSLog(@"TextView texts are changed");
+        [self stopSpeaking];
+        self.pasteBoard.string = self.textView.text;
+        
+    } else {
+        NSLog(@"Nothing Changed");
+    }
 }
 
 
@@ -1056,73 +1109,6 @@
 }
 
 
-#pragma mark - UITextView delegate method
-
-- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-    
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (self.textView.inputAccessoryView == nil) {
-        self.textView.inputAccessoryView = self.keyboardAccessoryView;
-        self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
-    }
-    
-    self.menuViewHeightConstraint.constant = 0.0;
-    
-    CGFloat duration = 0.3f;
-    [UIView animateWithDuration:duration animations:^{
-        [self.view layoutIfNeeded];
-        self.logoButton.alpha = 0.0;
-        self.playPauseButton.alpha = 0.0;
-    }completion:^(BOOL finished) { }];
-    
-    return YES;
-}
-
-
-- (void)textViewDidBeginEditing:(UITextView *)textView
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    _lastViewedDocument = self.textView.text;
-}
-
-
-- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
-    
-    [textView resignFirstResponder];
-    [self.keyboardAccessoryView removeFromSuperview];
-    
-    self.menuViewHeightConstraint.constant = 60.0;
-    
-    CGFloat duration = 0.3f;
-    [UIView animateWithDuration:duration animations:^{
-        [self.view layoutIfNeeded];
-        self.logoButton.alpha = 1.0;
-        self.playPauseButton.alpha = 1.0;
-    }completion:^(BOOL finished) { }];
-    
-    return YES;
-}
-
-
-- (void)textViewDidEndEditing:(UITextView *)textView
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (![_lastViewedDocument isEqualToString:self.textView.text]) {
-        
-        NSLog(@"TextView texts are changed");
-        [self stopSpeaking];
-        self.pasteBoard.string = self.textView.text;
-        
-    } else {
-        
-        NSLog(@"Nothing Changed");
-    }
-}
-
-
 #pragma mark - Change Selection Button Color For TurnOn or TurnOff
 
 - (void)changeSelectionButtonColor:(BOOL)didTurnOn
@@ -1141,7 +1127,7 @@
             
         }completion:^(BOOL finished) { }];
         
-        //[self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
         
     } else {
         
@@ -1157,9 +1143,8 @@
             
         }completion:^(BOOL finished) { }];
         
-        //[self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
+        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
     }
-    
 }
 
 
@@ -1346,9 +1331,14 @@
 - (void)hideSlideViewAndEqualizerViewWithNoAnimation
 {
     [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.keyboardAccessoryViewHeightConstraint.constant = 0.0;
+        [self.view layoutIfNeeded];
+        self.keyboardDownButton.alpha = 0.0;
+    } completion:nil];
+    
+    [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         self.saveAlertViewHeightConstraint.constant = 0.0;
         [self.view layoutIfNeeded];
-        self.archiveButton.enabled = YES;
         self.saveAlertLabel.alpha = 0.0;
     } completion:nil];
     
@@ -1402,6 +1392,8 @@
     self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1];
     self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    
+    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     
     //Image View
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
