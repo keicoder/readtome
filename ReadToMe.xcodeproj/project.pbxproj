@@ -22,6 +22,8 @@
 		323C1CB41AF4746A00EB8689 /* ActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 323C1CB31AF4746A00EB8689 /* ActionViewController.m */; };
 		323C1CB61AF4746A00EB8689 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 323C1CB51AF4746A00EB8689 /* MainInterface.storyboard */; };
 		323C1CB91AF4746A00EB8689 /* ReadToMeActionExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 323C1CAE1AF4746A00EB8689 /* ReadToMeActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		325592A61AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325592A51AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m */; };
+		325592A71AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325592A51AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m */; };
 		32D651701ADA050200B16DCE /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D6516F1ADA050200B16DCE /* NotificationCenter.framework */; };
 		32D651761ADA050200B16DCE /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D651751ADA050200B16DCE /* TodayViewController.m */; };
 		32D651781ADA050200B16DCE /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32D651771ADA050200B16DCE /* MainInterface.storyboard */; };
@@ -172,6 +174,8 @@
 		323C1CB31AF4746A00EB8689 /* ActionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionViewController.m; sourceTree = "<group>"; };
 		323C1CB51AF4746A00EB8689 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		323C1CBE1AF4778100EB8689 /* ReadToMeActionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeActionExtension.entitlements; sourceTree = "<group>"; };
+		325592A41AFCCA1B00EB0B2F /* NBTouchAndHoldButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NBTouchAndHoldButton.h; sourceTree = "<group>"; };
+		325592A51AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NBTouchAndHoldButton.m; sourceTree = "<group>"; };
 		32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReadToMeTodayExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		32D6516F1ADA050200B16DCE /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		32D651731ADA050200B16DCE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -655,6 +659,8 @@
 				C1931EA61ACE490E004DF586 /* ListTableViewCell.m */,
 				32D651CC1ADB4D8300B16DCE /* KeiTextView.h */,
 				32D651CD1ADB4D8300B16DCE /* KeiTextView.m */,
+				325592A41AFCCA1B00EB0B2F /* NBTouchAndHoldButton.h */,
+				325592A51AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1001,6 +1007,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				325592A71AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */,
 				323C1CB41AF4746A00EB8689 /* ActionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1048,6 +1055,7 @@
 				C12245451ACA6C900085C0E6 /* DocumentsForSpeech.m in Sources */,
 				C110F2A61AC12F4000B4E355 /* POPAnimationTracer.mm in Sources */,
 				C12F07801ABF88FD0039EA89 /* ReadToMe.xcdatamodeld in Sources */,
+				325592A61AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */,
 				C110F2AC1AC12F4000B4E355 /* POPCGUtils.mm in Sources */,
 				C1FB14E01AC29B5700F24030 /* SettingsViewController.m in Sources */,
 				C110F2A81AC12F4000B4E355 /* POPAnimator.mm in Sources */,
@@ -1716,6 +1724,7 @@
 				323C1CBC1AF4746A00EB8689 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		32D6517E1ADA050200B16DCE /* Build configuration list for PBXNativeTarget "ReadToMeTodayExtension" */ = {
 			isa = XCConfigurationList;

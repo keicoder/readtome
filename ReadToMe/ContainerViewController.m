@@ -94,6 +94,11 @@
 
 @property (weak, nonatomic) IBOutlet UIView *keyboardAccessoryView;
 @property (weak, nonatomic) IBOutlet UIButton *keyboardDownButton;
+@property (weak, nonatomic) IBOutlet UIButton *previousButton;
+@property (weak, nonatomic) IBOutlet UIButton *nextButton;
+
+@property (nonatomic, strong) NSTimer *previousButtonTimer;
+@property (nonatomic, strong) NSTimer *nextButtonTimer;
 
 @property (weak, nonatomic) IBOutlet UIView *equalizerView;
 @property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
@@ -542,13 +547,6 @@
 }
 
 
-- (IBAction)keyboardDownButtonTapped:(id)sender
-{
-    [self.textView resignFirstResponder];
-}
-
-
-
 - (IBAction)logoButtonTapped:(id)sender
 {
     //Open URL
@@ -560,6 +558,69 @@
         {
             [responder performSelector:@selector(openURL:) withObject:[NSURL URLWithString:@"https://itunes.apple.com/us/app/talk-to-me-world/id985869735?l=ko&ls=1&mt=8"]];
         }
+    }
+}
+
+
+#pragma mark Keyboard Accessory Buttons Action Methods
+
+- (IBAction)keyboardDownButtonTapped:(id)sender
+{
+    [self.textView resignFirstResponder];
+}
+
+
+
+- (IBAction)previousButtonTapped:(id)sender
+{
+    self.previousButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(previousCharacter:) userInfo:nil repeats:YES];
+    [self.previousButtonTimer fire];
+}
+
+
+-(void)previousCharacter:(id)sender
+{
+    if (self.previousButton.state == UIControlStateNormal){
+        [self.previousButtonTimer invalidate];
+        self.previousButtonTimer = nil;
+    }
+    else {
+        UITextRange *selectedRange = [self.textView selectedTextRange];
+        
+        if (self.textView.selectedRange.location > 0)
+        {
+            UITextPosition *newPosition = [self.textView positionFromPosition:selectedRange.start offset:-1];
+            UITextRange *newRange = [self.textView textRangeFromPosition:newPosition toPosition:newPosition];
+            [self.textView setSelectedTextRange:newRange];
+        }
+        [self.textView scrollToVisibleCaretAnimated];
+    }
+}
+
+
+- (IBAction)nextButtonTapped:(id)sender
+{
+    self.nextButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(nextCharacter:) userInfo:nil repeats:YES];
+    [self.nextButtonTimer fire];
+}
+
+
+-(void)nextCharacter:(id)sender
+{
+    if (self.nextButton.state == UIControlStateNormal){
+        [self.nextButtonTimer invalidate];
+        self.nextButtonTimer = nil;
+    }
+    else {
+        UITextRange *selectedRange = [self.textView selectedTextRange];
+        
+        if (self.textView.selectedRange.location < self.textView.text.length)
+        {
+            UITextPosition *newPosition = [self.textView positionFromPosition:selectedRange.start offset:1];
+            UITextRange *newRange = [self.textView textRangeFromPosition:newPosition toPosition:newPosition];
+            [self.textView setSelectedTextRange:newRange];
+        }
+        [self.textView scrollToVisibleCaretAnimated];
     }
 }
 
