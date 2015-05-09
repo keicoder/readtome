@@ -17,32 +17,32 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>1.1.2</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>NSExtensionActivationRule</key>
 			<dict>
-				<key>NSExtensionActivationSupportsAttachmentsWithMinCount</key>
-				<integer>0</integer>
 				<key>NSExtensionActivationSupportsAttachmentsWithMaxCount</key>
+				<integer>0</integer>
+				<key>NSExtensionActivationSupportsAttachmentsWithMinCount</key>
 				<integer>0</integer>
 				<key>NSExtensionActivationSupportsFileWithMaxCount</key>
 				<integer>0</integer>
+				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
+				<integer>0</integer>
 				<key>NSExtensionActivationSupportsMovieWithMaxCount</key>
-				<integer>0</integer>
-				<key>NSExtensionActivationSupportsWebPageWithMaxCount</key>
-				<integer>0</integer>
-				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
 				<integer>0</integer>
 				<key>NSExtensionActivationSupportsText</key>
 				<true/>
-				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
+				<key>NSExtensionActivationSupportsWebPageWithMaxCount</key>
+				<integer>0</integer>
+				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
 				<integer>0</integer>
 			</dict>
 		</dict>
