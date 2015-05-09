@@ -15,6 +15,7 @@
 		32281F771AD8B0AB00584E4A /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32281F761AD8B0AB00584E4A /* ShareViewController.m */; };
 		32281F791AD8B0AB00584E4A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32281F781AD8B0AB00584E4A /* MainInterface.storyboard */; };
 		32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3228ACA91AFDB5DF0024F897 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3228ACA81AFDB5DF0024F897 /* ContainerViewController.m */; };
 		323937811AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
 		323937821AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
 		323937831AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
@@ -167,6 +168,8 @@
 		32281F801AD8BC2F00584E4A /* ReadToMe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMe.entitlements; sourceTree = "<group>"; };
 		32281F811AD8BCB900584E4A /* ReadToMeAction.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeAction.entitlements; sourceTree = "<group>"; };
 		32281F821AD8BCEE00584E4A /* ReadToMeShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeShareExtension.entitlements; sourceTree = "<group>"; };
+		3228ACA71AFDB5CF0024F897 /* ContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainerViewController.h; sourceTree = "<group>"; };
+		3228ACA81AFDB5DF0024F897 /* ContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContainerViewController.m; sourceTree = "<group>"; };
 		323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BHTKeyboardAnimationBlocks; sourceTree = "<group>"; };
 		323C1CAE1AF4746A00EB8689 /* ReadToMeActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReadToMeActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		323C1CB11AF4746A00EB8689 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -400,6 +403,8 @@
 			isa = PBXGroup;
 			children = (
 				323C1CBE1AF4778100EB8689 /* ReadToMeActionExtension.entitlements */,
+				3228ACA71AFDB5CF0024F897 /* ContainerViewController.h */,
+				3228ACA81AFDB5DF0024F897 /* ContainerViewController.m */,
 				323C1CB21AF4746A00EB8689 /* ActionViewController.h */,
 				323C1CB31AF4746A00EB8689 /* ActionViewController.m */,
 				323C1CB51AF4746A00EB8689 /* MainInterface.storyboard */,
@@ -1009,6 +1014,7 @@
 			files = (
 				325592A71AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */,
 				323C1CB41AF4746A00EB8689 /* ActionViewController.m in Sources */,
+				3228ACA91AFDB5DF0024F897 /* ContainerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
