@@ -15,16 +15,11 @@
 		32281F771AD8B0AB00584E4A /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32281F761AD8B0AB00584E4A /* ShareViewController.m */; };
 		32281F791AD8B0AB00584E4A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32281F781AD8B0AB00584E4A /* MainInterface.storyboard */; };
 		32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		3228ACA91AFDB5DF0024F897 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3228ACA81AFDB5DF0024F897 /* ContainerViewController.m */; };
 		323937811AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
 		323937821AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
 		323937831AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
 		323937841AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
-		323C1CB41AF4746A00EB8689 /* ActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 323C1CB31AF4746A00EB8689 /* ActionViewController.m */; };
-		323C1CB61AF4746A00EB8689 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 323C1CB51AF4746A00EB8689 /* MainInterface.storyboard */; };
-		323C1CB91AF4746A00EB8689 /* ReadToMeActionExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 323C1CAE1AF4746A00EB8689 /* ReadToMeActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		325592A61AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325592A51AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m */; };
-		325592A71AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325592A51AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m */; };
 		32D651701ADA050200B16DCE /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D6516F1ADA050200B16DCE /* NotificationCenter.framework */; };
 		32D651761ADA050200B16DCE /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D651751ADA050200B16DCE /* TodayViewController.m */; };
 		32D651781ADA050200B16DCE /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32D651771ADA050200B16DCE /* MainInterface.storyboard */; };
@@ -103,13 +98,6 @@
 			remoteGlobalIDString = 32281F701AD8B0AB00584E4A;
 			remoteInfo = ReadToMeShareExtension;
 		};
-		323C1CB71AF4746A00EB8689 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 323C1CAD1AF4746A00EB8689;
-			remoteInfo = ReadToMeActionExtension;
-		};
 		32D651791ADA050200B16DCE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C12F076C1ABF88FD0039EA89 /* Project object */;
@@ -145,7 +133,6 @@
 			dstSubfolderSpec = 13;
 			files = (
 				32D6517B1ADA050200B16DCE /* ReadToMeTodayExtension.appex in Embed App Extensions */,
-				323C1CB91AF4746A00EB8689 /* ReadToMeActionExtension.appex in Embed App Extensions */,
 				32281F7C1AD8B0AB00584E4A /* ReadToMeShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -171,7 +158,6 @@
 		3228ACA71AFDB5CF0024F897 /* ContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainerViewController.h; sourceTree = "<group>"; };
 		3228ACA81AFDB5DF0024F897 /* ContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContainerViewController.m; sourceTree = "<group>"; };
 		323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BHTKeyboardAnimationBlocks; sourceTree = "<group>"; };
-		323C1CAE1AF4746A00EB8689 /* ReadToMeActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReadToMeActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		323C1CB11AF4746A00EB8689 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		323C1CB21AF4746A00EB8689 /* ActionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionViewController.h; sourceTree = "<group>"; };
 		323C1CB31AF4746A00EB8689 /* ActionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionViewController.m; sourceTree = "<group>"; };
@@ -306,13 +292,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		32281F6E1AD8B0AB00584E4A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		323C1CAB1AF4746A00EB8689 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -565,7 +544,6 @@
 				32281F571AD8AA7600584E4A /* ReadToMeKitTests.xctest */,
 				32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */,
 				32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */,
-				323C1CAE1AF4746A00EB8689 /* ReadToMeActionExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -760,23 +738,6 @@
 			productReference = 32281F711AD8B0AB00584E4A /* ReadToMeShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		323C1CAD1AF4746A00EB8689 /* ReadToMeActionExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 323C1CBD1AF4746A00EB8689 /* Build configuration list for PBXNativeTarget "ReadToMeActionExtension" */;
-			buildPhases = (
-				323C1CAA1AF4746A00EB8689 /* Sources */,
-				323C1CAB1AF4746A00EB8689 /* Frameworks */,
-				323C1CAC1AF4746A00EB8689 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ReadToMeActionExtension;
-			productName = ReadToMeActionExtension;
-			productReference = 323C1CAE1AF4746A00EB8689 /* ReadToMeActionExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		32D6516C1ADA050100B16DCE /* ReadToMeTodayExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 32D6517E1ADA050200B16DCE /* Build configuration list for PBXNativeTarget "ReadToMeTodayExtension" */;
@@ -810,7 +771,6 @@
 				32281F631AD8AA7600584E4A /* PBXTargetDependency */,
 				32281F7B1AD8B0AB00584E4A /* PBXTargetDependency */,
 				32D6517A1ADA050200B16DCE /* PBXTargetDependency */,
-				323C1CB81AF4746A00EB8689 /* PBXTargetDependency */,
 			);
 			name = ReadToMe;
 			productName = ReadToMe;
@@ -854,15 +814,6 @@
 					};
 					32281F701AD8B0AB00584E4A = {
 						CreatedOnToolsVersion = 6.3;
-						DevelopmentTeam = 9DHQ6GLLC9;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-						};
-					};
-					323C1CAD1AF4746A00EB8689 = {
-						CreatedOnToolsVersion = 6.3.1;
 						DevelopmentTeam = 9DHQ6GLLC9;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -914,7 +865,6 @@
 				32281F561AD8AA7600584E4A /* ReadToMeKitTests */,
 				32281F701AD8B0AB00584E4A /* ReadToMeShareExtension */,
 				32D6516C1ADA050100B16DCE /* ReadToMeTodayExtension */,
-				323C1CAD1AF4746A00EB8689 /* ReadToMeActionExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -941,14 +891,6 @@
 			files = (
 				32281F791AD8B0AB00584E4A /* MainInterface.storyboard in Resources */,
 				323937831AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		323C1CAC1AF4746A00EB8689 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				323C1CB61AF4746A00EB8689 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1005,16 +947,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				32281F771AD8B0AB00584E4A /* ShareViewController.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		323C1CAA1AF4746A00EB8689 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				325592A71AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */,
-				323C1CB41AF4746A00EB8689 /* ActionViewController.m in Sources */,
-				3228ACA91AFDB5DF0024F897 /* ContainerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1100,11 +1032,6 @@
 			isa = PBXTargetDependency;
 			target = 32281F701AD8B0AB00584E4A /* ReadToMeShareExtension */;
 			targetProxy = 32281F7A1AD8B0AB00584E4A /* PBXContainerItemProxy */;
-		};
-		323C1CB81AF4746A00EB8689 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 323C1CAD1AF4746A00EB8689 /* ReadToMeActionExtension */;
-			targetProxy = 323C1CB71AF4746A00EB8689 /* PBXContainerItemProxy */;
 		};
 		32D6517A1ADA050200B16DCE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1279,61 +1206,6 @@
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
-		};
-		323C1CBA1AF4746A00EB8689 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = ReadToMeActionExtension/ReadToMeActionExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = ReadToMeActionExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		323C1CBB1AF4746A00EB8689 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = ReadToMeActionExtension/ReadToMeActionExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = ReadToMeActionExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		323C1CBC1AF4746A00EB8689 /* Distribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = ReadToMeActionExtension/ReadToMeActionExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = ReadToMeActionExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Distribution;
 		};
 		3276C5D51ADFE87000AFFDC6 /* Distribution */ = {
 			isa = XCBuildConfiguration;
@@ -1718,16 +1590,6 @@
 				32281F7E1AD8B0AB00584E4A /* Debug */,
 				32281F7F1AD8B0AB00584E4A /* Release */,
 				3276C5DA1ADFE87000AFFDC6 /* Distribution */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		323C1CBD1AF4746A00EB8689 /* Build configuration list for PBXNativeTarget "ReadToMeActionExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				323C1CBA1AF4746A00EB8689 /* Debug */,
-				323C1CBB1AF4746A00EB8689 /* Release */,
-				323C1CBC1AF4746A00EB8689 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

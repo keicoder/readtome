@@ -144,6 +144,14 @@
     [self stopSpeaking];
     [self checkHasLaunchedOnce];
     [self addObserver];
+    
+    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    
+    if (_isTypeSelecting == YES) {
+        [self changeSelectionButtonColor:YES];
+    } else {
+        [self changeSelectionButtonColor:NO];
+    }
 }
 
 
@@ -946,12 +954,6 @@
     self.rateSlider.value = self.rate;
     
     _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    
-    if (_isTypeSelecting == YES) {
-        [self changeSelectionButtonColor:YES];
-    } else {
-        [self changeSelectionButtonColor:NO];
-    }
     
     _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
 }

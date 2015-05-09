@@ -9,11 +9,6 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>ReadToMeActionExtension.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>4</integer>
-		</dict>
 		<key>ReadToMeKit.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
