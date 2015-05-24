@@ -36,6 +36,10 @@
 #define kLastViewedDocument                     @"kLastViewedDocument"
 #define kSavedDocument                          @"kSavedDocument"
 
+#define kBlankText  @""
+#define kSelectedDocumentIndex                          @"kSelectedDocumentIndex"
+#define kSelectedDocumentIndexPath                      @"kSelectedDocumentIndexPath"
+
 
 @import AVFoundation;
 #import <CoreData/CoreData.h>
@@ -47,9 +51,10 @@
 #import "SettingsViewController.h"
 #import "LanguagePickerViewController.h"
 #import "ListViewController.h"
+#import "NSUserDefaults+Extension.h"
 
 
-@interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate, UITextViewDelegate>
+@interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
@@ -72,10 +77,11 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *menuViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *saveAlertViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyboardAccessoryViewHeightConstraint;
-
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *progressInfoViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *floatingBackgroundViewWidthConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *floatingViewWidthConstraint;
 
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIButton *listButton;
@@ -116,6 +122,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *equalizerButton;
 @property (weak, nonatomic) IBOutlet UIButton *settingsButton;
 
+@property (weak, nonatomic) IBOutlet UIView *floatingBackgroundView;
+@property (weak, nonatomic) IBOutlet UIView *floatingView;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIButton *addButton;
+@property (weak, nonatomic) IBOutlet UIButton *closeButton;
+
 @end
 
 
@@ -128,6 +140,8 @@
     NSString *_lastViewedDocument;
     NSString *_subString;
     float _speechLocationPercentValueInWholeTexts;
+    BOOL _floatingViewExpanded;
+    NSString *_originalDocument;
 }
 
 
@@ -145,13 +159,19 @@
     [self checkHasLaunchedOnce];
     [self addObserver];
     
+    [self addTapGesture];
+    [self addSwipeGesture];
+    
+    _floatingViewExpanded = YES;
+    self.textView.editable = NO;
+    
     _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
     
-    if (_isTypeSelecting == YES) {
-        [self changeSelectionButtonColor:YES];
-    } else {
-        [self changeSelectionButtonColor:NO];
-    }
+//    if (_isTypeSelecting == YES) {
+//        [self changeSelectionButtonColor:YES];
+//    } else {
+//        [self changeSelectionButtonColor:NO];
+//    }
 }
 
 
@@ -164,6 +184,28 @@
     [self setPasteBoardString];
     [self retrieveDataForSpeech];
     [self checkToPasteText];
+    
+    [self executePerformFetch];
+    [self.tableView reloadData];
+    NSLog(@"viewWillAppear > [self.tableView reloadData]");
+}
+
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    [super viewDidAppear:animated];
+    [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    [super viewWillDisappear:animated];
+    [self checkWhetherSavingDocumentOrNot];
 }
 
 
@@ -421,22 +463,108 @@
 
 - (IBAction)listButtonTapped:(id)sender
 {
-    [self pauseSpeaking];
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-	if (_equalizerViewExpanded == YES) {
+    _floatingViewExpanded = !_floatingViewExpanded;
+    
+    CGFloat duration = 0.25f;
+    
+    if (_floatingViewExpanded) {
         
-        [self adjustEqualizerViewHeight:0.0];
-		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.35];
-	} else {
-		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.0];
-	}
+        [self.textView resignFirstResponder];
+        
+        CGFloat floatingViewWidth = CGRectGetWidth(self.view.bounds) * 0.7;
+        self.floatingViewWidthConstraint.constant = floatingViewWidth;
+        
+        [UIView animateWithDuration:duration animations:^{
+            self.addButton.alpha = 1.0;
+            self.closeButton.alpha = 1.0;
+            [self.view layoutIfNeeded];
+            
+        }completion:^(BOOL finished) {
+            CGFloat floatingBackgroundViewWidth = CGRectGetWidth(self.view.bounds);
+            self.floatingBackgroundViewWidthConstraint.constant = floatingBackgroundViewWidth;
+            
+            [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
+        }];
+        
+        [self checkWhetherSavingDocumentOrNot];
+        [self executePerformFetch];
+        [self.tableView reloadData];
+        NSLog(@"_floatingViewExpanded > [self.tableView reloadData]");
+        
+    } else {
+        
+        [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.25];
+        
+        self.floatingViewWidthConstraint.constant = 0.0;
+        
+        [UIView animateWithDuration:duration animations:^{
+            self.addButton.alpha = 0.0;
+            self.closeButton.alpha = 0.0;
+            [self.view layoutIfNeeded];
+            
+        }completion:^(BOOL finished) {
+            self.floatingBackgroundViewWidthConstraint.constant = 0.0;
+        }];
+    }
 }
 
 
-- (void)showListView:(id)sender
+- (void)addShadowEffectToTheView:(UIView *)view withOpacity:(float)opacity andRadius:(float)radius afterDelay:(CGFloat)delay andDuration:(CGFloat)duration
 {
-	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
-	[self presentViewController:controller animated:YES completion:^{ }];
+    [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        view.layer.shadowColor = [UIColor blackColor].CGColor;
+        view.layer.shadowOpacity = opacity;
+        view.layer.shadowOffset = CGSizeMake(0, 0);
+        view.layer.shadowRadius = radius;
+        view.layer.masksToBounds = NO;
+        view.layer.shadowPath =[UIBezierPath bezierPathWithRect:view.layer.bounds].CGPath;
+    } completion:^(BOOL finished) { }];
+}
+
+
+//- (IBAction)listButtonTapped:(id)sender
+//{
+//    [self pauseSpeaking];
+//    
+//	if (_equalizerViewExpanded == YES) {
+//        
+//        [self adjustEqualizerViewHeight:0.0];
+//		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.35];
+//	} else {
+//		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.0];
+//	}
+//}
+
+
+//- (void)showListView:(id)sender
+//{
+//	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
+//	[self presentViewController:controller animated:YES completion:^{ }];
+//}
+
+
+#pragma mark 생성 버튼
+
+- (IBAction)addButtonTapped:(id)sender
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    self.textView.editable = YES;
+    
+    if (_floatingViewExpanded) {
+        [self listButtonTapped:self];
+    }
+    
+    self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"Document" inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
+    
+    self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
+    self.currentDocument.document = kBlankText;
+    self.textView.text = self.currentDocument.document;
+    _originalDocument = self.currentDocument.document;
+    
+    [self.textView becomeFirstResponder];
 }
 
 
@@ -444,6 +572,8 @@
 {
     [self stopSpeaking];
 }
+
+
 
 
 - (IBAction)actionButtonTapped:(id)sender
@@ -654,6 +784,70 @@
 }
 
 
+#pragma mark - Save Data
+#pragma mark Saving
+
+- (void)checkWhetherSavingDocumentOrNot
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if ([self.currentDocument.isNewDocument boolValue] == YES) {
+        
+        if ([_originalDocument isEqualToString:self.textView.text]) {
+            NSLog(@"It's new document but no texts, so nothing to save");
+            
+        } else {
+            NSLog(@"It's new document and have texts, so save document");
+            [self saveDocument];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            [self saveIndexPath:indexPath];
+        }
+        
+    } else {
+        
+        if ([_originalDocument isEqualToString:self.textView.text]) {
+            NSLog(@"Can't find any changing in document, so nothing updated");
+            
+        } else {
+            NSLog(@"Document updated, so save document");
+            [self saveDocument];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            [self saveIndexPath:indexPath];
+        }
+    }
+}
+
+
+- (void)saveDocument
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if (self.currentDocument.isNewDocument) {
+        self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
+    }
+    
+    self.currentDocument.document = self.textView.text;
+    _originalDocument = self.currentDocument.document;
+    
+    NSDate *now = [NSDate date];
+    if (self.currentDocument.createdDate == nil) {
+        self.currentDocument.createdDate = now;
+    }
+    self.currentDocument.modifiedDate = now;
+    
+    [[DataManager sharedDataManager].managedObjectContext performBlock:^{
+        
+        NSError *error = nil;
+        if ([[DataManager sharedDataManager].managedObjectContext save:&error]) {
+            NSLog(@"Saved");
+            
+        } else {
+            NSLog(@"Error saving context: %@", error);
+        }
+    }];
+}
+
+
 #pragma mark - Save Current Documents For Speech
 
 #pragma mark Save Document
@@ -845,44 +1039,110 @@
 }
 
 
-#pragma mark - Fetched Results Controller
+#pragma mark 유저 디폴트 > 현재 인덱스패스 저장
 
-- (NSFetchedResultsController *)fetchedResultsController
+- (void)saveIndexPath:(NSIndexPath *)indexPath
 {
-	if (_fetchedResultsController != nil) {
-		return _fetchedResultsController;
-	}
-	else if (_fetchedResultsController == nil)
-	{
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DocumentsForSpeech"];
-		
-		NSSortDescriptor *createdDateSort = [[NSSortDescriptor alloc] initWithKey:@"modifiedDate" ascending:NO];
-		[fetchRequest setSortDescriptors: @[createdDateSort]];
-		
-		_fetchedResultsController = [[NSFetchedResultsController alloc]
-									 initWithFetchRequest:fetchRequest
-									 managedObjectContext:[DataManager sharedDataManager].managedObjectContext
-									 sectionNameKeyPath:nil cacheName:nil];
-		[fetchRequest setFetchBatchSize:20];
-		_fetchedResultsController.delegate = self;
-	}
-	return _fetchedResultsController;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setIndexPath:indexPath forKey:kSelectedDocumentIndexPath];
+    [defaults setInteger:indexPath.row forKey:kSelectedDocumentIndex];
+    [defaults synchronize];
 }
 
 
+#pragma mark - Fetched Results Controller
+
 - (void)executePerformFetch
 {
-	NSError *error = nil;
-	
-	if (![[self fetchedResultsController] performFetch:&error])
-	{
-		NSLog(@"Unable to perform fetch.");
-		NSLog(@"%@, %@", error, error.localizedDescription);
-		
-	} else {
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        NSLog (@"executePerformFetch > error occurred");
+        NSLog(@"%@, %@", error, error.localizedDescription);
+        //abort();
+    }
+}
+
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
         
-		NSLog (@"[executePerformFetch > self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
-	}
+    } else if (_fetchedResultsController == nil) {
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DocumentsForSpeech"];
+        NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"modifiedDate" ascending:NO];
+        [fetchRequest setSortDescriptors: @[sort]];
+        
+        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[DataManager sharedDataManager].managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
+        [fetchRequest setFetchBatchSize:20];
+        _fetchedResultsController.delegate = self;
+    }
+    
+    return _fetchedResultsController;
+}
+
+
+#pragma mark NSFetched Results Controller Delegate (수정사항 반영)
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView beginUpdates];
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            break;
+    }
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+{
+    UITableView *tableView = self.tableView;
+    switch(type)
+    {
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [tableView reloadData];
+            [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+    }
+}
+
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView endUpdates];
 }
 
 
@@ -1016,6 +1276,9 @@
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:self.view.window];
     [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window];
     
+    //Device Orientation
+    [center addObserver:self selector:@selector(deviceOrientationChanged:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
+    
     //Application Status
     [center addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     [center addObserver:self selector:@selector(applicationDidBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -1101,6 +1364,7 @@
     [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.view layoutIfNeeded];
         self.keyboardDownButton.alpha = 1.0;
+        self.listButton.alpha = 0.0;
     } completion:^(BOOL finished) { }];
 }
 
@@ -1113,11 +1377,38 @@
     [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.view layoutIfNeeded];
         self.keyboardDownButton.alpha = 0.0;
+        self.listButton.alpha = 1.0;
     } completion:nil];
 }
 
 
-#pragma mark - UITextView delegate method
+#pragma mark Device Orientation Changed
+
+- (void)deviceOrientationChanged:(NSNotification *)notification
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if (_floatingViewExpanded) {
+        
+        [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.0];
+        
+        CGFloat floatingViewWidth = CGRectGetWidth(self.view.bounds) * 0.7;
+        self.floatingViewWidthConstraint.constant = floatingViewWidth;
+        
+        CGFloat duration = 0.25;
+        [UIView animateWithDuration:duration animations:^{
+            [self.view layoutIfNeeded];
+        }completion:^(BOOL finished) {
+            CGFloat floatingBackgroundViewWidth = CGRectGetWidth(self.view.bounds);
+            self.floatingBackgroundViewWidthConstraint.constant = floatingBackgroundViewWidth;
+            
+            [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.0];
+        }];
+    }
+}
+
+
+#pragma mark UITextView delegate method
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
@@ -1171,6 +1462,8 @@
 - (void)applicationDidEnterBackground
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    NSLog(@"applicationDidEnterBackground > checkWhetherSavingDocumentOrNot");
+    [self checkWhetherSavingDocumentOrNot];
 }
 
 
@@ -1184,12 +1477,16 @@
 - (void)applicationDidReceiveMemoryWarning
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    NSLog(@"applicationDidReceiveMemoryWarning > checkWhetherSavingDocumentOrNot");
+    [self checkWhetherSavingDocumentOrNot];
 }
 
 
 - (void)applicationWillTerminate
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    NSLog(@"applicationWillTerminate > checkWhetherSavingDocumentOrNot");
+    [self checkWhetherSavingDocumentOrNot];
 }
 
 
@@ -1465,6 +1762,158 @@
 }
 
 
+#pragma mark - Table View
+#pragma mark Data Source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    NSLog (@"numberOfSectionsInTableView: %lu\n", (unsigned long)[[self.fetchedResultsController sections] count]);
+    return [[self.fetchedResultsController sections] count];
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    NSLog (@"numberOfRowsInSection: %lu\n", (unsigned long)[[self.fetchedResultsController sections][section] numberOfObjects]);
+    return [[self.fetchedResultsController sections][section] numberOfObjects];
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+    DocumentsForSpeech *document = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = document.document;
+    
+    return cell;
+}
+
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 50.0;
+}
+
+
+#pragma mark Select
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    self.textView.editable = YES;
+    
+    self.currentDocument = (DocumentsForSpeech *)[self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSLog (@"self.currentDocument: %@\n", self.currentDocument);
+    
+    self.textView.text = self.currentDocument.document;
+    _originalDocument = self.currentDocument.document;
+    
+    [self saveIndexPath:indexPath];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self listButtonTapped:self];
+}
+
+
+#pragma mark Editing
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+        
+        [self deleteCoreDataNoteObject:indexPath];
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSInteger index = [defaults integerForKey:kSelectedDocumentIndex];
+        
+        NSLog (@"kSelectedDocumentIndex: %ld\n", (long)index);
+        NSLog (@"indexPath.row: %ld\n", (long)indexPath.row);
+        
+        if (index == indexPath.row) {
+            
+            NSLog(@"self.currentDocument was deleted");
+            self.currentDocument = nil;
+            self.textView.text = kBlankText;
+            self.textView.editable = NO;
+        }
+    }
+}
+
+
+- (void)deleteCoreDataNoteObject:(NSIndexPath *)indexPath
+{
+    [[DataManager sharedDataManager].managedObjectContext deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+    NSError *error = nil;
+    [[DataManager sharedDataManager].managedObjectContext save:&error];
+}
+
+
+#pragma mark Moving
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return NO;
+}
+
+
+#pragma mark - Gesture
+#pragma mark Tap Gesture
+
+- (void)addTapGesture
+{
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(listButtonTapped:)];
+    gestureRecognizer.cancelsTouchesInView = NO;
+    gestureRecognizer.delegate = self;
+    
+    [self.floatingBackgroundView addGestureRecognizer:gestureRecognizer];
+}
+
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    return (touch.view == self.floatingBackgroundView);
+}
+
+#pragma mark Swipe Gesture
+
+- (void)addSwipeGesture
+{
+    UISwipeGestureRecognizer *right = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipes:)];
+    right.direction = UISwipeGestureRecognizerDirectionRight;
+    right.numberOfTouchesRequired = 1;
+    [self.textView addGestureRecognizer:right];
+    
+    UISwipeGestureRecognizer *left = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipes:)];
+    left.direction = UISwipeGestureRecognizerDirectionLeft;
+    left.numberOfTouchesRequired = 1;
+    [self.floatingBackgroundView addGestureRecognizer:left];
+}
+
+
+- (void)handleSwipes:(UISwipeGestureRecognizer *)swipeGesture
+{
+    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionLeft){
+        _floatingViewExpanded = YES;
+        [self listButtonTapped:swipeGesture];
+    }
+    
+    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionRight){
+        _floatingViewExpanded = NO;
+        [self listButtonTapped:swipeGesture];
+    }
+}
+
+
 #pragma mark - Configure UI
 
 - (void)configureUI
@@ -1476,6 +1925,8 @@
     self.bottomView.backgroundColor = [UIColor colorWithRed:0.157 green:0.29 blue:0.42 alpha:1];
     self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    self.floatingView.backgroundColor = self.menuView.backgroundColor;
+    self.tableView.backgroundColor = [UIColor whiteColor];
     
     //키보드 액세서리 뷰
     self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.988 green:0.831 blue:0.345 alpha:1]; //[UIColor colorWithRed:0.71 green:0.714 blue:0.722 alpha:1];
@@ -1492,12 +1943,12 @@
     self.rateSlider.alpha = 0.0;
     
     //Button
-    self.listButton.enabled = NO;
-    self.listButton.alpha = 0.0;
+    self.listButton.enabled = YES;
+    self.listButton.alpha = 1.0;
     self.archiveButton.enabled = NO;
     self.archiveButton.alpha = 0.0;
-    self.logoButton.enabled = YES;
-    self.logoButton.alpha = 1.0;
+    self.logoButton.enabled = NO;
+    self.logoButton.alpha = 0.0;
     self.actionButton.enabled = NO;
     self.actionButton.alpha = 0.0;
     self.resetButton.alpha = 0.0;

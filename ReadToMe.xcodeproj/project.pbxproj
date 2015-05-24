@@ -19,6 +19,7 @@
 		323937821AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
 		323937831AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
 		323937841AEE6F0300537FD6 /* BHTKeyboardAnimationBlocks in Resources */ = {isa = PBXBuildFile; fileRef = 323937801AEE6F0200537FD6 /* BHTKeyboardAnimationBlocks */; };
+		32554DAA1B117D8E009ED509 /* NSUserDefaults+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 32554DA91B117D8E009ED509 /* NSUserDefaults+Extension.m */; };
 		325592A61AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325592A51AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m */; };
 		32D651701ADA050200B16DCE /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D6516F1ADA050200B16DCE /* NotificationCenter.framework */; };
 		32D651761ADA050200B16DCE /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D651751ADA050200B16DCE /* TodayViewController.m */; };
@@ -163,6 +164,8 @@
 		323C1CB31AF4746A00EB8689 /* ActionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionViewController.m; sourceTree = "<group>"; };
 		323C1CB51AF4746A00EB8689 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		323C1CBE1AF4778100EB8689 /* ReadToMeActionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeActionExtension.entitlements; sourceTree = "<group>"; };
+		32554DA81B117D8E009ED509 /* NSUserDefaults+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Extension.h"; sourceTree = "<group>"; };
+		32554DA91B117D8E009ED509 /* NSUserDefaults+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Extension.m"; sourceTree = "<group>"; };
 		325592A41AFCCA1B00EB0B2F /* NBTouchAndHoldButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NBTouchAndHoldButton.h; sourceTree = "<group>"; };
 		325592A51AFCCA1B00EB0B2F /* NBTouchAndHoldButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NBTouchAndHoldButton.m; sourceTree = "<group>"; };
 		32D6516D1ADA050100B16DCE /* ReadToMeTodayExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReadToMeTodayExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -400,6 +403,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		32554DA41B117132009ED509 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				32554DA81B117D8E009ED509 /* NSUserDefaults+Extension.h */,
+				32554DA91B117D8E009ED509 /* NSUserDefaults+Extension.m */,
+				C110F2CA1AC233DE00B4E355 /* UIImage+ChangeColor.h */,
+				C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		32D6516E1ADA050200B16DCE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -510,15 +524,6 @@
 			name = popView;
 			sourceTree = "<group>";
 		};
-		C110F2C91AC233BC00B4E355 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				C110F2CA1AC233DE00B4E355 /* UIImage+ChangeColor.h */,
-				C110F2CB1AC233DE00B4E355 /* UIImage+ChangeColor.m */,
-			);
-			name = Categories;
-			sourceTree = "<group>";
-		};
 		C12F076B1ABF88FD0039EA89 = {
 			isa = PBXGroup;
 			children = (
@@ -556,8 +561,8 @@
 				C1FB14DD1AC29B2200F24030 /* Data */,
 				C18978F11ACCC27400BFFA61 /* Sound */,
 				C1FB14DC1AC29B0B00F24030 /* UI */,
+				32554DA41B117132009ED509 /* Categories */,
 				C1FB14DB1AC29AF300F24030 /* Controllers */,
-				C110F2C91AC233BC00B4E355 /* Categories */,
 				C110F2C01AC12F8000B4E355 /* popView */,
 				C110F25F1AC12F4000B4E355 /* pop */,
 				C12F07771ABF88FD0039EA89 /* Supporting Files */,
@@ -966,6 +971,7 @@
 				C110F2B01AC12F4000B4E355 /* POPDecayAnimation.mm in Sources */,
 				C110F2CC1AC233DE00B4E355 /* UIImage+ChangeColor.m in Sources */,
 				C110F2B61AC12F4000B4E355 /* POPMath.mm in Sources */,
+				32554DAA1B117D8E009ED509 /* NSUserDefaults+Extension.m in Sources */,
 				32D651CE1ADB4D8300B16DCE /* KeiTextView.m in Sources */,
 				C1FB14E41AC2AFD800F24030 /* PopAnimationImageView.m in Sources */,
 				C1931EA71ACE490E004DF586 /* ListTableViewCell.m in Sources */,
