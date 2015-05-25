@@ -21,11 +21,8 @@
 @property (nonatomic, retain) NSString * monthAndYearString;
 @property (nonatomic, retain) NSNumber * pitch;
 @property (nonatomic, retain) NSNumber * rate;
-@property (nonatomic, retain) NSString * section;
 @property (nonatomic, retain) NSNumber * isNewDocument;
-@property (nonatomic, retain) NSString * savedDocument;
 @property (nonatomic, retain) NSString * documentTitle;
-@property (nonatomic, retain) NSString * uniqueIdString;
 @property (nonatomic, retain) NSNumber * volume;
 @property (nonatomic, retain) NSString * yearString;
 @property (nonatomic, retain) NSString * document;

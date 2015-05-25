@@ -36,9 +36,11 @@
 #define kLastViewedDocument                     @"kLastViewedDocument"
 #define kSavedDocument                          @"kSavedDocument"
 
+#define kNothingToSaveColor                     [UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1]
+
 #define kBlankText  @""
-#define kSelectedDocumentIndex                          @"kSelectedDocumentIndex"
-#define kSelectedDocumentIndexPath                      @"kSelectedDocumentIndexPath"
+#define kSelectedDocumentIndex                  @"kSelectedDocumentIndex"
+#define kSelectedDocumentIndexPath              @"kSelectedDocumentIndexPath"
 
 
 @import AVFoundation;
@@ -52,6 +54,7 @@
 #import "LanguagePickerViewController.h"
 #import "ListViewController.h"
 #import "NSUserDefaults+Extension.h"
+#import "ListTableViewCell.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
@@ -141,7 +144,6 @@
     NSString *_subString;
     float _speechLocationPercentValueInWholeTexts;
     BOOL _floatingViewExpanded;
-    NSString *_originalDocument;
 }
 
 
@@ -158,20 +160,12 @@
     [self stopSpeaking];
     [self checkHasLaunchedOnce];
     [self addObserver];
-    
     [self addTapGesture];
     [self addSwipeGesture];
     
     _floatingViewExpanded = YES;
     self.textView.editable = NO;
-    
     _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    
-//    if (_isTypeSelecting == YES) {
-//        [self changeSelectionButtonColor:YES];
-//    } else {
-//        [self changeSelectionButtonColor:NO];
-//    }
 }
 
 
@@ -181,10 +175,7 @@
     
 	[super viewWillAppear:animated];
     
-    [self setPasteBoardString];
     [self retrieveDataForSpeech];
-    [self checkToPasteText];
-    
     [self executePerformFetch];
     [self.tableView reloadData];
     NSLog(@"viewWillAppear > [self.tableView reloadData]");
@@ -232,65 +223,6 @@
     self.textView.delegate = self;
     
     [self hideSlideViewAndEqualizerViewWithNoAnimation];
-}
-
-
-- (NSString *)setPasteBoardString
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (!self.pasteBoard.string) {
-        
-        self.pasteBoard.string = @"Copy whatever you want to read, ReadToMe will read aloud for you.\n\nYou can play, pause or replay whenever you want.\n\nEnjoy reading!";
-    }
-    
-    return self.pasteBoard.string;
-}
-
-
-#pragma mark Paste Text
-
-- (void)checkToPasteText
-{
-    if (!self.sharedDefaults) {
-        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
-    }
-    
-    self.isSharedDocument = [self.sharedDefaults boolForKey:kIsSharedDocument];
-    self.isTodayDocument = [self.sharedDefaults boolForKey:kIsTodayDocument];
-    self.isSelectedDocumentFromListView = [self.sharedDefaults boolForKey:kIsSelectedDocumentFromListView];
-    self.isNewDocument = [self.sharedDefaults boolForKey:kIsNewDocument];
-    self.isSavedDocument = [self.sharedDefaults boolForKey:kIsSavedDocument];
-    
-    if (self.isSharedDocument) {
-        
-        NSLog(@"viewWillAppear > checkToPasteText > isSharedDocument > self.textView.text = kSharedDocument");
-        
-        self.textView.text = [self.sharedDefaults objectForKey:kSharedDocument];
-        [self saveToSharedDefaultsDocumentIsNew];
-        
-    } else if (self.isTodayDocument) {
-        
-        NSLog(@"viewWillAppear > checkToPasteText > isTodayDocument > self.textView.text = kTodayDocument");
-        
-        self.textView.text = [self.sharedDefaults objectForKey:kTodayDocument];
-        [self saveToSharedDefaultsDocumentIsNew];
-        
-    } else if (self.isSelectedDocumentFromListView) {
-        
-        NSLog(@"viewWillAppear > checkToPasteText > isSelectedDocumentFromListView > handle rest of logic by didReceivedSelectDocumentsForSpeechNotification");
-        
-        [self saveToSharedDefaultsDocumentDidAlreadySave];
-        
-    } else {
-        
-        NSLog(@"viewWillAppear > checkToPasteText > !isSharedDocument, !isTodayDocument, !isSelectedDocumentFromListView > self.textView.text = self.pasteBoard.string");
-        
-        self.textView.text = self.pasteBoard.string;
-        [self saveToSharedDefaultsDocumentIsNew];
-    }
-    
-    [self showLog];
 }
 
 
@@ -557,12 +489,12 @@
         [self listButtonTapped:self];
     }
     
-    self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"Document" inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
+    self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
     
     self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
     self.currentDocument.document = kBlankText;
     self.textView.text = self.currentDocument.document;
-    _originalDocument = self.currentDocument.document;
+    _lastViewedDocument = self.currentDocument.document;
     
     [self.textView becomeFirstResponder];
 }
@@ -784,6 +716,40 @@
 }
 
 
+#pragma mark - Check if there are new clipboard texts
+
+- (void)checkIfThereAreNewClipboardTexts
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if (![self.pasteBoard.string isEqualToString:_lastViewedDocument]) {
+        //Arert View
+        NSLog(@"checkIfThereAreNewClipboardTexts > Found new pasteboard string > Arert view displaying");
+    }
+}
+
+
+#pragma mark - State Restoration
+
+- (void)retrieveDataForSpeech
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    self.language = [self.defaults objectForKey:kLanguage];
+    self.volume = [self.defaults floatForKey:kVolumeValue];
+    self.pitch = [self.defaults floatForKey:kPitchValue];
+    self.rate = [self.defaults floatForKey:kRateValue];
+    
+    self.volumeSlider.value = self.volume;
+    self.pitchSlider.value = self.pitch;
+    self.rateSlider.value = self.rate;
+    
+    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    
+    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
+}
+
+
 #pragma mark - Save Data
 #pragma mark Saving
 
@@ -793,24 +759,26 @@
     
     if ([self.currentDocument.isNewDocument boolValue] == YES) {
         
-        if ([_originalDocument isEqualToString:self.textView.text]) {
+        if ([_lastViewedDocument isEqualToString:self.textView.text]) {
             NSLog(@"It's new document but no texts, so nothing to save");
+            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:kSlideViewHeight color:kNothingToSaveColor withSender:self.archiveButton];
             
         } else {
             NSLog(@"It's new document and have texts, so save document");
-            [self saveDocument];
+            [self saveSpeechDocumentAndAttributes];
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
             [self saveIndexPath:indexPath];
         }
         
     } else {
         
-        if ([_originalDocument isEqualToString:self.textView.text]) {
+        if ([_lastViewedDocument isEqualToString:self.textView.text]) {
             NSLog(@"Can't find any changing in document, so nothing updated");
+            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:kSlideViewHeight color:kNothingToSaveColor withSender:self.archiveButton];
             
         } else {
             NSLog(@"Document updated, so save document");
-            [self saveDocument];
+            [self saveSpeechDocumentAndAttributes];
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
             [self saveIndexPath:indexPath];
         }
@@ -818,29 +786,21 @@
 }
 
 
-- (void)saveDocument
+- (void)saveSpeechDocumentAndAttributes
 {
     if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    if (self.currentDocument.isNewDocument) {
-        self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
+    if ([self.textView isFirstResponder]) {
+        [self.textView resignFirstResponder];
     }
+    [self pauseSpeaking];
+    [self updateSpeechDocumentAndAttributes]; //다큐먼트 업데이트
     
-    self.currentDocument.document = self.textView.text;
-    _originalDocument = self.currentDocument.document;
-    
-    NSDate *now = [NSDate date];
-    if (self.currentDocument.createdDate == nil) {
-        self.currentDocument.createdDate = now;
-    }
-    self.currentDocument.modifiedDate = now;
-    
+    //Save
     [[DataManager sharedDataManager].managedObjectContext performBlock:^{
-        
         NSError *error = nil;
         if ([[DataManager sharedDataManager].managedObjectContext save:&error]) {
             NSLog(@"Saved");
-            
         } else {
             NSLog(@"Error saving context: %@", error);
         }
@@ -848,153 +808,57 @@
 }
 
 
-#pragma mark - Save Current Documents For Speech
-
-#pragma mark Save Document
-
-- (IBAction)saveCurrentDocument:(id)sender
+- (void)updateSpeechDocumentAndAttributes
 {
-    [self.textView resignFirstResponder];
-    [self pauseSpeaking];
-    
-    NSLog (@"self.currentDocument.savedDocument: %@\n", self.currentDocument.savedDocument);
-    
-    if (self.isNewDocument == YES) {
-        
-        if ([self.textView.text isEqualToString:_lastViewedDocument]) {
-            
-            NSLog(@"Nothing to Save");
-            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
-            
-        } else {
-            
-            if (self.managedObjectContext == nil) {
-                self.managedObjectContext = [DataManager sharedDataManager].managedObjectContext;
-            }
-            
-            self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:self.managedObjectContext];
-            
-            [self updateDocument];
-            
-            [self.managedObjectContext performBlock:^{
-                NSError *error = nil;
-                if ([self.managedObjectContext save:&error]) {
-                    
-                    NSLog (@"Save to coredata succeed");
-                    
-                    [self adjustSlideViewHeightWithTitle:@"Saved" height:kSlideViewHeight color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
-                    
-                    [self saveToSharedDefaultsDocumentDidAlreadySave];
-                    [self saveToDefaultsLastViewedDocument];
-                    [self executePerformFetch];
-                    [self showLog];
-                    
-                    NSLog (@"[self.isNewDocument > Saved > self.fetchedResultsController fetchedObjects].count: %lu\n", (unsigned long)[self.fetchedResultsController fetchedObjects].count);
-                    
-                    if ([self.fetchedResultsController fetchedObjects].count > 0) {
-                        
-                        DocumentsForSpeech *savedDocument = [self.fetchedResultsController fetchedObjects][0];
-                        self.currentDocument = savedDocument;
-                    }
-                    
-                } else {
-                    
-                    NSLog(@"Error saving to coredata: %@", error);
-                }
-            }];
-        }
-        
-    } else { //isSavedDocument
-        
-        if ([self.textView.text isEqualToString:_lastViewedDocument]) {
-            
-            NSLog(@"Nothing to Save");
-            
-            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1] withSender:self.archiveButton];
-            
-        } else {
-            
-            [self updateDocument];
-            
-            [self.managedObjectContext performBlock:^{
-                NSError *error = nil;
-                if ([self.managedObjectContext save:&error]) {
-                    
-                    NSLog (@"Save updated document to coredata succeed");
-                    
-                    [self adjustSlideViewHeightWithTitle:@"Saved" height:kSlideViewHeight color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1] withSender:self.archiveButton];
-                    
-                    _lastViewedDocument = self.textView.text;
-                    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
-                    [self.defaults synchronize];
-                    NSLog(@"_lastViewedDocument texts updated");
-                    
-                    [self executePerformFetch];
-                    [self showLog];
-                    
-                } else {
-                    
-                    NSLog(@"Error updating to coredata: %@", error);
-                }
-            }];
-        }
-    }
-}
-
-
-- (void)updateDocument
-{
+    //Speech Attributes
     self.currentDocument.language = self.language;
     self.currentDocument.volume = [NSNumber numberWithFloat:self.volume];;
     self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitch];
     self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
     
-    if (self.currentDocument.uniqueIdString == nil) {
-        NSString *uniqueIDString = [NSString stringWithFormat:@"%li", (long)(arc4random() % 999999999999999999)];
-        self.currentDocument.uniqueIdString = uniqueIDString;
+    //Document Attributes
+    if (self.currentDocument.isNewDocument) {
+        self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
     }
-    
-    self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
-    self.currentDocument.savedDocument = kSavedDocument;
-    
     self.currentDocument.document = self.textView.text;
+    
+    _lastViewedDocument = self.currentDocument.document;
+    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
+    [self.defaults synchronize];
+    NSLog(@"_lastViewedDocument texts updated");
+    
     
     NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
     self.currentDocument.documentTitle = firstLineForTitle;
     
+    //Date Attributes
     NSDate *now = [NSDate date];
-    
-    [self.formatter setDateFormat:@"yyyy"];
-    NSString *stringYear = [self.formatter stringFromDate:now];
-    
-    [self.formatter setDateFormat:@"MMM"];
-    NSString *stringMonth = [self.formatter stringFromDate:now];
-    
-    [self.formatter setDateFormat:@"dd"];
-    NSString *stringDay = [self.formatter stringFromDate:now];
-    
-    [self.formatter setDateFormat:@"EEEE"];
-    NSString *stringDate = [self.formatter stringFromDate:now];
-    NSString *stringdaysOfTheWeek = [[stringDate substringToIndex:3] uppercaseString];
     
     if (self.currentDocument.createdDate == nil) {
         self.currentDocument.createdDate = now;
     }
+    self.currentDocument.modifiedDate = now;
     
-    if (self.currentDocument.modifiedDate == nil) {
-        self.currentDocument.modifiedDate = now;
-    }
-    
+    [self.formatter setDateFormat:@"yyyy"];
+    NSString *stringYear = [self.formatter stringFromDate:now];
     self.currentDocument.yearString = stringYear;
+    
+    [self.formatter setDateFormat:@"MMM"];
+    NSString *stringMonth = [self.formatter stringFromDate:now];
     self.currentDocument.monthString = stringMonth;
+    
+    [self.formatter setDateFormat:@"dd"];
+    NSString *stringDay = [self.formatter stringFromDate:now];
     self.currentDocument.dayString = stringDay;
+    
+    [self.formatter setDateFormat:@"EEEE"];
+    NSString *stringDate = [self.formatter stringFromDate:now];
+    NSString *stringdaysOfTheWeek = [[stringDate substringToIndex:3] uppercaseString];
     self.currentDocument.dateString = stringdaysOfTheWeek;
     
     [self.formatter setDateFormat:@"MMM yyyy"];
     NSString *monthAndYearString = [self.formatter stringFromDate:now];
     self.currentDocument.monthAndYearString = monthAndYearString;
-    
-    self.currentDocument.section = monthAndYearString;
 }
 
 
@@ -1194,28 +1058,6 @@
     NSInteger selectedRangeLocation = [self.defaults integerForKey:kSelectedRangeLocation];
     NSInteger selectedRangeLength =[self.defaults integerForKey:kSelectedRangeLength];
     self.textView.selectedRange = NSMakeRange(selectedRangeLocation, selectedRangeLength);
-}
-
-
-#pragma mark - State Restoration
-
-- (void)retrieveDataForSpeech
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    self.language = [self.defaults objectForKey:kLanguage];
-    
-    self.volume = [self.defaults floatForKey:kVolumeValue];
-    self.pitch = [self.defaults floatForKey:kPitchValue];
-    self.rate = [self.defaults floatForKey:kRateValue];
-    
-    self.volumeSlider.value = self.volume;
-    self.pitchSlider.value = self.pitch;
-    self.rateSlider.value = self.rate;
-    
-    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    
-    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
 }
 
 
@@ -1427,7 +1269,9 @@
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    [textView resignFirstResponder];
+    if ([textView isFirstResponder]) {
+        [textView resignFirstResponder];
+    }
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -1435,7 +1279,7 @@
     }completion:^(BOOL finished) { }];
     
     if (![_lastViewedDocument isEqualToString:self.textView.text]) {
-        NSLog(@"TextView texts are changed");
+        NSLog(@"textViewDidEndEditing > TextView texts are changed, so stop speaking");
         [self stopSpeaking];
         self.pasteBoard.string = self.textView.text;
         
@@ -1453,12 +1297,6 @@
 }
 
 
-- (void)applicationDidBecomeActive
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-}
-
-
 - (void)applicationDidEnterBackground
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
@@ -1470,7 +1308,14 @@
 - (void)applicationWillEnterForeground
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    [self checkToPasteText];
+    
+}
+
+
+- (void)applicationDidBecomeActive
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    [self checkIfThereAreNewClipboardTexts];
 }
 
 
@@ -1526,49 +1371,6 @@
         
         [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
     }
-}
-
-
-#pragma mark - Save To SharedDefaults Document Is New or Did Already Save
-
-- (void)saveToSharedDefaultsDocumentIsNew
-{
-    [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
-    [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
-    [self.sharedDefaults setBool:NO forKey:kIsSelectedDocumentFromListView];
-    [self.sharedDefaults setBool:YES forKey:kIsNewDocument];
-    [self.sharedDefaults setBool:NO forKey:kIsSavedDocument];
-    [self.sharedDefaults synchronize];
-    self.isSharedDocument = NO;
-    self.isTodayDocument = NO;
-    self.isSelectedDocumentFromListView = NO;
-    self.isNewDocument = YES;
-    self.isSavedDocument = NO;
-}
-
-
-- (void)saveToSharedDefaultsDocumentDidAlreadySave
-{
-    [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
-    [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
-    [self.sharedDefaults setBool:NO forKey:kIsSelectedDocumentFromListView];
-    [self.sharedDefaults setBool:NO forKey:kIsNewDocument];
-    [self.sharedDefaults setBool:YES forKey:kIsSavedDocument];
-    [self.sharedDefaults synchronize];
-    self.isSharedDocument = NO;
-    self.isTodayDocument = NO;
-    self.isSelectedDocumentFromListView = NO;
-    self.isNewDocument = NO;
-    self.isSavedDocument = YES;
-}
-
-
-- (void)saveToDefaultsLastViewedDocument
-{
-    _lastViewedDocument = self.textView.text;
-    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
-    [self.defaults synchronize];
-    NSLog(@"_lastViewedDocument texts updated");
 }
 
 
@@ -1781,11 +1583,19 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    static NSString *cellIdentifier = @"Cell";
     
-    DocumentsForSpeech *document = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = document.document;
+    ListTableViewCell *cell = (ListTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    if (cell == nil) {
+        cell = (ListTableViewCell *)[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    }
+    
+    DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.titleLabel.text = documentsForSpeech.documentTitle;
+    cell.dayLabel.text = documentsForSpeech.dayString;
+    cell.dateLabel.text = documentsForSpeech.dateString;
+    cell.monthAndYearLabel.text = documentsForSpeech.monthAndYearString;
     
     return cell;
 }
@@ -1793,7 +1603,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 50.0;
+    return 88.0;
 }
 
 
@@ -1809,7 +1619,7 @@
     NSLog (@"self.currentDocument: %@\n", self.currentDocument);
     
     self.textView.text = self.currentDocument.document;
-    _originalDocument = self.currentDocument.document;
+    _lastViewedDocument = self.currentDocument.document;
     
     [self saveIndexPath:indexPath];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -1982,7 +1792,7 @@
     NSLog (@"self.isTodayDocument: %@\n", self.isTodayDocument ? @"YES" : @"NO");
     NSLog (@"self.isSelectedDocumentFromListView: %@\n", self.isSelectedDocumentFromListView ? @"YES" : @"NO");
     NSLog (@"self.isNewDocument: %@\n", self.isNewDocument ? @"YES" : @"NO");
-    NSLog (@"self.isSavedDocument: %@\n", self.isSavedDocument ? @"YES" : @"NO");
+    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
     
     NSLog(@"\n");
     NSLog (@"self.currentDocument.language: %@\n", self.currentDocument.language);
@@ -2001,12 +1811,7 @@
     NSLog (@"self.volume: %f\n", self.volume);
     NSLog (@"self.pitch: %f\n", self.pitch);
     NSLog (@"self.rate: %f\n", self.rate);
-    
-    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
     NSLog(@"\n");
-    
-//    NSLog (@"self.textView.text: %@\n", self.textView.text);
-//    NSLog (@"_lastViewedDocument: %@\n", _lastViewedDocument);
 }
 
 
