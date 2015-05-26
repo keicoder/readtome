@@ -220,8 +220,6 @@
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
     
-    self.textView.delegate = self;
-    
     [self hideSlideViewAndEqualizerViewWithNoAnimation];
 }
 
@@ -232,23 +230,11 @@
 
 - (void)setupUtterance
 {
-    if (self.isNewDocument) {
-        
-        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.language];
-        self.utterance.volume = self.volumeSlider.value;
-        self.utterance.pitchMultiplier = self.pitchSlider.value;
-        self.utterance.rate = self.rateSlider.value;
-        
-    } else {
-        
-        self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
-        self.utterance.volume = [self.currentDocument.volume floatValue];
-        self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
-        self.utterance.rate = [self.currentDocument.rate floatValue];
-    }
-    
+    self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
+    self.utterance.volume = [self.currentDocument.volume floatValue];
+    self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
+    self.utterance.rate = [self.currentDocument.rate floatValue];
     self.utterance.preUtteranceDelay = 0.3f;
     self.utterance.postUtteranceDelay = 0.3f;
 }
@@ -269,14 +255,16 @@
     }
     
     self.textView.editable = NO;
-    [self.textView resignFirstResponder];
+    if ([self.textView isFirstResponder]) {
+        [self.textView resignFirstResponder];
+    }
     
     [self.synthesizer speakUtterance:self.utterance];
-    [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-    _paused = NO;
     
+    _paused = NO;
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
+        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
         self.resetButton.alpha = 1.0;
     }completion:^(BOOL finished) { }];
 }
@@ -289,11 +277,11 @@
     [self saveSelectedRangeValue];
     
     [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-    [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
-    _paused = YES;
     
+    _paused = YES;
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
+        [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
         self.resetButton.alpha = 0.0;
     }completion:^(BOOL finished) { }];
 }
@@ -304,14 +292,16 @@
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     self.textView.editable = NO;
-    [self.textView resignFirstResponder];
+    if ([self.textView isFirstResponder]) {
+        [self.textView resignFirstResponder];
+    }
     
     [self.synthesizer continueSpeaking];
-    [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
-    _paused = NO;
     
+    _paused = NO;
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
+        [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
         self.resetButton.alpha = 1.0;
     }completion:^(BOOL finished) { }];
 }
@@ -322,7 +312,9 @@
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     self.textView.editable = YES;
-    [self.textView resignFirstResponder];
+    if ([self.textView isFirstResponder]) {
+        [self.textView resignFirstResponder];
+    }
     
     [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -365,26 +357,21 @@
     }
     
     if (_paused == YES) {
-        
         [self continueSpeaking];
         
     } else {
-        
         [self pauseSpeaking];
     }
     
     if (self.synthesizer.isSpeaking == NO) {
-        
         [self startSpeaking];
     }
     
     if (_isTypeSelecting == YES) {
-        
         [self selectWord];
     }
     
     if (_paused == YES) {
-        
         self.textView.editable = YES;
         [self.textView resignFirstResponder];
     }
@@ -397,6 +384,7 @@
 {
     if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
+    [self pauseSpeaking];
     _floatingViewExpanded = !_floatingViewExpanded;
     
     CGFloat duration = 0.25f;
@@ -404,6 +392,10 @@
     if (_floatingViewExpanded) {
         
         [self.textView resignFirstResponder];
+        
+        if (_equalizerViewExpanded == YES) {
+            [self adjustEqualizerViewHeight:0.0];
+        }
         
         CGFloat floatingViewWidth = CGRectGetWidth(self.view.bounds) * 0.7;
         self.floatingViewWidthConstraint.constant = floatingViewWidth;
@@ -456,27 +448,6 @@
 }
 
 
-//- (IBAction)listButtonTapped:(id)sender
-//{
-//    [self pauseSpeaking];
-//    
-//	if (_equalizerViewExpanded == YES) {
-//        
-//        [self adjustEqualizerViewHeight:0.0];
-//		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.35];
-//	} else {
-//		[self performSelector:@selector(showListView:) withObject:nil afterDelay:0.0];
-//	}
-//}
-
-
-//- (void)showListView:(id)sender
-//{
-//	ListViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ListViewController"];
-//	[self presentViewController:controller animated:YES completion:^{ }];
-//}
-
-
 #pragma mark 생성 버튼
 
 - (IBAction)addButtonTapped:(id)sender
@@ -491,10 +462,17 @@
     
     self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
     
+    //Document Attributes
     self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
     self.currentDocument.document = kBlankText;
     self.textView.text = self.currentDocument.document;
     _lastViewedDocument = self.currentDocument.document;
+    
+    //Speech Attributes
+    self.currentDocument.language = [self.defaults objectForKey:kLanguage];
+    self.currentDocument.volume = [NSNumber numberWithFloat:[self.defaults floatForKey:kVolumeValue]];
+    self.currentDocument.pitch = [NSNumber numberWithFloat:[self.defaults floatForKey:kPitchValue]];
+    self.currentDocument.rate = [NSNumber numberWithFloat:[self.defaults floatForKey:kRateValue]];
     
     [self.textView becomeFirstResponder];
 }
@@ -506,19 +484,15 @@
 }
 
 
-
-
 - (IBAction)actionButtonTapped:(id)sender
 {
     [self pauseSpeaking];
 	
 	if (_equalizerViewExpanded == YES) {
-        
 		[self adjustEqualizerViewHeight:0.0];
 		[self performSelector:@selector(action:) withObject:nil afterDelay:0.35];
         
 	} else {
-        
 		[self performSelector:@selector(action:) withObject:nil afterDelay:0.0];
 	}
 }
@@ -553,12 +527,10 @@
     [self pauseSpeaking];
 	
 	if (_equalizerViewExpanded == YES) {
-        
 		[self adjustEqualizerViewHeight:0.0];
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.35];
         
 	} else {
-        
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.0];
 	}
 }
@@ -568,27 +540,17 @@
 {
 	LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
 	[self presentViewController:controller animated:YES completion:^{
-        if (self.isNewDocument == YES) {
-            NSLog(@"showLanguagePickerView > isNewDocument > controller.currentLanguage = self.language");
-            controller.currentLanguage = self.language;
-        } else {
-            NSLog(@"showLanguagePickerView > isSavedDocument > controller.currentLanguage = self.currentDocument.language");
-            controller.currentLanguage = self.currentDocument.language;
-        }
+        controller.currentLanguage = self.currentDocument.language;
     }];
 }
 
 
 - (IBAction)equalizerButtonTappped:(id)sender
 {
-    //[self pauseSpeaking];
-    
     if (_equalizerViewExpanded == YES) {
-        
         [self adjustEqualizerViewHeight:0.0];
         
     } else {
-        
         [self adjustEqualizerViewHeight:150.0];
     }
 }
@@ -599,12 +561,10 @@
     [self pauseSpeaking];
 	
 	if (_equalizerViewExpanded == YES) {
-        
 		[self adjustEqualizerViewHeight:0.0];
 		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.35];
         
 	} else {
-        
 		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.0];
 	}
 	
@@ -622,11 +582,11 @@
 {
     //Open URL
     UIResponder* responder = self;
-    while ((responder = [responder nextResponder]) != nil)
-    {
+    
+    while ((responder = [responder nextResponder]) != nil) {
         NSLog(@"responder = %@", responder);
-        if([responder respondsToSelector:@selector(openURL:)] == YES)
-        {
+        
+        if([responder respondsToSelector:@selector(openURL:)] == YES) {
             [responder performSelector:@selector(openURL:) withObject:[NSURL URLWithString:@"https://itunes.apple.com/us/app/talk-to-me-world/id985869735?l=ko&ls=1&mt=8"]];
         }
     }
@@ -716,6 +676,20 @@
 }
 
 
+#pragma mark - State Restoration
+
+- (void)retrieveDataForSpeech
+{
+    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    self.volumeSlider.value = [self.currentDocument.volume floatValue];
+    self.pitchSlider.value = [self.currentDocument.pitch floatValue];
+    self.rateSlider.value = [self.currentDocument.rate floatValue];
+    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
+}
+
+
 #pragma mark - Check if there are new clipboard texts
 
 - (void)checkIfThereAreNewClipboardTexts
@@ -725,28 +699,49 @@
     if (![self.pasteBoard.string isEqualToString:_lastViewedDocument]) {
         //Arert View
         NSLog(@"checkIfThereAreNewClipboardTexts > Found new pasteboard string > Arert view displaying");
+        
+        //Alert Cotroller and Alert Action
+        NSString *title = @"Found new clipboard texts";
+        NSString *message = @"Paste it?";
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *yes  = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            
+            NSLog(@"YES Button Tapped");
+            
+            self.textView.editable = YES;
+            
+            if (_floatingViewExpanded) {
+                [self listButtonTapped:self];
+            }
+            
+            self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
+            
+            self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
+            self.currentDocument.document = self.pasteBoard.string;
+            self.textView.text = self.pasteBoard.string;
+            _lastViewedDocument = kBlankText;
+            
+            NSLog (@"checkIfThereAreNewClipboardTexts > self.currentDocument: %@\n", self.currentDocument);
+            NSLog (@"checkIfThereAreNewClipboardTexts > _lastViewedDocument: %@\n", _lastViewedDocument);
+            
+            [self.textView becomeFirstResponder];
+        }];
+        
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            
+            NSLog(@"Cancel paste clipboard texts");
+        }];
+        
+        [alert addAction:yes];
+        [alert addAction:cancel];
+        
+        alert.popoverPresentationController.sourceView = self.view;
+        alert.popoverPresentationController.sourceRect = self.view.frame;
+        
+        [self presentViewController:alert animated:YES completion:nil];
     }
-}
-
-
-#pragma mark - State Restoration
-
-- (void)retrieveDataForSpeech
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    self.language = [self.defaults objectForKey:kLanguage];
-    self.volume = [self.defaults floatForKey:kVolumeValue];
-    self.pitch = [self.defaults floatForKey:kPitchValue];
-    self.rate = [self.defaults floatForKey:kRateValue];
-    
-    self.volumeSlider.value = self.volume;
-    self.pitchSlider.value = self.pitch;
-    self.rateSlider.value = self.rate;
-    
-    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    
-    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
 }
 
 
@@ -761,7 +756,6 @@
         
         if ([_lastViewedDocument isEqualToString:self.textView.text]) {
             NSLog(@"It's new document but no texts, so nothing to save");
-            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:kSlideViewHeight color:kNothingToSaveColor withSender:self.archiveButton];
             
         } else {
             NSLog(@"It's new document and have texts, so save document");
@@ -774,7 +768,6 @@
         
         if ([_lastViewedDocument isEqualToString:self.textView.text]) {
             NSLog(@"Can't find any changing in document, so nothing updated");
-            [self adjustSlideViewHeightWithTitle:@"Nothing to Save" height:kSlideViewHeight color:kNothingToSaveColor withSender:self.archiveButton];
             
         } else {
             NSLog(@"Document updated, so save document");
@@ -811,18 +804,18 @@
 - (void)updateSpeechDocumentAndAttributes
 {
     //Speech Attributes
-    self.currentDocument.language = self.language;
-    self.currentDocument.volume = [NSNumber numberWithFloat:self.volume];;
-    self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitch];
-    self.currentDocument.rate = [NSNumber numberWithFloat:self.rate];
+    self.currentDocument.language = [self.defaults objectForKey:kLanguage];
+    self.currentDocument.volume = [NSNumber numberWithFloat:[self.defaults floatForKey:kVolumeValue]];
+    self.currentDocument.pitch = [NSNumber numberWithFloat:[self.defaults floatForKey:kPitchValue]];
+    self.currentDocument.rate = [NSNumber numberWithFloat:[self.defaults floatForKey:kRateValue]];
     
     //Document Attributes
     if (self.currentDocument.isNewDocument) {
         self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
     }
-    self.currentDocument.document = self.textView.text;
     
-    _lastViewedDocument = self.currentDocument.document;
+    self.currentDocument.document = self.textView.text;
+    _lastViewedDocument = self.textView.text;
     [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
     [self.defaults synchronize];
     NSLog(@"_lastViewedDocument texts updated");
@@ -1066,36 +1059,26 @@
 - (IBAction)sliderValueChanged:(UISlider *)sender
 {
     if (sender == self.progressSlider) {
-        
         self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
         
     } else if (sender == self.volumeSlider) {
-        
         [self stopSpeaking];
-        
-        self.volume = self.volumeSlider.value;
-        self.utterance.volume = self.volumeSlider.value;
-        [self.defaults setFloat:sender.value forKey:kVolumeValue];
+        self.currentDocument.volume = [NSNumber numberWithFloat:self.volumeSlider.value];
+        [self.defaults setFloat:self.volumeSlider.value forKey:kVolumeValue];
         [self.defaults synchronize];
         
     } else if (sender == self.pitchSlider) {
-        
         [self stopSpeaking];
-        
-        self.pitch = sender.value;
+        self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitchSlider.value];
         [self.defaults setFloat:self.pitchSlider.value forKey:kPitchValue];
         [self.defaults synchronize];
         
     } else if (sender == self.rateSlider) {
-        
         [self stopSpeaking];
-        
-        self.rate = sender.value;
+        self.currentDocument.rate = [NSNumber numberWithFloat:self.rateSlider.value];
         [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
         [self.defaults synchronize];
     }
-    
-    [self showLog];
 }
 
 
@@ -1109,10 +1092,10 @@
     [center addObserver:self selector:@selector(didPickedLanguageNotification:) name:@"DidPickedLanguageNotification" object:nil];
     
     //Select Document
-    [center addObserver:self selector:@selector(didReceivedSelectDocumentsForSpeechNotification:) name:@"DidSelectDocumentsForSpeechNotification" object:nil];
+//    [center addObserver:self selector:@selector(didReceivedSelectDocumentsForSpeechNotification:) name:@"DidSelectDocumentsForSpeechNotification" object:nil];
     
     //Slider Value
-    [center addObserver:self selector:@selector(didChangeSliderValue:) name:@"DidChangeSliderValueNotification" object:nil];
+//    [center addObserver:self selector:@selector(didChangeSliderValue:) name:@"DidChangeSliderValueNotification" object:nil];
     
     //Keyboard
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:self.view.window];
@@ -1148,47 +1131,47 @@
 }
 
 
-#pragma mark Select Document
+//#pragma mark Select Document
+//
+//- (void)didReceivedSelectDocumentsForSpeechNotification:(NSNotification *)notification
+//{
+//    NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
+//    
+//    [self stopSpeaking];
+//    
+//    NSDictionary *userInfo = notification.userInfo;
+//    DocumentsForSpeech *receivedDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
+//    
+//    self.currentDocument = receivedDocument;
+//    
+//    self.pasteBoard.string = self.currentDocument.document;
+//    _lastViewedDocument = self.currentDocument.document;
+//    self.textView.text = self.currentDocument.document;
+//    
+//    self.textView.text = self.currentDocument.document;
+//    self.language = self.currentDocument.language;
+//    
+//    self.volume = [self.currentDocument.volume floatValue];
+//    self.pitch = [self.currentDocument.pitch floatValue];
+//    self.rate = [self.currentDocument.rate floatValue];
+//    
+//    //Slider Value
+//    self.volumeSlider.value = self.volume;
+//    self.pitchSlider.value = self.pitch;
+//    self.rateSlider.value = self.rate;
+//    
+//    [self showLog];
+//}
 
-- (void)didReceivedSelectDocumentsForSpeechNotification:(NSNotification *)notification
-{
-    NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
-    
-    [self stopSpeaking];
-    
-    NSDictionary *userInfo = notification.userInfo;
-    DocumentsForSpeech *receivedDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
-    
-    self.currentDocument = receivedDocument;
-    
-    self.pasteBoard.string = self.currentDocument.document;
-    _lastViewedDocument = self.currentDocument.document;
-    self.textView.text = self.currentDocument.document;
-    
-    self.textView.text = self.currentDocument.document;
-    self.language = self.currentDocument.language;
-    
-    self.volume = [self.currentDocument.volume floatValue];
-    self.pitch = [self.currentDocument.pitch floatValue];
-    self.rate = [self.currentDocument.rate floatValue];
-    
-    //Slider Value
-    self.volumeSlider.value = self.volume;
-    self.pitchSlider.value = self.pitch;
-    self.rateSlider.value = self.rate;
-    
-    [self showLog];
-}
-
-
-#pragma mark Slider Value Changed
-
-- (void)didChangeSliderValue:(NSNotification *)notification
-{
-    if ([notification.name isEqualToString:@"DidChangeSliderValueNotification"]) {
-        NSLog(@"DidChangeSliderValue Notification Received");
-    }
-}
+//
+//#pragma mark Slider Value Changed
+//
+//- (void)didChangeSliderValue:(NSNotification *)notification
+//{
+//    if ([notification.name isEqualToString:@"DidChangeSliderValueNotification"]) {
+//        NSLog(@"DidChangeSliderValue Notification Received");
+//    }
+//}
 
 #pragma mark Keyboard Handling
 
@@ -1231,7 +1214,6 @@
     if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (_floatingViewExpanded) {
-        
         [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.0];
         
         CGFloat floatingViewWidth = CGRectGetWidth(self.view.bounds) * 0.7;
@@ -1240,11 +1222,11 @@
         CGFloat duration = 0.25;
         [UIView animateWithDuration:duration animations:^{
             [self.view layoutIfNeeded];
+            
         }completion:^(BOOL finished) {
             CGFloat floatingBackgroundViewWidth = CGRectGetWidth(self.view.bounds);
             self.floatingBackgroundViewWidthConstraint.constant = floatingBackgroundViewWidth;
-            
-            [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.0];
+            [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
         }];
     }
 }
@@ -1260,8 +1242,6 @@
     [UIView animateWithDuration:duration animations:^{
         self.playPauseButton.alpha = 0.0;
     }completion:^(BOOL finished) { }];
-    
-    _lastViewedDocument = self.textView.text;
 }
 
 
@@ -1281,10 +1261,11 @@
     if (![_lastViewedDocument isEqualToString:self.textView.text]) {
         NSLog(@"textViewDidEndEditing > TextView texts are changed, so stop speaking");
         [self stopSpeaking];
+        self.currentDocument.document = self.textView.text;
         self.pasteBoard.string = self.textView.text;
         
     } else {
-        NSLog(@"Nothing Changed");
+        NSLog(@"textViewDidEndEditing > Nothing Changed");
     }
 }
 
@@ -1381,11 +1362,9 @@
     NSRange rangeInTotalText;
     
     if (_isTypeSelecting == YES) {
-        
         rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length);
         
     } else {
-        
         rangeInTotalText = NSMakeRange(characterRange.location, characterRange.length  - characterRange.length);
     }
     
@@ -1408,27 +1387,28 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    NSLog(@"speechSynthesizer didFinishSpeechUtterance");
+    NSLog(@"speechSynthesizer didFinishSpeechUtterance, so stopSpeaking");
     [self stopSpeaking];
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    NSLog(@"speechSynthesizer didPauseSpeechUtterance");
+    NSLog(@"speechSynthesizer didPauseSpeechUtterance, so pauseSpeaking");
     [self pauseSpeaking];
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    NSLog(@"speechSynthesizer didContinueSpeechUtterance");
+    NSLog(@"speechSynthesizer didContinueSpeechUtterance, so continueSpeaking");
+    [self continueSpeaking];
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    NSLog(@"speechSynthesizer didCancelSpeechUtterance");
+    NSLog(@"speechSynthesizer didCancelSpeechUtterance, so stopSpeaking");
     [self stopSpeaking];
 }
 
@@ -1788,9 +1768,6 @@
 - (void)showLog
 {
     NSLog (@"\n");
-    NSLog (@"self.isSharedDocument: %@\n", self.isSharedDocument ? @"YES" : @"NO");
-    NSLog (@"self.isTodayDocument: %@\n", self.isTodayDocument ? @"YES" : @"NO");
-    NSLog (@"self.isSelectedDocumentFromListView: %@\n", self.isSelectedDocumentFromListView ? @"YES" : @"NO");
     NSLog (@"self.isNewDocument: %@\n", self.isNewDocument ? @"YES" : @"NO");
     NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
     
