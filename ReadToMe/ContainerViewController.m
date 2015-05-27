@@ -231,10 +231,46 @@
 - (void)setupUtterance
 {
     self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
-    self.utterance.volume = [self.currentDocument.volume floatValue];
-    self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
-    self.utterance.rate = [self.currentDocument.rate floatValue];
+    
+    NSLog (@"setupUtterance > self.currentDocument.language: %@\n", self.currentDocument.language);
+    NSLog (@"setupUtterance > self.currentDocument.volume: %@\n", self.currentDocument.volume);
+    NSLog (@"setupUtterance > self.currentDocument.pitch: %@\n", self.currentDocument.pitch);
+    NSLog (@"setupUtterance > self.currentDocument.rate: %@\n", self.currentDocument.rate);
+    
+    
+    if (![AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language]) {
+        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
+        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
+        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
+        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:defaultLanguageName];
+    } else {
+        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
+    }
+    
+    if (![self.currentDocument.volume floatValue]) {
+        self.utterance.volume = 1.0;
+    } else {
+        self.utterance.volume = [self.currentDocument.volume floatValue];
+    }
+    
+    if (![self.currentDocument.pitch floatValue]) {
+        self.utterance.pitchMultiplier = 1.0;
+    } else {
+        self.utterance.volume = [self.currentDocument.volume floatValue];
+    }
+    
+    if (![self.currentDocument.pitch floatValue]) {
+        self.utterance.pitchMultiplier = 1.0;
+    } else {
+        self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
+    }
+    
+    if (![self.currentDocument.rate floatValue]) {
+        self.utterance.rate = 0.07;
+    } else {
+        self.utterance.rate = [self.currentDocument.rate floatValue];
+    }
+    
     self.utterance.preUtteranceDelay = 0.3f;
     self.utterance.postUtteranceDelay = 0.3f;
 }
@@ -1126,8 +1162,9 @@
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
     
-    self.language = [self.defaults objectForKey:kLanguage];
-    [self setupUtterance];
+    self.currentDocument.language = [self.defaults objectForKey:kLanguage];
+    
+    //[self setupUtterance];
 }
 
 
@@ -1379,12 +1416,6 @@
 }
 
 
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didStartSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-    NSLog(@"speechSynthesizer didStartSpeechUtterance");
-}
-
-
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
     NSLog(@"speechSynthesizer didFinishSpeechUtterance, so stopSpeaking");
@@ -1396,20 +1427,6 @@
 {
     NSLog(@"speechSynthesizer didPauseSpeechUtterance, so pauseSpeaking");
     [self pauseSpeaking];
-}
-
-
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-    NSLog(@"speechSynthesizer didContinueSpeechUtterance, so continueSpeaking");
-    [self continueSpeaking];
-}
-
-
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance
-{
-    NSLog(@"speechSynthesizer didCancelSpeechUtterance, so stopSpeaking");
-    [self stopSpeaking];
 }
 
 
@@ -1592,6 +1609,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    [self stopSpeaking];
     
     self.textView.editable = YES;
     
