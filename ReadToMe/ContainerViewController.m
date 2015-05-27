@@ -175,7 +175,7 @@
     
 	[super viewWillAppear:animated];
     
-    [self retrieveDataForSpeech];
+    [self setInitialDataForSpeech];
     [self executePerformFetch];
     [self.tableView reloadData];
     NSLog(@"viewWillAppear > [self.tableView reloadData]");
@@ -230,49 +230,30 @@
 
 - (void)setupUtterance
 {
-    self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
-    
-    NSLog (@"setupUtterance > self.currentDocument.language: %@\n", self.currentDocument.language);
-    NSLog (@"setupUtterance > self.currentDocument.volume: %@\n", self.currentDocument.volume);
-    NSLog (@"setupUtterance > self.currentDocument.pitch: %@\n", self.currentDocument.pitch);
-    NSLog (@"setupUtterance > self.currentDocument.rate: %@\n", self.currentDocument.rate);
-    
-    
-    if (![AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language]) {
+    //Check if attributes are nil;
+    if (!self.currentDocument.language) {
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
         NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
         NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
-        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:defaultLanguageName];
-    } else {
-        self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
+        self.currentDocument.language = defaultLanguageName;
     }
+    if (!self.currentDocument.volume) { self.currentDocument.volume = @1.0; }
+    if (!self.currentDocument.pitch) { self.currentDocument.pitch = @1.0; }
+    if (!self.currentDocument.rate) { self.utterance.rate = 0.07; }
     
-    if (![self.currentDocument.volume floatValue]) {
-        self.utterance.volume = 1.0;
-    } else {
-        self.utterance.volume = [self.currentDocument.volume floatValue];
-    }
-    
-    if (![self.currentDocument.pitch floatValue]) {
-        self.utterance.pitchMultiplier = 1.0;
-    } else {
-        self.utterance.volume = [self.currentDocument.volume floatValue];
-    }
-    
-    if (![self.currentDocument.pitch floatValue]) {
-        self.utterance.pitchMultiplier = 1.0;
-    } else {
-        self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
-    }
-    
-    if (![self.currentDocument.rate floatValue]) {
-        self.utterance.rate = 0.07;
-    } else {
-        self.utterance.rate = [self.currentDocument.rate floatValue];
-    }
-    
+    //Put attributes into objects
+    self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
+    self.utterance.volume = [self.currentDocument.volume floatValue];
+    self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
+    self.utterance.rate = [self.currentDocument.rate floatValue];
     self.utterance.preUtteranceDelay = 0.3f;
     self.utterance.postUtteranceDelay = 0.3f;
+    
+    //Slider value
+    self.volumeSlider.value = self.utterance.volume;
+    self.pitchSlider.value = self.utterance.pitchMultiplier;
+    self.rateSlider.value = self.utterance.rate;
 }
 
 
@@ -499,10 +480,14 @@
     self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
     
     //Document Attributes
-    self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
+    self.currentDocument.documentTitle = kBlankText;
     self.currentDocument.document = kBlankText;
     self.textView.text = self.currentDocument.document;
     _lastViewedDocument = self.currentDocument.document;
+    
+    //Date Attributes
+    self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
+    [self setDateAttributes];
     
     //Speech Attributes
     self.currentDocument.language = [self.defaults objectForKey:kLanguage];
@@ -510,7 +495,14 @@
     self.currentDocument.pitch = [NSNumber numberWithFloat:[self.defaults floatForKey:kPitchValue]];
     self.currentDocument.rate = [NSNumber numberWithFloat:[self.defaults floatForKey:kRateValue]];
     
+    //Slider value
+    self.volumeSlider.value = [self.currentDocument.volume floatValue];
+    self.pitchSlider.value = [self.currentDocument.pitch floatValue];
+    self.rateSlider.value = [self.currentDocument.rate floatValue];
+    
     [self.textView becomeFirstResponder];
+    
+    [self showLog];
 }
 
 
@@ -549,10 +541,10 @@
     }
     
     if (_isTypeSelecting == YES) {
-        [self changeSelectionButtonColor:NO];
+        [self changeSelectionButtonToColored:NO withSlideAnimation:YES];
         
     } else {
-        [self changeSelectionButtonColor:YES];
+        [self changeSelectionButtonToColored:YES withSlideAnimation:YES];
         [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.2];
     }
 }
@@ -714,15 +706,26 @@
 
 #pragma mark - State Restoration
 
-- (void)retrieveDataForSpeech
+- (void)setInitialDataForSpeech
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    self.volumeSlider.value = [self.currentDocument.volume floatValue];
-    self.pitchSlider.value = [self.currentDocument.pitch floatValue];
-    self.rateSlider.value = [self.currentDocument.rate floatValue];
-    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    
+    self.volumeSlider.value = [self.defaults floatForKey:kVolumeValue];
+    self.pitchSlider.value = [self.defaults floatForKey:kPitchValue];
+    self.rateSlider.value = [self.defaults floatForKey:kRateValue];
     _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
+    
+    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    if (_isTypeSelecting) {
+        //Change icon color
+        [self changeSelectionButtonToColored:YES withSlideAnimation:NO];
+    } else {
+        [self changeSelectionButtonToColored:NO withSlideAnimation:NO];
+    }
 }
 
 
@@ -846,24 +849,36 @@
     self.currentDocument.rate = [NSNumber numberWithFloat:[self.defaults floatForKey:kRateValue]];
     
     //Document Attributes
+    NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
+    self.currentDocument.documentTitle = firstLineForTitle;
+    self.currentDocument.document = self.textView.text;
+    
+    //Date Attributes
+    [self setDateAttributes];
+    
+    //Set to saved document
     if (self.currentDocument.isNewDocument) {
         self.currentDocument.isNewDocument = [NSNumber numberWithBool:NO];
     }
     
-    self.currentDocument.document = self.textView.text;
+    //User defaults sync
     _lastViewedDocument = self.textView.text;
+    if (!self.defaults) { self.defaults = [NSUserDefaults standardUserDefaults]; }
     [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
+    [self.defaults setObject:self.currentDocument.language forKey:kLanguage];
+    [self.defaults setFloat:[self.currentDocument.volume floatValue] forKey:kVolumeValue];
+    [self.defaults setFloat:[self.currentDocument.pitch floatValue] forKey:kPitchValue];
+    [self.defaults setFloat:[self.currentDocument.rate floatValue] forKey:kRateValue];
     [self.defaults synchronize];
-    NSLog(@"_lastViewedDocument texts updated");
-    
-    
-    NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
-    self.currentDocument.documentTitle = firstLineForTitle;
-    
+}
+
+
+- (void)setDateAttributes
+{
     //Date Attributes
     NSDate *now = [NSDate date];
     
-    if (self.currentDocument.createdDate == nil) {
+    if (self.currentDocument.isNewDocument) {
         self.currentDocument.createdDate = now;
     }
     self.currentDocument.modifiedDate = now;
@@ -1163,52 +1178,8 @@
     }
     
     self.currentDocument.language = [self.defaults objectForKey:kLanguage];
-    
-    //[self setupUtterance];
 }
 
-
-//#pragma mark Select Document
-//
-//- (void)didReceivedSelectDocumentsForSpeechNotification:(NSNotification *)notification
-//{
-//    NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
-//    
-//    [self stopSpeaking];
-//    
-//    NSDictionary *userInfo = notification.userInfo;
-//    DocumentsForSpeech *receivedDocument = [userInfo objectForKey:@"DidSelectDocumentsForSpeechNotificationKey"];
-//    
-//    self.currentDocument = receivedDocument;
-//    
-//    self.pasteBoard.string = self.currentDocument.document;
-//    _lastViewedDocument = self.currentDocument.document;
-//    self.textView.text = self.currentDocument.document;
-//    
-//    self.textView.text = self.currentDocument.document;
-//    self.language = self.currentDocument.language;
-//    
-//    self.volume = [self.currentDocument.volume floatValue];
-//    self.pitch = [self.currentDocument.pitch floatValue];
-//    self.rate = [self.currentDocument.rate floatValue];
-//    
-//    //Slider Value
-//    self.volumeSlider.value = self.volume;
-//    self.pitchSlider.value = self.pitch;
-//    self.rateSlider.value = self.rate;
-//    
-//    [self showLog];
-//}
-
-//
-//#pragma mark Slider Value Changed
-//
-//- (void)didChangeSliderValue:(NSNotification *)notification
-//{
-//    if ([notification.name isEqualToString:@"DidChangeSliderValueNotification"]) {
-//        NSLog(@"DidChangeSliderValue Notification Received");
-//    }
-//}
 
 #pragma mark Keyboard Handling
 
@@ -1353,12 +1324,11 @@
 }
 
 
-#pragma mark - Change Selection Button Color For TurnOn or TurnOff
+#pragma mark - Change Selection Button to Colored or Not
 
-- (void)changeSelectionButtonColor:(BOOL)didTurnOn
+- (void)changeSelectionButtonToColored:(BOOL)didSetColored withSlideAnimation:(BOOL)willAnimate
 {
-    if (didTurnOn == YES) {
-        
+    if (didSetColored == YES) {
         _isTypeSelecting = YES;
         [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults synchronize];
@@ -1371,7 +1341,9 @@
             
         }completion:^(BOOL finished) { }];
         
-        [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
+        if (willAnimate) {
+            [self adjustSlideViewHeightWithTitle:@"WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0 green:0.635 blue:0.259 alpha:1] withSender:self.selectionButton];
+        }
         
     } else {
         
@@ -1387,7 +1359,9 @@
             
         }completion:^(BOOL finished) { }];
         
-        [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
+        if (willAnimate) {
+            [self adjustSlideViewHeightWithTitle:@"NO WORD SELECTING" height:kSlideViewHeight color:[UIColor colorWithRed:0.984 green:0.4 blue:0.302 alpha:1] withSender:self.selectionButton];
+        }
     }
 }
 
@@ -1549,13 +1523,11 @@
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
         NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
         NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
-        
         [self.defaults setObject:defaultLanguageName forKey:kLanguage];
         [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults setFloat:1.0 forKey:kVolumeValue];
         [self.defaults setFloat:1.0 forKey:kPitchValue];
         [self.defaults setFloat:0.07 forKey:kRateValue];
-        
         _lastViewedDocument = @"";
     }
 }
@@ -1566,7 +1538,6 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSLog (@"numberOfSectionsInTableView: %lu\n", (unsigned long)[[self.fetchedResultsController sections] count]);
     return [[self.fetchedResultsController sections] count];
 }
 
@@ -1786,28 +1757,49 @@
 
 - (void)showLog
 {
-    NSLog (@"\n");
-    NSLog (@"self.isNewDocument: %@\n", self.isNewDocument ? @"YES" : @"NO");
-    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
-    
     NSLog(@"\n");
+    NSLog (@"*****Speech Attributes*****");
     NSLog (@"self.currentDocument.language: %@\n", self.currentDocument.language);
     NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
     NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
     NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
     
     NSLog(@"\n");
-    
+    NSLog(@"Slider Attributes");
     NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
     NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
     NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
     
     NSLog(@"\n");
-    NSLog (@"self.language: %@\n", self.language);
-    NSLog (@"self.volume: %f\n", self.volume);
-    NSLog (@"self.pitch: %f\n", self.pitch);
-    NSLog (@"self.rate: %f\n", self.rate);
-    NSLog(@"\n");
+    NSLog(@"Document Attributes");
+    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+    NSLog (@"self.currentDocument.isNewDocument: %@\n", self.currentDocument.isNewDocument ? @"YES" : @"NO");
+    NSLog (@"self.currentDocument.createdDate: %@\n", self.currentDocument.createdDate);
+    NSLog (@"self.currentDocument.modifiedDate: %@\n", self.currentDocument.modifiedDate);
+    NSLog (@"self.currentDocument.yearString: %@\n", self.currentDocument.yearString);
+    NSLog (@"self.currentDocument.monthString: %@\n", self.currentDocument.monthString);
+    NSLog (@"self.currentDocument.dateString: %@\n", self.currentDocument.dateString);
+    NSLog (@"self.currentDocument.dayString: %@\n", self.currentDocument.dayString);
+    NSLog (@"self.currentDocument.monthAndYearString: %@\n", self.currentDocument.monthAndYearString);
+    NSLog (@"self.currentDocument.documentTitle: %@\n", self.currentDocument.documentTitle);
+    NSLog (@"self.currentDocument.document: %@\n", self.currentDocument.document);
+    
+    /*
+     @property (nonatomic, retain) NSDate * createdDate;
+     @property (nonatomic, retain) NSDate * modifiedDate;
+     @property (nonatomic, retain) NSString * dateString;
+     @property (nonatomic, retain) NSString * dayString;
+     @property (nonatomic, retain) NSString * language;
+     @property (nonatomic, retain) NSString * monthString;
+     @property (nonatomic, retain) NSString * monthAndYearString;
+     @property (nonatomic, retain) NSNumber * pitch;
+     @property (nonatomic, retain) NSNumber * rate;
+     @property (nonatomic, retain) NSNumber * isNewDocument;
+     @property (nonatomic, retain) NSString * documentTitle;
+     @property (nonatomic, retain) NSNumber * volume;
+     @property (nonatomic, retain) NSString * yearString;
+     @property (nonatomic, retain) NSString * document;
+     */
 }
 
 
