@@ -708,6 +708,7 @@
         NSError *error = nil;
         if ([[DataManager sharedDataManager].managedObjectContext save:&error]) {
             NSLog(@"Saved");
+            [self showLog];
         } else {
             NSLog(@"Error saving context: %@", error);
         }
