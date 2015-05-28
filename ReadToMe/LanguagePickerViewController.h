@@ -17,6 +17,8 @@
 @property (nonatomic, strong) NSArray *languageCodes;
 @property (nonatomic, strong) NSDictionary *languageDictionary;
 @property (strong, nonatomic) DocumentsForSpeech *currentDocument;
-@property (nonatomic, strong) NSString *currentLanguage;
+//@property (nonatomic, strong) NSString *currentLanguage;
+
+//- (void)documentForSpeech:(DocumentsForSpeech *)document inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 @end

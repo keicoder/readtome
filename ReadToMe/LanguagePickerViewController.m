@@ -16,7 +16,9 @@
 
 @interface LanguagePickerViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
 
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSUserDefaults *defaults;
+
 @property (weak, nonatomic) IBOutlet UIButton *returnButton;
 
 @end
@@ -28,34 +30,43 @@
 }
 
 
+#pragma mark - Document in Managed Object Context
+
+//- (void)documentForSpeech:(DocumentsForSpeech *)document inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+//{
+//    self.currentDocument = document;
+//    self.managedObjectContext = managedObjectContext;
+//}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	
-//	[self restoreUserPreferences];
-//	
-//    NSUInteger index = [self.languageCodes indexOfObject:self.currentLanguage];
-//    if (index != NSNotFound)
-//    {
-//        [self.languagePickerView selectRow:index inComponent:0 animated:NO];
-//    }
+	[self restoreUserPreferences];
+	
+    NSUInteger index = [self.languageCodes indexOfObject:self.currentDocument.language];
+    if (index != NSNotFound)
+    {
+        [self.languagePickerView selectRow:index inComponent:0 animated:YES];
+    }
 	
 	[self configureUI];
 }
 
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    [self restoreUserPreferences];
-    
-    NSUInteger index = [self.languageCodes indexOfObject:self.currentLanguage];
-    if (index != NSNotFound)
-    {
-        [self.languagePickerView selectRow:index inComponent:0 animated:YES];
-    }
-}
+//- (void)viewDidAppear:(BOOL)animated
+//{
+//    [super viewDidAppear:animated];
+//    
+//    [self restoreUserPreferences];
+//    
+//    NSUInteger index = [self.languageCodes indexOfObject:self.currentDocument.language];
+//    if (index != NSNotFound)
+//    {
+//        [self.languagePickerView selectRow:index inComponent:0 animated:YES];
+//    }
+//}
 
 
 #pragma mark - State Restoration
@@ -66,19 +77,21 @@
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
 	
-    if (self.currentLanguage == nil) {
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage == nil");
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage: %@\n", self.currentLanguage);
+    NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
+    
+    if (self.currentDocument.language == nil) {
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language == nil");
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
         NSDictionary *currentLanguage = @{ kLanguage:currentLanguageCode };
         [self.defaults registerDefaults:currentLanguage];
-        self.currentLanguage = [self.defaults stringForKey:kLanguage];
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage: %@\n", self.currentLanguage);
+        self.currentDocument.language = [self.defaults stringForKey:kLanguage];
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
         NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
         
     } else {
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage == not nil");
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage: %@\n", self.currentLanguage);
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language == not nil");
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
         NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
     }
 }
@@ -132,21 +145,14 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    self.currentLanguage = [self.languageCodes objectAtIndex:row];
+    self.currentDocument.language = [self.languageCodes objectAtIndex:row];
     
     
     if (self.defaults == nil) {
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
-    [self.defaults setObject:self.currentLanguage forKey:kLanguage];
+    [self.defaults setObject:self.currentDocument.language forKey:kLanguage];
     [self.defaults synchronize];
-    
-    //Post a notification when picked
-    [[NSNotificationCenter defaultCenter] postNotificationName: @"DidPickedLanguageNotification" object:nil userInfo:nil];
-    
-    ContainerViewController *controller = (ContainerViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
-    controller.currentDocument = self.currentDocument;
-    controller.currentDocument.language = self.currentLanguage;
 }
 
 
@@ -163,6 +169,12 @@
 - (IBAction)returnButtonTapped:(id)sender
 {
 	NSLog(@"self.returnButton Tapped");
+    //Post a notification when picked
+    [[NSNotificationCenter defaultCenter] postNotificationName: @"DidPickedLanguageNotification" object:nil userInfo:nil];
+    
+    ContainerViewController *controller = (ContainerViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
+    controller.currentDocument.language = self.currentDocument.language;
+    controller.currentDocument = self.currentDocument;
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
