@@ -32,15 +32,29 @@
 {
     [super viewDidLoad];
 	
-	[self restoreUserPreferences];
-	
-	NSUInteger index = [self.languageCodes indexOfObject:self.currentLanguage];
-	if (index != NSNotFound)
-	{
-		[self.languagePickerView selectRow:index inComponent:0 animated:NO];
-	}
+//	[self restoreUserPreferences];
+//	
+//    NSUInteger index = [self.languageCodes indexOfObject:self.currentLanguage];
+//    if (index != NSNotFound)
+//    {
+//        [self.languagePickerView selectRow:index inComponent:0 animated:NO];
+//    }
 	
 	[self configureUI];
+}
+
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [self restoreUserPreferences];
+    
+    NSUInteger index = [self.languageCodes indexOfObject:self.currentLanguage];
+    if (index != NSNotFound)
+    {
+        [self.languagePickerView selectRow:index inComponent:0 animated:YES];
+    }
 }
 
 
@@ -48,20 +62,24 @@
 
 - (void)restoreUserPreferences
 {
-    if (self.defaults == nil) {
+    if (!self.defaults) {
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
 	
     if (self.currentLanguage == nil) {
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage == nil");
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage: %@\n", self.currentLanguage);
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
         NSDictionary *currentLanguage = @{ kLanguage:currentLanguageCode };
         [self.defaults registerDefaults:currentLanguage];
         self.currentLanguage = [self.defaults stringForKey:kLanguage];
-        NSLog (@"self.currentLanguage: %@\n", self.currentLanguage);
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage: %@\n", self.currentLanguage);
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
         
     } else {
-        
-        NSLog (@"self.currentLanguage: %@\n", self.currentLanguage);
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage == not nil");
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentLanguage: %@\n", self.currentLanguage);
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
     }
 }
 
@@ -87,8 +105,8 @@
 		
 		NSLocale *currentLocale = [NSLocale autoupdatingCurrentLocale];
 		NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-		for (NSString *code in languages)
-		{
+		
+        for (NSString *code in languages) {
 			dictionary[code] = [currentLocale displayNameForKey:NSLocaleIdentifier value:code];
             //NSLog (@"dictionary[code]: %@\n", dictionary[code]);
 		}
@@ -114,20 +132,21 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-	self.currentLanguage = [self.languageCodes objectAtIndex:row];
-	
+    self.currentLanguage = [self.languageCodes objectAtIndex:row];
+    
     
     if (self.defaults == nil) {
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
-	[self.defaults setObject:self.currentLanguage forKey:kLanguage];
-	[self.defaults synchronize];
-	
-	//Post a notification when picked
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DidPickedLanguageNotification" object:nil userInfo:nil];
-	
-	ContainerViewController *controller = (ContainerViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
-	controller.language = self.currentLanguage;
+    [self.defaults setObject:self.currentLanguage forKey:kLanguage];
+    [self.defaults synchronize];
+    
+    //Post a notification when picked
+    [[NSNotificationCenter defaultCenter] postNotificationName: @"DidPickedLanguageNotification" object:nil userInfo:nil];
+    
+    ContainerViewController *controller = (ContainerViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
+    controller.currentDocument = self.currentDocument;
+    controller.currentDocument.language = self.currentLanguage;
 }
 
 

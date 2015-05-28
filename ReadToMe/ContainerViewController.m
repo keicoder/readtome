@@ -235,10 +235,12 @@
     self.utterance.preUtteranceDelay = 0.3f;
     self.utterance.postUtteranceDelay = 0.3f;
     
-    //Slider value
-    self.volumeSlider.value = self.utterance.volume;
-    self.pitchSlider.value = self.utterance.pitchMultiplier;
-    self.rateSlider.value = self.utterance.rate;
+    if (!self.synthesizer) {
+        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
+        self.synthesizer.delegate = self;
+    }
+    
+    [self.synthesizer speakUtterance:self.utterance];
 }
 
 
@@ -248,20 +250,18 @@
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    [self stopSpeaking];
     [self setupUtterance];
     
-    if (!self.synthesizer) {
-        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-        self.synthesizer.delegate = self;
+    NSRange range = NSMakeRange(0 , 0);
+    self.textView.selectedRange = range;
+    if (_isTypeSelecting) {
+        [self selectWord];
     }
     
     self.textView.editable = NO;
     if ([self.textView isFirstResponder]) {
         [self.textView resignFirstResponder];
     }
-    
-    [self.synthesizer speakUtterance:self.utterance];
     
     _paused = NO;
     CGFloat duration = 0.25f;
@@ -320,6 +320,7 @@
     
     [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
+    
     _paused = YES;
     
     _selectedRange = NSMakeRange(0, 0);
@@ -350,11 +351,8 @@
 
 - (void)startPauseContinueStopSpeaking:(id)sender
 {
-    [self setupUtterance];
-    
-    if (!self.synthesizer) {
-        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-        self.synthesizer.delegate = self;
+    if (self.synthesizer.isSpeaking == NO) {
+        [self startSpeaking];
     }
     
     if (_paused == YES) {
@@ -364,17 +362,15 @@
         [self pauseSpeaking];
     }
     
-    if (self.synthesizer.isSpeaking == NO) {
-        [self startSpeaking];
-    }
-    
     if (_isTypeSelecting == YES) {
         [self selectWord];
     }
     
     if (_paused == YES) {
         self.textView.editable = YES;
-        [self.textView resignFirstResponder];
+        if ([self.textView isFirstResponder]) {
+            [self.textView resignFirstResponder];
+        }
     }
 }
 
@@ -391,7 +387,6 @@
     CGFloat duration = 0.25f;
     
     if (_floatingViewExpanded) {
-        
         [self.textView resignFirstResponder];
         
         if (_equalizerViewExpanded == YES) {
@@ -414,9 +409,6 @@
         }];
         
         [self checkWhetherSavingDocumentOrNot];
-        [self executePerformFetch];
-        [self.tableView reloadData];
-        NSLog(@"_floatingViewExpanded > [self.tableView reloadData]");
         
     } else {
         
@@ -522,16 +514,47 @@
     [self setDateAttributes];
     
     //Speech Attributes
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    
     NSString *language = [self.defaults objectForKey:kLanguage];
+    if (!language) {
+        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
+        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
+        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
+        language = defaultLanguageName;
+        //UserDefaults
+        [self.defaults setObject:language forKey:kLanguage];
+        [self.defaults synchronize];
+    }
     self.currentDocument.language = language;
     
     float volume = [self.defaults floatForKey:kVolumeValue];
+    if (volume <= 0.0) {
+        volume = 1.0;
+        //UserDefaults
+        [self.defaults setFloat:volume forKey:kVolumeValue];
+        [self.defaults synchronize];
+    }
     self.currentDocument.volume = [NSNumber numberWithFloat:volume];
     
     float pitch = [self.defaults floatForKey:kPitchValue];
+    if (pitch <= 0.5) {
+        pitch = 1.0;
+        //UserDefaults
+        [self.defaults setFloat:pitch forKey:kPitchValue];
+        [self.defaults synchronize];
+    }
     self.currentDocument.pitch = [NSNumber numberWithFloat:pitch];
     
     float rate = [self.defaults floatForKey:kRateValue];
+    if (rate <= 0.0) {
+        rate = 0.07;
+        //UserDefaults
+        [self.defaults setFloat:rate forKey:kRateValue];
+        [self.defaults synchronize];
+    }
     self.currentDocument.rate = [NSNumber numberWithFloat:rate];
     
     //Slider value
@@ -608,6 +631,8 @@
 	LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
 	[self presentViewController:controller animated:YES completion:^{
         controller.currentLanguage = self.currentDocument.language;
+        controller.currentDocument = self.currentDocument;
+        NSLog (@"showLanguagePickerView > self.currentDocument: %@\n", self.currentDocument);
     }];
 }
 
@@ -697,7 +722,7 @@
     if ([self.textView isFirstResponder]) {
         [self.textView resignFirstResponder];
     }
-    [self pauseSpeaking];
+    
     [self updateSpeechDocumentAndAttributes]; //다큐먼트 업데이트
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
@@ -707,7 +732,10 @@
     [[DataManager sharedDataManager].managedObjectContext performBlock:^{
         NSError *error = nil;
         if ([[DataManager sharedDataManager].managedObjectContext save:&error]) {
-            NSLog(@"Saved");
+            
+            NSLog(@"Document saved > executePerformFetch, tableView reloadData");
+            [self executePerformFetch];
+            [self.tableView reloadData];
             [self showLog];
         } else {
             NSLog(@"Error saving context: %@", error);
@@ -738,8 +766,11 @@
     }
     
     //User defaults sync
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    
     _lastViewedDocument = self.textView.text;
-    if (!self.defaults) { self.defaults = [NSUserDefaults standardUserDefaults]; }
     [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
     [self.defaults setObject:self.currentDocument.language forKey:kLanguage];
     [self.defaults setFloat:[self.currentDocument.volume floatValue] forKey:kVolumeValue];
@@ -983,27 +1014,47 @@
 
 #pragma mark - Slider value changed
 
-- (IBAction)sliderValueChanged:(UISlider *)sender
+- (IBAction)progressSliderValueChanged:(UISlider *)sender
 {
-    if (sender == self.progressSlider) {
-        self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
-        
-    } else if (sender == self.volumeSlider) {
-        [self stopSpeaking];
-        [self.defaults setFloat:self.volumeSlider.value forKey:kVolumeValue];
-        [self.defaults synchronize];
-        
-    } else if (sender == self.pitchSlider) {
-        [self stopSpeaking];
-        [self.defaults setFloat:self.pitchSlider.value forKey:kPitchValue];
-        [self.defaults synchronize];
-        
-    } else if (sender == self.rateSlider) {
-        [self stopSpeaking];
-        [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
-        [self.defaults synchronize];
+    self.progressSlider.value = _speechLocationPercentValueInWholeTexts;
+}
+
+
+- (IBAction)volumeSliderValueChanged:(UISlider *)sender
+{
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
     }
     
+    [self stopSpeaking];
+    [self.defaults setFloat:self.volumeSlider.value forKey:kVolumeValue];
+    [self.defaults synchronize];
+    [self saveSpeechDocumentAndAttributes];
+}
+
+
+- (IBAction)pitchSliderValueChanged:(UISlider *)sender
+{
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    
+    [self stopSpeaking];
+    [self.defaults setFloat:self.pitchSlider.value forKey:kPitchValue];
+    [self.defaults synchronize];
+    [self saveSpeechDocumentAndAttributes];
+}
+
+
+- (IBAction)rateSliderValueChanged:(UISlider *)sender
+{
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    
+    [self stopSpeaking];
+    [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
+    [self.defaults synchronize];
     [self saveSpeechDocumentAndAttributes];
 }
 
@@ -1046,6 +1097,8 @@
     [self.defaults synchronize];
     
     [self saveSpeechDocumentAndAttributes];
+    
+    NSLog (@"didPickedLanguageNotification > self.currentDocument: %@\n", self.currentDocument);
 }
 
 
@@ -1139,6 +1192,7 @@
         [self stopSpeaking];
         self.currentDocument.document = self.textView.text;
         self.pasteBoard.string = self.textView.text;
+        [self saveSpeechDocumentAndAttributes];
         
     } else {
         NSLog(@"textViewDidEndEditing > Nothing Changed");
@@ -1364,6 +1418,10 @@
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    
     if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
         NSLog(@"First time launching!");
         
@@ -1372,11 +1430,20 @@
         NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
         [self.defaults setObject:defaultLanguageName forKey:kLanguage];
         
+        float volume = 1.0;
+        float pitch = 1.0;
+        float rate = 0.07;
         [self.defaults setBool:YES forKey:kTypeSelecting];
-        [self.defaults setFloat:1.0 forKey:kVolumeValue];
-        [self.defaults setFloat:1.0 forKey:kPitchValue];
-        [self.defaults setFloat:0.07 forKey:kRateValue];
+        [self.defaults setFloat:volume forKey:kVolumeValue];
+        [self.defaults setFloat:pitch forKey:kPitchValue];
+        [self.defaults setFloat:rate forKey:kRateValue];
+        
         _lastViewedDocument = @"";
+        _isTypeSelecting = YES;
+        
+        self.volumeSlider.value = volume;
+        self.pitchSlider.value = pitch;
+        self.rateSlider.value = rate;
         
         [self.defaults setBool:YES forKey:kHasLaunchedOnce];
         [self.defaults synchronize];
@@ -1441,6 +1508,10 @@
     
     self.textView.text = self.currentDocument.document;
     _lastViewedDocument = self.currentDocument.document;
+    
+    self.volumeSlider.value = [self.currentDocument.volume floatValue];
+    self.pitchSlider.value = [self.currentDocument.pitch floatValue];
+    self.rateSlider.value = [self.currentDocument.rate floatValue];
     
     [self saveIndexPath:indexPath];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

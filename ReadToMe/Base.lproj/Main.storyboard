@@ -214,7 +214,7 @@
                                         <color key="maximumTrackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="thumbTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <connections>
-                                            <action selector="sliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="yOX-pz-WLq"/>
+                                            <action selector="progressSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="KfA-Ul-eWN"/>
                                         </connections>
                                     </slider>
                                 </subviews>
@@ -239,7 +239,7 @@
                                         <rect key="frame" x="116" y="16" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
-                                            <action selector="sliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="bUI-Ra-xdV"/>
+                                            <action selector="volumeSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="xEW-pk-rX7"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pitch" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OwE-xb-ztj">
@@ -252,7 +252,7 @@
                                         <rect key="frame" x="116" y="60" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
-                                            <action selector="sliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="ZlI-EB-Jss"/>
+                                            <action selector="pitchSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="dtg-AK-eVR"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Skf-hE-fIQ">
@@ -265,7 +265,7 @@
                                         <rect key="frame" x="116" y="104" width="453" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
-                                            <action selector="sliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="V01-tc-Qv9"/>
+                                            <action selector="rateSliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="yRZ-kx-xpJ"/>
                                         </connections>
                                     </slider>
                                 </subviews>
@@ -439,7 +439,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c8E-Cu-pMp">
-                                                            <rect key="frame" x="76" y="8" width="208" height="44"/>
+                                                            <rect key="frame" x="80" y="8" width="204" height="44"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="44" id="ptw-ye-ETr"/>
                                                             </constraints>
@@ -472,7 +472,7 @@
                                                         <constraint firstItem="lOw-NG-p1J" firstAttribute="centerX" secondItem="9z3-XN-2px" secondAttribute="centerX" constant="0.5" id="0FV-iC-ROl"/>
                                                         <constraint firstItem="1Dv-77-WrU" firstAttribute="bottom" secondItem="TWV-sf-dyg" secondAttribute="bottomMargin" id="0uA-uy-Q1S"/>
                                                         <constraint firstItem="lOw-NG-p1J" firstAttribute="bottom" secondItem="TWV-sf-dyg" secondAttribute="bottomMargin" id="Eqh-Qj-sOY"/>
-                                                        <constraint firstItem="9z3-XN-2px" firstAttribute="trailing" secondItem="c8E-Cu-pMp" secondAttribute="leading" constant="-8" id="UjO-Vc-4sI"/>
+                                                        <constraint firstItem="c8E-Cu-pMp" firstAttribute="leading" secondItem="TWV-sf-dyg" secondAttribute="leadingMargin" constant="72" id="Ffd-gK-6jP"/>
                                                         <constraint firstItem="9z3-XN-2px" firstAttribute="top" secondItem="TWV-sf-dyg" secondAttribute="topMargin" id="bm8-Mt-qC1"/>
                                                         <constraint firstItem="9z3-XN-2px" firstAttribute="leading" secondItem="TWV-sf-dyg" secondAttribute="leadingMargin" id="f90-xz-I15"/>
                                                         <constraint firstItem="c8E-Cu-pMp" firstAttribute="trailing" secondItem="TWV-sf-dyg" secondAttribute="trailingMargin" constant="-8" id="iCF-Nq-YnL"/>
