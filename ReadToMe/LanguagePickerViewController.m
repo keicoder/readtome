@@ -30,15 +30,6 @@
 }
 
 
-#pragma mark - Document in Managed Object Context
-
-//- (void)documentForSpeech:(DocumentsForSpeech *)document inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-//{
-//    self.currentDocument = document;
-//    self.managedObjectContext = managedObjectContext;
-//}
-
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -53,20 +44,6 @@
 	
 	[self configureUI];
 }
-
-
-//- (void)viewDidAppear:(BOOL)animated
-//{
-//    [super viewDidAppear:animated];
-//    
-//    [self restoreUserPreferences];
-//    
-//    NSUInteger index = [self.languageCodes indexOfObject:self.currentDocument.language];
-//    if (index != NSNotFound)
-//    {
-//        [self.languagePickerView selectRow:index inComponent:0 animated:YES];
-//    }
-//}
 
 
 #pragma mark - State Restoration

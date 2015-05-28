@@ -629,15 +629,10 @@
 - (void)showLanguagePickerView:(id)sender
 {
 	LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
-    //[controller documentForSpeech:self.currentDocument inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
+    
     controller.currentDocument = self.currentDocument;
-//    controller.currentLanguage = self.currentDocument.language;
     NSLog (@"showLanguagePickerView > self.currentDocument: %@\n", self.currentDocument);
-	[self presentViewController:controller animated:YES completion:^{
-//        [controller documentForSpeech:self.currentDocument inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
-//        controller.currentLanguage = self.currentDocument.language;
-//        controller.currentDocument = self.currentDocument;
-    }];
+	[self presentViewController:controller animated:YES completion:^{ }];
 }
 
 
