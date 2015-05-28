@@ -61,7 +61,7 @@
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, strong) NSMutableArray *fetchedDocuments;
+
 @property (nonatomic, strong) NSDateFormatter *formatter;
 
 @property (nonatomic, strong) NSUserDefaults *sharedDefaults;
@@ -75,14 +75,10 @@
 @property (nonatomic, assign) float pitch;
 @property (nonatomic, assign) float rate;
 
-@property (strong, nonatomic) NSDictionary *paragraphAttributes;
-
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *menuViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *saveAlertViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyboardAccessoryViewHeightConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *progressInfoViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *floatingBackgroundViewWidthConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *floatingViewWidthConstraint;
 
@@ -138,12 +134,11 @@
 {
 	BOOL _paused;
     BOOL _isTypeSelecting;
-	BOOL _equalizerViewExpanded;
-    NSRange _selectedRange;
-    NSString *_lastViewedDocument;
-    NSString *_subString;
-    float _speechLocationPercentValueInWholeTexts;
+    BOOL _equalizerViewExpanded;
     BOOL _floatingViewExpanded;
+    NSString *_lastViewedDocument;
+    NSRange _selectedRange;
+    float _speechLocationPercentValueInWholeTexts;
 }
 
 
@@ -156,16 +151,14 @@
 	[super viewDidLoad];
     
 	[self configureUI];
-    [self setInitialObjectsForSpeech];
-    [self stopSpeaking];
+    [self hideSlideViewAndEqualizerViewWithNoAnimation];
     [self checkHasLaunchedOnce];
     [self addObserver];
     [self addTapGesture];
     [self addSwipeGesture];
-    
-    _floatingViewExpanded = YES;
     self.textView.editable = NO;
-    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    _floatingViewExpanded = NO;
+    [self listButtonTapped:self];
 }
 
 
@@ -178,31 +171,13 @@
     [self setInitialDataForSpeech];
     [self executePerformFetch];
     [self.tableView reloadData];
-    NSLog(@"viewWillAppear > [self.tableView reloadData]");
-}
-
-
--(void)viewDidAppear:(BOOL)animated
-{
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    [super viewDidAppear:animated];
     [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
 }
 
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    [super viewWillDisappear:animated];
-    [self checkWhetherSavingDocumentOrNot];
-}
+#pragma mark - State Restoration
 
-
-#pragma mark - Set Initial Data
-
-- (void)setInitialObjectsForSpeech
+- (void)setInitialDataForSpeech
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
@@ -220,7 +195,28 @@
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
     
-    [self hideSlideViewAndEqualizerViewWithNoAnimation];
+    self.volumeSlider.value = [self.defaults floatForKey:kVolumeValue];
+    self.pitchSlider.value = [self.defaults floatForKey:kPitchValue];
+    self.rateSlider.value = [self.defaults floatForKey:kRateValue];
+    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
+    
+    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
+    if (_isTypeSelecting) { //Change icon color
+        [self changeSelectionButtonToColored:YES withSlideAnimation:NO];
+    } else {
+        [self changeSelectionButtonToColored:NO withSlideAnimation:NO];
+    }
+    
+    [self showLog];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    [super viewWillDisappear:animated];
+    [self checkWhetherSavingDocumentOrNot];
 }
 
 
@@ -230,17 +226,6 @@
 
 - (void)setupUtterance
 {
-    //Check if attributes are nil;
-    if (!self.currentDocument.language) {
-        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
-        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
-        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
-        self.currentDocument.language = defaultLanguageName;
-    }
-    if (!self.currentDocument.volume) { self.currentDocument.volume = @1.0; }
-    if (!self.currentDocument.pitch) { self.currentDocument.pitch = @1.0; }
-    if (!self.currentDocument.rate) { self.utterance.rate = 0.07; }
-    
     //Put attributes into objects
     self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
     self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
@@ -354,7 +339,6 @@
 - (IBAction)playPauseButtonTapped:(id)sender
 {
     if (_equalizerViewExpanded == YES) {
-        
         [self adjustEqualizerViewHeight:0.0];
         [self performSelector:@selector(startPauseContinueStopSpeaking:) withObject:nil afterDelay:0.35];
         
@@ -471,6 +455,54 @@
 {
     if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
+    if (self.pasteBoard.string.length > 0 && ![self.pasteBoard.string isEqualToString:_lastViewedDocument]) {
+        
+        //Arert view showing
+        NSLog(@"addButtonTapped > checkIfThereAreNewClipboardTexts > Found new pasteboard string > Arert view displaying");
+        
+        //Alert cotroller and Alert action
+        NSString *title = @"Found clipboard texts.";
+        NSString *message = @"Paste it?";
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *clipboardAction  = [UIAlertAction actionWithTitle:@"Paste Clipboard Texts" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            
+            NSLog(@"Paste Clipboard Texts");
+            
+            [self createNewDocumentWithTexts:self.pasteBoard.string];
+        }];
+        
+        UIAlertAction *addAction  = [UIAlertAction actionWithTitle:@"New Document" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            
+            NSLog(@"New Document");
+            
+            [self createNewDocumentWithTexts:kBlankText];
+        }];
+        
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            
+            NSLog(@"Cancel");
+        }];
+        
+        [alert addAction:clipboardAction];
+        [alert addAction:addAction];
+        [alert addAction:cancel];
+        
+        alert.popoverPresentationController.sourceView = self.view;
+        alert.popoverPresentationController.sourceRect = self.view.frame;
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    } else {
+        
+        [self createNewDocumentWithTexts:kBlankText];
+    }
+}
+
+
+- (void)createNewDocumentWithTexts:(NSString *)texts
+{
     self.textView.editable = YES;
     
     if (_floatingViewExpanded) {
@@ -480,25 +512,32 @@
     self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
     
     //Document Attributes
-    self.currentDocument.documentTitle = kBlankText;
-    self.currentDocument.document = kBlankText;
+    self.currentDocument.documentTitle = texts;
+    self.currentDocument.document = texts;
     self.textView.text = self.currentDocument.document;
-    _lastViewedDocument = self.currentDocument.document;
+    _lastViewedDocument = kBlankText;
     
     //Date Attributes
     self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
     [self setDateAttributes];
     
     //Speech Attributes
-    self.currentDocument.language = [self.defaults objectForKey:kLanguage];
-    self.currentDocument.volume = [NSNumber numberWithFloat:[self.defaults floatForKey:kVolumeValue]];
-    self.currentDocument.pitch = [NSNumber numberWithFloat:[self.defaults floatForKey:kPitchValue]];
-    self.currentDocument.rate = [NSNumber numberWithFloat:[self.defaults floatForKey:kRateValue]];
+    NSString *language = [self.defaults objectForKey:kLanguage];
+    self.currentDocument.language = language;
+    
+    float volume = [self.defaults floatForKey:kVolumeValue];
+    self.currentDocument.volume = [NSNumber numberWithFloat:volume];
+    
+    float pitch = [self.defaults floatForKey:kPitchValue];
+    self.currentDocument.pitch = [NSNumber numberWithFloat:pitch];
+    
+    float rate = [self.defaults floatForKey:kRateValue];
+    self.currentDocument.rate = [NSNumber numberWithFloat:rate];
     
     //Slider value
-    self.volumeSlider.value = [self.currentDocument.volume floatValue];
-    self.pitchSlider.value = [self.currentDocument.pitch floatValue];
-    self.rateSlider.value = [self.currentDocument.rate floatValue];
+    self.volumeSlider.value = volume;
+    self.pitchSlider.value = pitch;
+    self.rateSlider.value = rate;
     
     [self.textView becomeFirstResponder];
     
@@ -621,169 +660,6 @@
 }
 
 
-#pragma mark Keyboard Accessory Buttons Action Methods
-
-- (IBAction)previousButtonTapped:(id)sender
-{
-    self.previousButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previousCharacter:) userInfo:nil repeats:YES];
-    [self.previousButtonTimer fire];
-}
-
-
--(void)previousCharacter:(id)sender
-{
-    if (self.previousButton.state == UIControlStateNormal){
-        [self.previousButtonTimer invalidate];
-        self.previousButtonTimer = nil;
-    }
-    else {
-        UITextRange *selectedRange = [self.textView selectedTextRange];
-        
-        if (self.textView.selectedRange.location > 0)
-        {
-            UITextPosition *newPosition = [self.textView positionFromPosition:selectedRange.start offset:-1];
-            UITextRange *newRange = [self.textView textRangeFromPosition:newPosition toPosition:newPosition];
-            [self.textView setSelectedTextRange:newRange];
-        }
-        [self.textView scrollToVisibleCaretAnimated];
-    }
-}
-
-
-- (IBAction)keyboardDownButtonTapped:(id)sender
-{
-    [self.textView resignFirstResponder];
-}
-
-
-- (IBAction)selectButtonTapped:(id)sender
-{
-    NSRange selectedRange = self.textView.selectedRange;
-    
-    if (![self.textView hasText])
-    {
-        [self.textView select:self];
-    }
-    else if ([self.textView hasText] && selectedRange.length == 0)
-    {
-        [self.textView select:self];
-    }
-    else if ([self.textView hasText] && selectedRange.length > 0)
-    {
-        selectedRange.location = selectedRange.location + selectedRange.length;
-        selectedRange.length = 0;
-        self.textView.selectedRange = selectedRange;
-    }
-}
-
-
-- (IBAction)nextButtonTapped:(id)sender
-{
-    self.nextButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(nextCharacter:) userInfo:nil repeats:YES];
-    [self.nextButtonTimer fire];
-}
-
-
--(void)nextCharacter:(id)sender
-{
-    if (self.nextButton.state == UIControlStateNormal){
-        [self.nextButtonTimer invalidate];
-        self.nextButtonTimer = nil;
-    }
-    else {
-        UITextRange *selectedRange = [self.textView selectedTextRange];
-        
-        if (self.textView.selectedRange.location < self.textView.text.length)
-        {
-            UITextPosition *newPosition = [self.textView positionFromPosition:selectedRange.start offset:1];
-            UITextRange *newRange = [self.textView textRangeFromPosition:newPosition toPosition:newPosition];
-            [self.textView setSelectedTextRange:newRange];
-        }
-        [self.textView scrollToVisibleCaretAnimated];
-    }
-}
-
-
-#pragma mark - State Restoration
-
-- (void)setInitialDataForSpeech
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
-    
-    self.volumeSlider.value = [self.defaults floatForKey:kVolumeValue];
-    self.pitchSlider.value = [self.defaults floatForKey:kPitchValue];
-    self.rateSlider.value = [self.defaults floatForKey:kRateValue];
-    _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
-    
-    _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    if (_isTypeSelecting) {
-        //Change icon color
-        [self changeSelectionButtonToColored:YES withSlideAnimation:NO];
-    } else {
-        [self changeSelectionButtonToColored:NO withSlideAnimation:NO];
-    }
-}
-
-
-#pragma mark - Check if there are new clipboard texts
-
-- (void)checkIfThereAreNewClipboardTexts
-{
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    if (![self.pasteBoard.string isEqualToString:_lastViewedDocument]) {
-        //Arert View
-        NSLog(@"checkIfThereAreNewClipboardTexts > Found new pasteboard string > Arert view displaying");
-        
-        //Alert Cotroller and Alert Action
-        NSString *title = @"Found new clipboard texts";
-        NSString *message = @"Paste it?";
-        
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction *yes  = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            
-            NSLog(@"YES Button Tapped");
-            
-            self.textView.editable = YES;
-            
-            if (_floatingViewExpanded) {
-                [self listButtonTapped:self];
-            }
-            
-            self.currentDocument = [NSEntityDescription insertNewObjectForEntityForName:@"DocumentsForSpeech" inManagedObjectContext:[DataManager sharedDataManager].managedObjectContext];
-            
-            self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
-            self.currentDocument.document = self.pasteBoard.string;
-            self.textView.text = self.pasteBoard.string;
-            _lastViewedDocument = kBlankText;
-            
-            NSLog (@"checkIfThereAreNewClipboardTexts > self.currentDocument: %@\n", self.currentDocument);
-            NSLog (@"checkIfThereAreNewClipboardTexts > _lastViewedDocument: %@\n", _lastViewedDocument);
-            
-            [self.textView becomeFirstResponder];
-        }];
-        
-        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            
-            NSLog(@"Cancel paste clipboard texts");
-        }];
-        
-        [alert addAction:yes];
-        [alert addAction:cancel];
-        
-        alert.popoverPresentationController.sourceView = self.view;
-        alert.popoverPresentationController.sourceRect = self.view.frame;
-        
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-
 #pragma mark - Save Data
 #pragma mark Saving
 
@@ -799,8 +675,6 @@
         } else {
             NSLog(@"It's new document and have texts, so save document");
             [self saveSpeechDocumentAndAttributes];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-            [self saveIndexPath:indexPath];
         }
         
     } else {
@@ -811,8 +685,6 @@
         } else {
             NSLog(@"Document updated, so save document");
             [self saveSpeechDocumentAndAttributes];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-            [self saveIndexPath:indexPath];
         }
     }
 }
@@ -827,6 +699,9 @@
     }
     [self pauseSpeaking];
     [self updateSpeechDocumentAndAttributes]; //다큐먼트 업데이트
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self saveIndexPath:indexPath];
     
     //Save
     [[DataManager sharedDataManager].managedObjectContext performBlock:^{
@@ -878,7 +753,7 @@
     //Date Attributes
     NSDate *now = [NSDate date];
     
-    if (self.currentDocument.isNewDocument) {
+    if ([self.currentDocument.isNewDocument boolValue] == YES) {
         self.currentDocument.createdDate = now;
     }
     self.currentDocument.modifiedDate = now;
@@ -1114,22 +989,21 @@
         
     } else if (sender == self.volumeSlider) {
         [self stopSpeaking];
-        self.currentDocument.volume = [NSNumber numberWithFloat:self.volumeSlider.value];
         [self.defaults setFloat:self.volumeSlider.value forKey:kVolumeValue];
         [self.defaults synchronize];
         
     } else if (sender == self.pitchSlider) {
         [self stopSpeaking];
-        self.currentDocument.pitch = [NSNumber numberWithFloat:self.pitchSlider.value];
         [self.defaults setFloat:self.pitchSlider.value forKey:kPitchValue];
         [self.defaults synchronize];
         
     } else if (sender == self.rateSlider) {
         [self stopSpeaking];
-        self.currentDocument.rate = [NSNumber numberWithFloat:self.rateSlider.value];
         [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
         [self.defaults synchronize];
     }
+    
+    [self saveSpeechDocumentAndAttributes];
 }
 
 
@@ -1142,12 +1016,6 @@
     //Picked Language
     [center addObserver:self selector:@selector(didPickedLanguageNotification:) name:@"DidPickedLanguageNotification" object:nil];
     
-    //Select Document
-//    [center addObserver:self selector:@selector(didReceivedSelectDocumentsForSpeechNotification:) name:@"DidSelectDocumentsForSpeechNotification" object:nil];
-    
-    //Slider Value
-//    [center addObserver:self selector:@selector(didChangeSliderValue:) name:@"DidChangeSliderValueNotification" object:nil];
-    
     //Keyboard
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:self.view.window];
     [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window];
@@ -1156,10 +1024,7 @@
     [center addObserver:self selector:@selector(deviceOrientationChanged:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
     
     //Application Status
-    [center addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
-    [center addObserver:self selector:@selector(applicationDidBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     [center addObserver:self selector:@selector(applicationDidEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [center addObserver:self selector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
     [center addObserver:self selector:@selector(applicationDidReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     [center addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
@@ -1173,11 +1038,13 @@
     
     [self stopSpeaking];
     
-    if (self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+    if (self.defaults) { self.defaults = [NSUserDefaults standardUserDefaults]; }
     
     self.currentDocument.language = [self.defaults objectForKey:kLanguage];
+    [self.defaults setObject:self.currentDocument.language forKey:kLanguage];
+    [self.defaults synchronize];
+    
+    [self saveSpeechDocumentAndAttributes];
 }
 
 
@@ -1192,8 +1059,8 @@
     CGFloat progressViewHeight = CGRectGetHeight(self.progressView.frame);
     
     [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight - progressViewHeight];
-    
     self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
+    
     [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.view layoutIfNeeded];
         self.keyboardDownButton.alpha = 1.0;
@@ -1205,8 +1072,8 @@
 - (void)keyboardWillHide:(NSNotification*)notification
 {
     [self adjustEqualizerViewHeight:0.0];
-    
     self.keyboardAccessoryViewHeightConstraint.constant = 0.0;
+    
     [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.view layoutIfNeeded];
         self.keyboardDownButton.alpha = 0.0;
@@ -1280,31 +1147,11 @@
 
 #pragma mark Application's State
 
-- (void)applicationWillResignActive
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-}
-
-
 - (void)applicationDidEnterBackground
 {
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     NSLog(@"applicationDidEnterBackground > checkWhetherSavingDocumentOrNot");
     [self checkWhetherSavingDocumentOrNot];
-}
-
-
-- (void)applicationWillEnterForeground
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-}
-
-
-- (void)applicationDidBecomeActive
-{
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    [self checkIfThereAreNewClipboardTexts];
 }
 
 
@@ -1517,18 +1364,21 @@
     if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
-        
-        [self.defaults setBool:YES forKey:kHasLaunchedOnce];
+        NSLog(@"First time launching!");
         
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
         NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
         NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
         [self.defaults setObject:defaultLanguageName forKey:kLanguage];
+        
         [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults setFloat:1.0 forKey:kVolumeValue];
         [self.defaults setFloat:1.0 forKey:kPitchValue];
         [self.defaults setFloat:0.07 forKey:kRateValue];
         _lastViewedDocument = @"";
+        
+        [self.defaults setBool:YES forKey:kHasLaunchedOnce];
+        [self.defaults synchronize];
     }
 }
 
@@ -1690,6 +1540,89 @@
     if (swipeGesture.direction & UISwipeGestureRecognizerDirectionRight){
         _floatingViewExpanded = NO;
         [self listButtonTapped:swipeGesture];
+    }
+}
+
+
+#pragma mark Keyboard Accessory Buttons Action Methods
+
+- (IBAction)previousButtonTapped:(id)sender
+{
+    self.previousButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previousCharacter:) userInfo:nil repeats:YES];
+    [self.previousButtonTimer fire];
+}
+
+
+-(void)previousCharacter:(id)sender
+{
+    if (self.previousButton.state == UIControlStateNormal){
+        [self.previousButtonTimer invalidate];
+        self.previousButtonTimer = nil;
+    }
+    else {
+        UITextRange *selectedRange = [self.textView selectedTextRange];
+        
+        if (self.textView.selectedRange.location > 0)
+        {
+            UITextPosition *newPosition = [self.textView positionFromPosition:selectedRange.start offset:-1];
+            UITextRange *newRange = [self.textView textRangeFromPosition:newPosition toPosition:newPosition];
+            [self.textView setSelectedTextRange:newRange];
+        }
+        [self.textView scrollToVisibleCaretAnimated];
+    }
+}
+
+
+- (IBAction)keyboardDownButtonTapped:(id)sender
+{
+    [self.textView resignFirstResponder];
+}
+
+
+- (IBAction)selectButtonTapped:(id)sender
+{
+    NSRange selectedRange = self.textView.selectedRange;
+    
+    if (![self.textView hasText])
+    {
+        [self.textView select:self];
+    }
+    else if ([self.textView hasText] && selectedRange.length == 0)
+    {
+        [self.textView select:self];
+    }
+    else if ([self.textView hasText] && selectedRange.length > 0)
+    {
+        selectedRange.location = selectedRange.location + selectedRange.length;
+        selectedRange.length = 0;
+        self.textView.selectedRange = selectedRange;
+    }
+}
+
+
+- (IBAction)nextButtonTapped:(id)sender
+{
+    self.nextButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(nextCharacter:) userInfo:nil repeats:YES];
+    [self.nextButtonTimer fire];
+}
+
+
+-(void)nextCharacter:(id)sender
+{
+    if (self.nextButton.state == UIControlStateNormal){
+        [self.nextButtonTimer invalidate];
+        self.nextButtonTimer = nil;
+    }
+    else {
+        UITextRange *selectedRange = [self.textView selectedTextRange];
+        
+        if (self.textView.selectedRange.location < self.textView.text.length)
+        {
+            UITextPosition *newPosition = [self.textView positionFromPosition:selectedRange.start offset:1];
+            UITextRange *newRange = [self.textView textRangeFromPosition:newPosition toPosition:newPosition];
+            [self.textView setSelectedTextRange:newRange];
+        }
+        [self.textView scrollToVisibleCaretAnimated];
     }
 }
 

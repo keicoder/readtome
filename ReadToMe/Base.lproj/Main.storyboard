@@ -563,7 +563,6 @@
                         <outlet property="addButton" destination="jNs-6D-jHY" id="smg-vY-Wm6"/>
                         <outlet property="archiveButton" destination="8pi-Cu-ToX" id="MCT-rL-mw9"/>
                         <outlet property="bottomView" destination="Wws-1S-BRE" id="fjh-w7-D5G"/>
-                        <outlet property="bottomViewHeightConstraint" destination="del-jg-4jZ" id="DOc-6C-4dY"/>
                         <outlet property="closeButton" destination="uTF-u7-cZ8" id="Gjg-eP-AgO"/>
                         <outlet property="equalizerButton" destination="UuS-46-ldZ" id="UlX-Wi-kb0"/>
                         <outlet property="equalizerView" destination="ofM-O5-Xtc" id="7sj-mZ-m5G"/>
@@ -585,7 +584,6 @@
                         <outlet property="pitchSlider" destination="PDz-gG-Mvc" id="Lye-RR-NeI"/>
                         <outlet property="playPauseButton" destination="djw-qX-P0a" id="o9K-Lj-sya"/>
                         <outlet property="previousButton" destination="nGq-jO-cKw" id="mKb-ji-bVL"/>
-                        <outlet property="progressInfoViewHeightConstraint" destination="JUg-3N-Tig" id="be1-Wc-K60"/>
                         <outlet property="progressSlider" destination="BVz-FP-Yrg" id="GkV-Bd-qEa"/>
                         <outlet property="progressView" destination="Ch7-hb-2ah" id="uU2-fa-S81"/>
                         <outlet property="rateLabel" destination="Skf-hE-fIQ" id="bei-Lv-jda"/>
