@@ -59,7 +59,6 @@
 		C12F07971ABF88FD0039EA89 /* ReadToMeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C12F07961ABF88FD0039EA89 /* ReadToMeTests.m */; };
 		C16754991AC3A81E009F4D88 /* PopView.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754971AC3A81E009F4D88 /* PopView.m */; };
 		C167549D1AC4EDDD009F4D88 /* LanguagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */; };
-		C16754A11AC6AC33009F4D88 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C16754A01AC6AC33009F4D88 /* ListViewController.m */; };
 		C18978F31ACCC28D00BFFA61 /* correct.caf in Resources */ = {isa = PBXBuildFile; fileRef = C18978F21ACCC28D00BFFA61 /* correct.caf */; };
 		C18978F71ACCD74800BFFA61 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978F61ACCD74800BFFA61 /* AboutViewController.m */; };
 		C18978FB1ACCD78A00BFFA61 /* GradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = C18978FA1ACCD78A00BFFA61 /* GradientView.m */; };
@@ -261,8 +260,6 @@
 		C16754981AC3A81E009F4D88 /* PopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopView.h; sourceTree = "<group>"; };
 		C167549B1AC4EDDD009F4D88 /* LanguagePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LanguagePickerViewController.h; sourceTree = "<group>"; };
 		C167549C1AC4EDDD009F4D88 /* LanguagePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LanguagePickerViewController.m; sourceTree = "<group>"; };
-		C167549F1AC6AC33009F4D88 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
-		C16754A01AC6AC33009F4D88 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 		C18978F21ACCC28D00BFFA61 /* correct.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = correct.caf; sourceTree = "<group>"; };
 		C18978F51ACCD74800BFFA61 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		C18978F61ACCD74800BFFA61 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
@@ -641,8 +638,6 @@
 			children = (
 				C12F077B1ABF88FD0039EA89 /* AppDelegate.h */,
 				C12F077C1ABF88FD0039EA89 /* AppDelegate.m */,
-				C167549F1AC6AC33009F4D88 /* ListViewController.h */,
-				C16754A01AC6AC33009F4D88 /* ListViewController.m */,
 				C12F07811ABF88FD0039EA89 /* ContainerViewController.h */,
 				C12F07821ABF88FD0039EA89 /* ContainerViewController.m */,
 				C1FB14DE1AC29B5700F24030 /* SettingsViewController.h */,
@@ -995,7 +990,6 @@
 				C12F077D1ABF88FD0039EA89 /* AppDelegate.m in Sources */,
 				C18978F71ACCD74800BFFA61 /* AboutViewController.m in Sources */,
 				C12F077A1ABF88FD0039EA89 /* main.m in Sources */,
-				C16754A11AC6AC33009F4D88 /* ListViewController.m in Sources */,
 				C110F2A21AC12F4000B4E355 /* POPAnimationExtras.mm in Sources */,
 				C16754991AC3A81E009F4D88 /* PopView.m in Sources */,
 				C12F07831ABF88FD0039EA89 /* ContainerViewController.m in Sources */,
