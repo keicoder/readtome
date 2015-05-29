@@ -177,6 +177,8 @@
 		32D6517F1ADA056100B16DCE /* ReadToMeTodayExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ReadToMeTodayExtension.entitlements; sourceTree = "<group>"; };
 		32D651CC1ADB4D8300B16DCE /* KeiTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeiTextView.h; sourceTree = "<group>"; };
 		32D651CD1ADB4D8300B16DCE /* KeiTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeiTextView.m; sourceTree = "<group>"; };
+		32FD4FC81B1809B100E01780 /* KeiConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeiConstant.h; sourceTree = "<group>"; };
+		32FD4FC91B1809CA00E01780 /* KeiPrefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeiPrefix.pch; sourceTree = "<group>"; };
 		C110F2611AC12F4000B4E355 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C110F2621AC12F4000B4E355 /* pop-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "pop-Info.plist"; sourceTree = "<group>"; };
 		C110F2631AC12F4000B4E355 /* pop-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pop-Prefix.pch"; sourceTree = "<group>"; };
@@ -442,6 +444,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		32FD4FC71B18094000E01780 /* Constant */ = {
+			isa = PBXGroup;
+			children = (
+				32FD4FC81B1809B100E01780 /* KeiConstant.h */,
+			);
+			name = Constant;
+			sourceTree = "<group>";
+		};
 		C110F25F1AC12F4000B4E355 /* pop */ = {
 			isa = PBXGroup;
 			children = (
@@ -561,6 +571,7 @@
 				C1FB14DD1AC29B2200F24030 /* Data */,
 				C18978F11ACCC27400BFFA61 /* Sound */,
 				C1FB14DC1AC29B0B00F24030 /* UI */,
+				32FD4FC71B18094000E01780 /* Constant */,
 				32554DA41B117132009ED509 /* Categories */,
 				C1FB14DB1AC29AF300F24030 /* Controllers */,
 				C110F2C01AC12F8000B4E355 /* popView */,
@@ -573,6 +584,7 @@
 		C12F07771ABF88FD0039EA89 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				32FD4FC91B1809CA00E01780 /* KeiPrefix.pch */,
 				C12F07781ABF88FD0039EA89 /* Info.plist */,
 				C12F07791ABF88FD0039EA89 /* main.m */,
 			);
@@ -1259,6 +1271,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				GCC_PREFIX_HEADER = ReadToMe/KeiPrefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -1495,6 +1508,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				GCC_PREFIX_HEADER = ReadToMe/KeiPrefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -1515,6 +1529,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				GCC_PREFIX_HEADER = ReadToMe/KeiPrefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,

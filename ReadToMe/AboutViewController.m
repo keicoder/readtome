@@ -8,7 +8,6 @@
 
 #import "AboutViewController.h"
 #import "GradientView.h"
-#import "UIImage+ChangeColor.h"
 
 
 @interface AboutViewController () <UIGestureRecognizerDelegate>

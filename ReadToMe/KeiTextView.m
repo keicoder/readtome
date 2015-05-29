@@ -6,8 +6,6 @@
 //  Copyright (c) 2015년 keicoder. All rights reserved.
 //
 
-#define debug 1
-
 
 #import <tgmath.h>
 #import "KeiTextView.h"
@@ -52,7 +50,7 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     NSDictionary *userInfoDictionary = notification.userInfo;
     CGFloat duration = [[userInfoDictionary objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
@@ -69,7 +67,7 @@
 
 - (void)updateNoteTextViewInsetWithKeyboard:(NSNotification*)notification
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     CGFloat contentInsetBottom = 0.f;
     contentInsetBottom = __tg_fmin(CGRectGetHeight(_keyboardRect), CGRectGetWidth(_keyboardRect));
@@ -80,7 +78,7 @@
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     NSDictionary *userInfoDictionary = notification.userInfo;
     CGFloat duration = [[userInfoDictionary objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
@@ -95,7 +93,7 @@
 
 - (void)updateNoteTextViewInsetWithoutKeyboard
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     UIEdgeInsets contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
     self.contentInset = contentInset;

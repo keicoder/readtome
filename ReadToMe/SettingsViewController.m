@@ -9,19 +9,14 @@
 #define kBackgroundPlayValue	@"kBackgroundPlayValue"
 #define kBackgroundOn			@"Background On"
 #define kBackgroundOff			@"Background Off"
-#define kIsOnColor		[UIColor colorWithRed:1 green:0.73 blue:0.2 alpha:1]
-#define kIsOffColor		[UIColor colorWithRed:0.227 green:0.414 blue:0.610 alpha:1.000]
-#define iPad			[[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad
+#define kIsOnColor              [UIColor colorWithRed:1 green:0.73 blue:0.2 alpha:1]
+#define kIsOffColor             [UIColor colorWithRed:0.227 green:0.414 blue:0.610 alpha:1.000]
 
 
 #import "SettingsViewController.h"
-#import "UIImage+ChangeColor.h"
-#import "PopView.h"
-#import "LanguagePickerViewController.h"
-#import <AudioToolbox/AudioToolbox.h>
 #import "AboutViewController.h"
-#import <MessageUI/MessageUI.h>
 #import "OpenSourceLicencesViewController.h"
+#import "PopView.h"
 
 
 @interface SettingsViewController () <UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate>

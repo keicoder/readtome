@@ -6,11 +6,8 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
-#define kLanguage               @"kLanguage"
-
 
 #import "LanguagePickerViewController.h"
-#import "UIImage+ChangeColor.h"
 #import "ContainerViewController.h"
 
 

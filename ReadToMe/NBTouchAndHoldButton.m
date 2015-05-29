@@ -35,15 +35,7 @@
     NSValue* repeateSelectorAsValue;
     __weak typeof(id) targetOfRepeatSel;
 }
-/*
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-    
-    }
-    return self;
-}*/
+
 
 - (void)addTarget:(id)target action:(SEL)action forTouchAndHoldControlEventWithTimeInterval:(NSTimeInterval)periodTime{
     dt = periodTime;

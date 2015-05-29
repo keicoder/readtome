@@ -6,55 +6,10 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
-#define debug                       1
 
-
-#define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
-#define kSharedDocument                         @"kSharedDocument"
-#define kIsSharedDocument                       @"kIsSharedDocument"
-#define kTodayDocument                          @"kTodayDocument"
-#define kIsTodayDocument                        @"kIsTodayDocument"
-#define kIsSelectedDocumentFromListView         @"kIsSelectedDocumentFromListView"
-#define kIsNewDocument                          @"Already Saved Document"
-#define kIsSavedDocument                        @"kIsSavedDocument"
-
-#define kSelectedRangeLocation                  @"kSelectedRangeLocation"
-#define kSelectedRangeLength                    @"kSelectedRangeLength"
-
-#define kSlideViewHeight                        40.0
-
-#define kPause                                  [UIImage imageNamed:@"pause"]
-#define kPlay                                   [UIImage imageNamed:@"play"]
-
-#define kHasLaunchedOnce                        @"kHasLaunchedOnce"
-#define kTypeSelecting                          @"kTypeSelecting"
-#define kLanguage                               @"kLanguage"
-#define kVolumeValue                            @"kVolumeValue"
-#define kPitchValue                             @"kPitchValue"
-#define kRateValue                              @"kRateValue"
-
-#define kLastViewedDocument                     @"kLastViewedDocument"
-#define kSavedDocument                          @"kSavedDocument"
-
-#define kNothingToSaveColor                     [UIColor colorWithRed:0.984 green:0.447 blue:0 alpha:1]
-
-#define kBlankText  @""
-#define kSelectedDocumentIndex                  @"kSelectedDocumentIndex"
-#define kSelectedDocumentIndexPath              @"kSelectedDocumentIndexPath"
-
-
-@import AVFoundation;
-#import <CoreData/CoreData.h>
 #import "ContainerViewController.h"
-#import "DocumentsForSpeech.h"
-#import "DataManager.h"
-#import "KeiTextView.h"
-#import "UIImage+ChangeColor.h"
-#import "SettingsViewController.h"
 #import "LanguagePickerViewController.h"
-#import "ListViewController.h"
-#import "NSUserDefaults+Extension.h"
-#import "ListTableViewCell.h"
+#import "SettingsViewController.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
@@ -146,7 +101,7 @@
 
 - (void)viewDidLoad
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
 	[super viewDidLoad];
     
@@ -164,7 +119,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
 	[super viewWillAppear:animated];
     
@@ -179,7 +134,7 @@
 
 - (void)setInitialDataForSpeech
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (!self.synthesizer) {
         self.synthesizer = [[AVSpeechSynthesizer alloc]init];
@@ -213,7 +168,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     [super viewWillDisappear:animated];
     [self checkWhetherSavingDocumentOrNot];
@@ -253,7 +208,7 @@
 
 - (void)startSpeaking
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     [self setupUtterance];
     
@@ -279,7 +234,7 @@
 
 - (void)pauseSpeaking
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     [self saveSelectedRangeValue];
     
@@ -296,7 +251,7 @@
 
 - (void)continueSpeaking
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     self.textView.editable = NO;
     if ([self.textView isFirstResponder]) {
@@ -316,7 +271,7 @@
 
 - (void)stopSpeaking
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     self.textView.editable = YES;
     if ([self.textView isFirstResponder]) {
@@ -384,7 +339,7 @@
 
 - (IBAction)listButtonTapped:(id)sender
 {
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     [self pauseSpeaking];
     _floatingViewExpanded = !_floatingViewExpanded;
@@ -450,7 +405,7 @@
 
 - (IBAction)addButtonTapped:(id)sender
 {
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (self.pasteBoard.string.length > 0 && ![self.pasteBoard.string isEqualToString:_lastViewedDocument]) {
         
@@ -702,7 +657,7 @@
 
 - (void)checkWhetherSavingDocumentOrNot
 {
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if ([self.currentDocument.isNewDocument boolValue] == YES) {
         
@@ -729,7 +684,7 @@
 
 - (void)saveSpeechDocumentAndAttributes
 {
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if ([self.textView isFirstResponder]) {
         [self.textView resignFirstResponder];
@@ -881,7 +836,7 @@
 
 - (void)executePerformFetch
 {
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     NSError *error = nil;
     if (![[self fetchedResultsController] performFetch:&error]) {
@@ -977,7 +932,7 @@
 
 - (void)selectWord
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (_isTypeSelecting == YES) {
         
@@ -1152,7 +1107,7 @@
 
 - (void)deviceOrientationChanged:(NSNotification *)notification
 {
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (_floatingViewExpanded) {
         [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.0];
@@ -1177,7 +1132,7 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     CGFloat duration = 0.25f;
     [UIView animateWithDuration:duration animations:^{
@@ -1188,7 +1143,7 @@
 
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if ([textView isFirstResponder]) {
         [textView resignFirstResponder];
@@ -1216,7 +1171,7 @@
 
 - (void)applicationDidEnterBackground
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     NSLog(@"applicationDidEnterBackground > checkWhetherSavingDocumentOrNot");
     [self checkWhetherSavingDocumentOrNot];
 }
@@ -1224,7 +1179,7 @@
 
 - (void)applicationDidReceiveMemoryWarning
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     NSLog(@"applicationDidReceiveMemoryWarning > checkWhetherSavingDocumentOrNot");
     [self checkWhetherSavingDocumentOrNot];
 }
@@ -1232,7 +1187,7 @@
 
 - (void)applicationWillTerminate
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     NSLog(@"applicationWillTerminate > checkWhetherSavingDocumentOrNot");
     [self checkWhetherSavingDocumentOrNot];
 }
@@ -1428,7 +1383,7 @@
 
 - (void)checkHasLaunchedOnce
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (!self.defaults) {
         self.defaults = [NSUserDefaults standardUserDefaults];
@@ -1509,7 +1464,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     [self stopSpeaking];
     
@@ -1543,7 +1498,7 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        if (debug==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+        if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
         
         [self deleteCoreDataNoteObject:indexPath];
         
@@ -1715,7 +1670,7 @@
 
 - (void)configureUI
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     self.menuView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
     self.saveAlertView.backgroundColor = [UIColor colorWithRed:0.945 green:0.671 blue:0.686 alpha:1];

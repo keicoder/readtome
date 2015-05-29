@@ -6,12 +6,8 @@
 //  Copyright (c) 2015 keicoder. All rights reserved.
 //
 
-#define debug 1
 
-#define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
 #define kIsSelectedDocumentFromListView         @"kIsSelectedDocumentFromListView"
-#define kIsSharedDocument                       @"kIsSharedDocument"
-#define kIsTodayDocument                        @"kIsTodayDocument"
 #define kIsNewDocument                          @"kIsNewDocument"
 #define kIsSavedDocument                        @"kIsSavedDocument"
 
@@ -273,7 +269,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
 	DocumentsForSpeech *documentsForSpeech = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
