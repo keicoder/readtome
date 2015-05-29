@@ -226,6 +226,11 @@
 
 - (void)setupUtterance
 {
+    if ([self.currentDocument.isNewDocument boolValue] == YES) {
+        //Speech Attributes
+        [self setSpeechAttributesValue];
+    }
+    
     //Put attributes into objects
     self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
     self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
@@ -513,6 +518,16 @@
     self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
     [self setDateAttributes];
     
+    [self setSpeechAttributesValue];
+    
+    [self.textView becomeFirstResponder];
+    
+    [self showLog];
+}
+
+
+- (void)setSpeechAttributesValue
+{
     //Speech Attributes
     if (!self.defaults) {
         self.defaults = [NSUserDefaults standardUserDefaults];
@@ -561,12 +576,10 @@
     self.volumeSlider.value = volume;
     self.pitchSlider.value = pitch;
     self.rateSlider.value = rate;
-    
-    [self.textView becomeFirstResponder];
-    
-    [self showLog];
 }
 
+
+#pragma mark 리셋 버튼
 
 - (IBAction)resetButtonTapped:(id)sender
 {
