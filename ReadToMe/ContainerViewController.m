@@ -716,6 +716,11 @@
 
 - (void)updateSpeechDocumentAndAttributes
 {
+    //User defaults
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    
     //Speech Attributes
     self.currentDocument.language = [self.defaults objectForKey:kLanguage];
     self.currentDocument.volume = [NSNumber numberWithFloat:[self.defaults floatForKey:kVolumeValue]];
@@ -726,6 +731,7 @@
     NSString *firstLineForTitle = [self retrieveFirstLineOfStringForTitle:self.textView.text];
     self.currentDocument.documentTitle = firstLineForTitle;
     self.currentDocument.document = self.textView.text;
+    _lastViewedDocument = self.textView.text;
     
     //Date Attributes
     [self setDateAttributes];
@@ -736,11 +742,6 @@
     }
     
     //User defaults sync
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
-    
-    _lastViewedDocument = self.textView.text;
     [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
     [self.defaults setObject:self.currentDocument.language forKey:kLanguage];
     [self.defaults setFloat:[self.currentDocument.volume floatValue] forKey:kVolumeValue];
@@ -1556,7 +1557,7 @@
     self.textView.editable = YES;
     
     self.currentDocument = (DocumentsForSpeech *)[self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog (@"self.currentDocument: %@\n", self.currentDocument);
+    NSLog (@"didSelectRowAtIndexPath > self.currentDocument: %@\n", self.currentDocument);
     
     self.textView.text = self.currentDocument.document;
     _lastViewedDocument = self.currentDocument.document;
@@ -1568,6 +1569,19 @@
     [self saveIndexPath:indexPath];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     [self listButtonTapped:self];
+    
+    //User defaults
+    if (!self.defaults) {
+        self.defaults = [NSUserDefaults standardUserDefaults];
+    }
+    //User defaults sync
+    [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
+    [self.defaults setObject:self.currentDocument.language forKey:kLanguage];
+    [self.defaults setFloat:[self.currentDocument.volume floatValue] forKey:kVolumeValue];
+    [self.defaults setFloat:[self.currentDocument.pitch floatValue] forKey:kPitchValue];
+    [self.defaults setFloat:[self.currentDocument.rate floatValue] forKey:kRateValue];
+    [self.defaults synchronize];
+    
 }
 
 
@@ -1767,7 +1781,7 @@
     self.tableView.backgroundColor = [UIColor whiteColor];
     
     //키보드 액세서리 뷰
-    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.988 green:0.831 blue:0.345 alpha:1]; //[UIColor colorWithRed:0.71 green:0.714 blue:0.722 alpha:1];
+    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.255 green:0.427 blue:0.475 alpha:1]; //[UIColor colorWithRed:0.008 green:0.141 blue:0.227 alpha:1];
     
     //Image View
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
