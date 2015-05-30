@@ -189,11 +189,6 @@
 
 - (void)setupUtterance
 {
-    if ([self.currentDocument.isNewDocument boolValue] == YES) {
-        //Speech Attributes
-        [self setSpeechAttributesValue];
-    }
-    
     //Put attributes into objects
     self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
     self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
@@ -219,6 +214,10 @@
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     [self setupUtterance];
+    
+    if ([self.currentDocument.volume floatValue] <= 0) {
+        [self setSpeechAttributesValue];
+    }
     
     if (self.textView.text.length > 0) {
         _selectedRange = NSMakeRange(0 , 1);
@@ -298,7 +297,11 @@
     
     _paused = YES;
     
-    _selectedRange = NSMakeRange(0, 0);
+    if (self.textView.text.length > 0) {
+        _selectedRange = NSMakeRange(0 , 1);
+    } else {
+        _selectedRange = NSMakeRange(0 , 0);
+    }
     self.textView.selectedRange = _selectedRange;
     
     CGFloat duration = 0.25f;
