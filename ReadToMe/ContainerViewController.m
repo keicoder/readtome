@@ -1591,6 +1591,7 @@
             self.currentDocument = nil;
             self.textView.text = kBlankText;
             self.textView.editable = NO;
+            [self stopSpeaking]; //If there's paused speech, stop it.
         }
     }
 }
