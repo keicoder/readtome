@@ -362,18 +362,22 @@
         CGFloat floatingViewWidth = CGRectGetWidth(self.view.bounds) * 0.7;
         self.floatingViewWidthConstraint.constant = floatingViewWidth;
         
-        [UIView animateWithDuration:duration animations:^{
+        //Spring Animation
+        [UIView animateWithDuration:duration delay:0.0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
+            
             self.addButton.alpha = 1.0;
             self.closeButton.alpha = 1.0;
             [self.view layoutIfNeeded];
             
-        }completion:^(BOOL finished) {
+        } completion:^(BOOL finished) {
+            
             CGFloat floatingBackgroundViewWidth = CGRectGetWidth(self.view.bounds);
             self.floatingBackgroundViewWidthConstraint.constant = floatingBackgroundViewWidth;
             
             [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
         }];
         
+        //Whether to save
         [self checkWhetherSavingDocumentOrNot];
         
     } else {
@@ -578,6 +582,7 @@
         
     } else {
         [self changeSelectionButtonToColored:YES withSlideAnimation:YES];
+        self.textView.editable = NO; //Prevent keyboard pop-up
         [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.2];
     }
 }
@@ -1288,7 +1293,8 @@
         [self.defaults setBool:YES forKey:kTypeSelecting];
         [self.defaults synchronize];
         
-        CGFloat duration = 0.35f;
+        //Spring animation
+        CGFloat duration = 0.25f;
         [UIView animateWithDuration:duration animations:^{
             
             UIImage *image = [UIImage imageForChangingColor:@"selection" color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1]];
@@ -1306,7 +1312,7 @@
         [self.defaults setBool:NO forKey:kTypeSelecting];
         [self.defaults synchronize];
         
-        CGFloat duration = 0.35f;
+        CGFloat duration = 0.25f;
         [UIView animateWithDuration:duration animations:^{
             
             UIImage *image = [UIImage imageForChangingColor:@"selection" color:[UIColor whiteColor]];
@@ -1363,14 +1369,15 @@
 
 - (void)adjustSlideViewHeightWithTitle:(NSString *)string height:(float)height color:(UIColor *)color withSender:(UIButton *)button
 {
-    CGFloat duration = 0.3f;
+    CGFloat duration = 0.25f;
     CGFloat delay = 0.0f;
     
     self.saveAlertViewHeightConstraint.constant = height;
     button.enabled = NO;
     self.saveAlertView.backgroundColor = color;
     
-    [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+    //Spring animation
+    [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
         
         [self.view layoutIfNeeded];
         self.saveAlertLabel.alpha = 1.0;
@@ -1389,6 +1396,7 @@
                 self.saveAlertLabel.alpha = 0.0;
                 
             } completion:^(BOOL finished) {
+                
                 button.enabled = YES;
             }];
         });
@@ -1404,14 +1412,11 @@
     
     CGFloat duration = 0.25f;
     CGFloat delay = 0.0f;
-    [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
-        
-        [self.view layoutIfNeeded];
+    
+    //Spring animation
+    [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
         
         if (height == 0) {
-            
-            _equalizerViewExpanded = NO;
-            
             self.volumeLabel.alpha = 0.0;
             self.pitchLabel.alpha = 0.0;
             self.rateLabel.alpha = 0.0;
@@ -1419,17 +1424,20 @@
             self.pitchSlider.alpha = 0.0;
             self.rateSlider.alpha = 0.0;
             
+            _equalizerViewExpanded = NO;
+            
         } else {
-            
-            _equalizerViewExpanded = YES;
-            
             self.volumeLabel.alpha = 1.0;
             self.pitchLabel.alpha = 1.0;
             self.rateLabel.alpha = 1.0;
             self.volumeSlider.alpha = 1.0;
             self.pitchSlider.alpha = 1.0;
             self.rateSlider.alpha = 1.0;
+            
+            _equalizerViewExpanded = YES;
         }
+        
+        [self.view layoutIfNeeded];
         
     } completion:^(BOOL finished) { }];
 }
