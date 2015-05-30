@@ -111,6 +111,7 @@
     [self addObserver];
     [self addTapGesture];
     [self addSwipeGesture];
+    
     self.textView.editable = NO;
     _floatingViewExpanded = NO;
     [self listButtonTapped:self];
@@ -126,6 +127,9 @@
     [self setInitialDataForSpeech];
     [self executePerformFetch];
     [self.tableView reloadData];
+    
+    _paused = YES;
+    
     [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
 }
 
@@ -216,15 +220,18 @@
     
     [self setupUtterance];
     
-    NSRange range = NSMakeRange(0 , 0);
-    self.textView.selectedRange = range;
-    if (_isTypeSelecting) {
-        [self selectWord];
+    if (self.textView.text.length > 0) {
+        _selectedRange = NSMakeRange(0 , 1);
+    } else {
+        _selectedRange = NSMakeRange(0 , 0);
     }
+    self.textView.selectedRange = _selectedRange;
     
     self.textView.editable = NO;
-    if ([self.textView isFirstResponder]) {
-        [self.textView resignFirstResponder];
+    [self.textView resignFirstResponder];
+    
+    if (_isTypeSelecting) {
+        [self selectWord];
     }
     
     _paused = NO;
@@ -249,7 +256,11 @@
     [UIView animateWithDuration:duration animations:^{
         [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
         self.resetButton.alpha = 0.0;
+        
     }completion:^(BOOL finished) { }];
+    
+    self.textView.editable = YES;
+    [self.textView resignFirstResponder];
 }
 
 
@@ -258,8 +269,10 @@
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     self.textView.editable = NO;
-    if ([self.textView isFirstResponder]) {
-        [self.textView resignFirstResponder];
+    [self.textView resignFirstResponder];
+    
+    if (_isTypeSelecting == YES) {
+        [self selectWord];
     }
     
     [self.synthesizer continueSpeaking];
@@ -278,9 +291,7 @@
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     self.textView.editable = YES;
-    if ([self.textView isFirstResponder]) {
-        [self.textView resignFirstResponder];
-    }
+    [self.textView resignFirstResponder];
     
     [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
@@ -317,24 +328,12 @@
 {
     if (self.synthesizer.isSpeaking == NO) {
         [self startSpeaking];
-    }
-    
-    if (_paused == YES) {
+        
+    } else if (_paused == YES) {
         [self continueSpeaking];
         
     } else {
         [self pauseSpeaking];
-    }
-    
-    if (_isTypeSelecting == YES) {
-        [self selectWord];
-    }
-    
-    if (_paused == YES) {
-        self.textView.editable = YES;
-        if ([self.textView isFirstResponder]) {
-            [self.textView resignFirstResponder];
-        }
     }
 }
 
@@ -423,21 +422,18 @@
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction *clipboardAction  = [UIAlertAction actionWithTitle:@"Paste Clipboard Texts" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            
-            NSLog(@"Paste Clipboard Texts");
-            
+            NSLog(@"New document with clipboard texts");
             [self createNewDocumentWithTexts:self.pasteBoard.string];
+            [self.textView becomeFirstResponder];
         }];
         
         UIAlertAction *addAction  = [UIAlertAction actionWithTitle:@"New Document" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            
-            NSLog(@"New Document");
-            
+            NSLog(@"New document with blank text");
             [self createNewDocumentWithTexts:kBlankText];
+            [self.textView becomeFirstResponder];
         }];
         
         UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            
             NSLog(@"Cancel");
         }];
         
@@ -453,14 +449,13 @@
     } else {
         
         [self createNewDocumentWithTexts:kBlankText];
+        [self.textView becomeFirstResponder];
     }
 }
 
 
 - (void)createNewDocumentWithTexts:(NSString *)texts
 {
-    self.textView.editable = YES;
-    
     if (_floatingViewExpanded) {
         [self listButtonTapped:self];
     }
@@ -473,15 +468,16 @@
     self.textView.text = self.currentDocument.document;
     _lastViewedDocument = kBlankText;
     
-    //Date Attributes
+    //Other Attributes
     self.currentDocument.isNewDocument = [NSNumber numberWithBool:YES];
     [self setDateAttributes];
-    
     [self setSpeechAttributesValue];
-    
-    [self.textView becomeFirstResponder];
-    
     [self showLog];
+    
+    _selectedRange = NSMakeRange(0 , 0);
+    self.textView.selectedRange = _selectedRange;
+    
+    self.textView.editable = YES;
 }
 
 
@@ -1086,6 +1082,7 @@
     CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
     CGFloat progressViewHeight = CGRectGetHeight(self.progressView.frame);
     
+    self.menuViewHeightConstraint.constant = 0.0;
     [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight - progressViewHeight];
     self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
     
@@ -1100,6 +1097,12 @@
 - (void)keyboardWillHide:(NSNotification*)notification
 {
     [self adjustEqualizerViewHeight:0.0];
+    if (iPad) {
+        self.menuViewHeightConstraint.constant = 60.0;
+    } else {
+        self.menuViewHeightConstraint.constant = 44.0;
+    }
+    
     self.keyboardAccessoryViewHeightConstraint.constant = 0.0;
     
     [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -1266,7 +1269,9 @@
         kLogBOOL(self.isSharedDocument);
     }
     
-    [self.textView resignFirstResponder];
+    if ([self.textView isFirstResponder]) {
+        [self.textView resignFirstResponder];
+    }
 }
 
 
@@ -1698,21 +1703,21 @@
 
 - (IBAction)selectButtonTapped:(id)sender
 {
-    NSRange selectedRange = self.textView.selectedRange;
+    _selectedRange = self.textView.selectedRange;
     
     if (![self.textView hasText])
     {
         [self.textView select:self];
     }
-    else if ([self.textView hasText] && selectedRange.length == 0)
+    else if ([self.textView hasText] && _selectedRange.length == 0)
     {
         [self.textView select:self];
     }
-    else if ([self.textView hasText] && selectedRange.length > 0)
+    else if ([self.textView hasText] && _selectedRange.length > 0)
     {
-        selectedRange.location = selectedRange.location + selectedRange.length;
-        selectedRange.length = 0;
-        self.textView.selectedRange = selectedRange;
+        _selectedRange.location = _selectedRange.location + _selectedRange.length;
+        _selectedRange.length = 0;
+        self.textView.selectedRange = _selectedRange;
     }
 }
 
@@ -1729,8 +1734,8 @@
     if (self.nextButton.state == UIControlStateNormal){
         [self.nextButtonTimer invalidate];
         self.nextButtonTimer = nil;
-    }
-    else {
+    
+    } else {
         UITextRange *selectedRange = [self.textView selectedTextRange];
         
         if (self.textView.selectedRange.location < self.textView.text.length)
