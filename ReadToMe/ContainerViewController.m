@@ -127,6 +127,16 @@
     [self executePerformFetch];
     [self.tableView reloadData];
     [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
+    [self checkIfExtensionDocument];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    [super viewWillDisappear:animated];
+    [self checkWhetherSavingDocumentOrNot];
 }
 
 
@@ -150,6 +160,10 @@
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
     
+    if (!self.sharedDefaults) {
+        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
+    }
+    
     self.volumeSlider.value = [self.defaults floatForKey:kVolumeValue];
     self.pitchSlider.value = [self.defaults floatForKey:kPitchValue];
     self.rateSlider.value = [self.defaults floatForKey:kRateValue];
@@ -163,15 +177,6 @@
     }
     
     [self showLog];
-}
-
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    [super viewWillDisappear:animated];
-    [self checkWhetherSavingDocumentOrNot];
 }
 
 
@@ -1043,7 +1048,10 @@
     [center addObserver:self selector:@selector(deviceOrientationChanged:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
     
     //Application Status
+    [center addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     [center addObserver:self selector:@selector(applicationDidEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [center addObserver:self selector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [center addObserver:self selector:@selector(applicationDidBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     [center addObserver:self selector:@selector(applicationDidReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     [center addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
@@ -1169,6 +1177,12 @@
 
 #pragma mark Application's State
 
+- (void)applicationWillResignActive
+{
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+}
+
+
 - (void)applicationDidEnterBackground
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
@@ -1177,11 +1191,25 @@
 }
 
 
+- (void)applicationWillEnterForeground
+{
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    [self checkIfExtensionDocument];
+}
+
+
+- (void)applicationDidBecomeActive
+{
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+}
+
+
 - (void)applicationDidReceiveMemoryWarning
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     NSLog(@"applicationDidReceiveMemoryWarning > checkWhetherSavingDocumentOrNot");
     [self checkWhetherSavingDocumentOrNot];
+    [self stopSpeaking];
 }
 
 
@@ -1190,6 +1218,36 @@
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     NSLog(@"applicationWillTerminate > checkWhetherSavingDocumentOrNot");
     [self checkWhetherSavingDocumentOrNot];
+    [self stopSpeaking];
+}
+
+
+#pragma mark - Check if extension document
+
+- (void)checkIfExtensionDocument
+{
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
+    if (!self.sharedDefaults) {
+        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
+    }
+    
+    self.isSharedDocument = [self.sharedDefaults boolForKey:kIsSharedDocument];
+    kLogBOOL(self.isSharedDocument);
+    
+    if (self.isSharedDocument) {
+        NSLog(@"Found Shared Document");
+        
+        //add new document
+        NSString *document = [self.sharedDefaults objectForKey:kSharedDocument];
+        [self createNewDocumentWithTexts:document];
+        
+        //SharedDefaults sync
+        [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
+        [self.sharedDefaults synchronize];
+        self.isSharedDocument = NO;
+        kLogBOOL(self.isSharedDocument);
+    }
 }
 
 

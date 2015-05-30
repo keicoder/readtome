@@ -884,7 +884,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qqT-tU-SNa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="838" y="1106"/>
+            <point key="canvasLocation" x="838" y="1004"/>
         </scene>
         <!--About View Controller-->
         <scene sceneID="YvF-50-7Wk">
@@ -972,7 +972,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W8U-Fe-0Uk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1462" y="460"/>
+            <point key="canvasLocation" x="1462" y="339"/>
         </scene>
         <!--Open Source Licences View Controller-->
         <scene sceneID="p0F-N1-K88">
@@ -1048,7 +1048,7 @@ When the button in the toolbar is tapped, an activity view controller is present
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vCa-Dz-AR4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1462" y="1106"/>
+            <point key="canvasLocation" x="1462" y="1004"/>
         </scene>
     </scenes>
     <resources>

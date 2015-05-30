@@ -82,6 +82,7 @@
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
             [sharedDefaults setObject:self.pasteBoard.string forKey:kTodayDocument];
             [sharedDefaults setBool:YES forKey:kIsTodayDocument];
+            [sharedDefaults setObject:self.readToMeLabel.text forKey:kTodayDocument];
             [sharedDefaults synchronize];
             
             [responder performSelector:@selector(openURL:) withObject:[NSURL URLWithString:@"readtome://"]];

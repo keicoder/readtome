@@ -18,7 +18,9 @@
 //Global Attributes
 #define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
 #define kIsSharedDocument                       @"kIsSharedDocument"
+#define kSharedDocument                         @"kSharedDocument"
 #define kIsTodayDocument                        @"kIsTodayDocument"
+#define kTodayDocument                          @"kTodayDocument"
 
 //Speech Attributes
 #define kLanguage                               @"kLanguage"

@@ -12,16 +12,9 @@
 @interface ContainerViewController : UIViewController
 
 @property (strong, nonatomic) DocumentsForSpeech *currentDocument;
-@property (nonatomic, strong) NSString *language;
 
 @property (nonatomic, assign) BOOL isSharedDocument;
 @property (nonatomic, assign) BOOL isTodayDocument;
-@property (nonatomic, assign) BOOL isSelectedDocumentFromListView;
-
-@property (nonatomic, assign) BOOL isNewDocument;
-@property (nonatomic, assign) BOOL isSavedDocument;
-
-
 
 @end
 
