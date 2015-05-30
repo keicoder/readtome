@@ -127,7 +127,6 @@
     [self executePerformFetch];
     [self.tableView reloadData];
     [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
-    [self checkIfExtensionDocument];
 }
 
 
@@ -1232,10 +1231,28 @@
         self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
     }
     
+    //Today Extension
+    self.isTodayDocument = [self.sharedDefaults boolForKey:kIsTodayDocument];
+    kLogBOOL(self.isTodayDocument);
+    
+    //Share Extension
     self.isSharedDocument = [self.sharedDefaults boolForKey:kIsSharedDocument];
     kLogBOOL(self.isSharedDocument);
     
-    if (self.isSharedDocument) {
+    if (self.isTodayDocument) {
+        NSLog(@"Found Today Document");
+        
+        //add new document
+        NSString *document = [self.sharedDefaults objectForKey:kTodayDocument];
+        [self createNewDocumentWithTexts:document];
+        
+        //SharedDefaults sync
+        [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
+        [self.sharedDefaults synchronize];
+        self.isTodayDocument = NO;
+        kLogBOOL(self.isTodayDocument);
+        
+    } else if (self.isSharedDocument) {
         NSLog(@"Found Shared Document");
         
         //add new document
@@ -1248,6 +1265,8 @@
         self.isSharedDocument = NO;
         kLogBOOL(self.isSharedDocument);
     }
+    
+    [self.textView resignFirstResponder];
 }
 
 
