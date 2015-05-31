@@ -10,6 +10,7 @@
 #import "ContainerViewController.h"
 #import "LanguagePickerViewController.h"
 #import "SettingsViewController.h"
+#import "DRPageScrollView.h"
 
 
 @interface ContainerViewController () <AVSpeechSynthesizerDelegate, NSFetchedResultsControllerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
@@ -81,6 +82,8 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIButton *addButton;
 @property (weak, nonatomic) IBOutlet UIButton *closeButton;
+
+@property (nonatomic, strong) DRPageScrollView *pageScrollView;
 
 @end
 
@@ -1519,6 +1522,62 @@
         [self.defaults setBool:YES forKey:kHasLaunchedOnce];
         [self.defaults synchronize];
     }
+}
+
+
+#pragma mark - 처음 실행시 How-To View
+
+- (IBAction)howToButtonTapped:(id)sender
+{
+    self.pageScrollView = [[DRPageScrollView alloc] init];
+    self.pageScrollView.pageReuseEnabled = YES;
+    [self.view addSubview:self.pageScrollView];
+    [self applyConstraints:self.pageScrollView];
+    
+    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"PageViews" owner:self options:nil];
+    
+    __weak typeof(self) weakSelf = self;
+    
+    for (UIView *view in nibViews) {
+        [self.pageScrollView addPageWithHandler:^(UIView *pageView) {
+            [pageView addSubview:view];
+            [weakSelf applyConstraints:view];
+        }];
+    }
+}
+
+
+- (void)applyConstraints:(UIView *)view
+{
+    view.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSArray *attributeArray = @[@(NSLayoutAttributeTop), @(NSLayoutAttributeLeft), @(NSLayoutAttributeBottom), @(NSLayoutAttributeRight)];
+    
+    for (NSNumber *attributeNumber in attributeArray) {
+        NSLayoutAttribute attribute = (NSLayoutAttribute)[attributeNumber integerValue];
+        
+        NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:view attribute:attribute relatedBy:NSLayoutRelationEqual toItem:view.superview attribute:attribute multiplier:1 constant:0];
+        
+        [view.superview addConstraint:constraint];
+        
+        CGFloat duration = 0.3f;
+        [UIView animateWithDuration:duration animations:^{
+            [self.view layoutIfNeeded];
+        }completion:^(BOOL finished) { }];
+        
+    }
+}
+
+
+- (IBAction)howToCloseButtonTapped:(id)sender
+{
+    CGFloat duration = 0.3f;
+    [UIView animateWithDuration:duration animations:^{
+        self.pageScrollView.alpha = 0.0;
+        [self.view layoutIfNeeded];
+    }completion:^(BOOL finished) {
+        [self.pageScrollView removeFromSuperview];
+    }];
 }
 
 
