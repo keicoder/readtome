@@ -1093,7 +1093,12 @@
     
     self.menuViewHeightConstraint.constant = 0.0;
     [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight - progressViewHeight];
-    self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
+    
+    if (iPad) {
+        self.keyboardAccessoryViewHeightConstraint.constant = 60.0;
+    } else {
+        self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
+    }
     
     [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.view layoutIfNeeded];
@@ -1525,7 +1530,7 @@
 }
 
 
-#pragma mark - 처음 실행시 How-To View
+#pragma mark 처음 실행시 How-To View
 
 - (IBAction)howToButtonTapped:(id)sender
 {
@@ -1861,7 +1866,7 @@
     self.tableView.backgroundColor = [UIColor whiteColor];
     
     //키보드 액세서리 뷰
-    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.255 green:0.427 blue:0.475 alpha:1]; //[UIColor colorWithRed:0.008 green:0.141 blue:0.227 alpha:1];
+    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.310  green:0.451  blue:0.584 alpha:1]; //[UIColor colorWithRed:0.169  green:0.282  blue:0.396 alpha:1]; //[UIColor colorWithRed:0.255 green:0.427 blue:0.475 alpha:1];
     
     //Image View
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
