@@ -112,7 +112,7 @@
     [self addTapGesture];
     [self addSwipeGesture];
     
-    self.textView.editable = NO;
+    [self setTextViewBecomeNotEditable:self.textView];
     _floatingViewExpanded = NO;
     [self listButtonTapped:self];
 }
@@ -219,14 +219,8 @@
         [self setSpeechAttributesValue];
     }
     
-    if (self.textView.text.length > 0) {
-        _selectedRange = NSMakeRange(0 , 1);
-    } else {
-        _selectedRange = NSMakeRange(0 , 0);
-    }
-    self.textView.selectedRange = _selectedRange;
-    
-    self.textView.editable = NO;
+    [self performSelector:@selector(setCursorToBeginning:) withObject:self.textView afterDelay:0.01];
+    [self setTextViewBecomeNotEditable:self.textView];
     [self.textView resignFirstResponder];
     
     if (_isTypeSelecting) {
@@ -239,6 +233,12 @@
         [self.playPauseButton setImage:kPause forState:UIControlStateNormal];
         self.resetButton.alpha = 1.0;
     }completion:^(BOOL finished) { }];
+}
+
+
+- (void)setCursorToBeginning:(UITextView *)textView
+{
+    textView.selectedRange = NSMakeRange(0, 0);
 }
 
 
@@ -258,7 +258,7 @@
         
     }completion:^(BOOL finished) { }];
     
-    self.textView.editable = YES;
+    [self setTextViewBecomeEditable:self.textView];
     [self.textView resignFirstResponder];
 }
 
@@ -267,7 +267,7 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    self.textView.editable = NO;
+    [self setTextViewBecomeNotEditable:self.textView];
     [self.textView resignFirstResponder];
     
     if (_isTypeSelecting == YES) {
@@ -289,20 +289,14 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    self.textView.editable = YES;
-    [self.textView resignFirstResponder];
-    
     [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     
     _paused = YES;
     
-    if (self.textView.text.length > 0) {
-        _selectedRange = NSMakeRange(0 , 1);
-    } else {
-        _selectedRange = NSMakeRange(0 , 0);
-    }
-    self.textView.selectedRange = _selectedRange;
+    [self setTextViewBecomeEditable:self.textView];
+    [self setCursorToBeginning:self.textView];
+    [self.textView resignFirstResponder];
     
     CGFloat duration = 0.25f;
     _speechLocationPercentValueInWholeTexts = 0.0;
@@ -363,7 +357,7 @@
         self.floatingViewWidthConstraint.constant = floatingViewWidth;
         
         //Spring Animation
-        [UIView animateWithDuration:duration delay:0.0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
+        [UIView animateWithDuration:duration delay:0.0 usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^ {
             
             self.addButton.alpha = 1.0;
             self.closeButton.alpha = 1.0;
@@ -386,12 +380,15 @@
         
         self.floatingViewWidthConstraint.constant = 0.0;
         
-        [UIView animateWithDuration:duration animations:^{
+        //Spring Animation
+        [UIView animateWithDuration:duration delay:0.0 usingSpringWithDamping:0.8 initialSpringVelocity:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^ {
+            
             self.addButton.alpha = 0.0;
             self.closeButton.alpha = 0.0;
             [self.view layoutIfNeeded];
             
-        }completion:^(BOOL finished) {
+        } completion:^(BOOL finished) {
+            
             self.floatingBackgroundViewWidthConstraint.constant = 0.0;
         }];
     }
@@ -463,6 +460,8 @@
 
 - (void)createNewDocumentWithTexts:(NSString *)texts
 {
+    [self stopSpeaking];
+    
     if (_floatingViewExpanded) {
         [self listButtonTapped:self];
     }
@@ -481,10 +480,8 @@
     [self setSpeechAttributesValue];
     [self showLog];
     
-    _selectedRange = NSMakeRange(0 , 0);
-    self.textView.selectedRange = _selectedRange;
-    
-    self.textView.editable = YES;
+    [self setTextViewBecomeEditable:self.textView];
+    [self setCursorToBeginning:self.textView];
 }
 
 
@@ -582,8 +579,8 @@
         
     } else {
         [self changeSelectionButtonToColored:YES withSlideAnimation:YES];
-        self.textView.editable = NO; //Prevent keyboard pop-up
-        [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.2];
+        [self performSelector:@selector(setTextViewBecomeNotEditable:) withObject:self.textView afterDelay:0.1];
+        [self performSelector:@selector(selectWord) withObject:nil afterDelay:0.15];
     }
 }
 
@@ -1147,6 +1144,20 @@
 }
 
 
+#pragma mark Text View Editable
+
+- (void)setTextViewBecomeEditable:(UITextView *)textView
+{
+    textView.editable = YES;
+}
+
+
+- (void)setTextViewBecomeNotEditable:(UITextView *)textView
+{
+    textView.editable = NO;
+}
+
+
 #pragma mark UITextView delegate method
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
@@ -1342,7 +1353,6 @@
     
     self.textView.selectedRange = rangeInTotalText;
     [self.textView scrollToVisibleCaretAnimated];
-    
     
     float entireTextLength = (float)[self.textView.text length];
     float location = (float)rangeInTotalText.location;
@@ -1562,13 +1572,16 @@
     
     [self stopSpeaking];
     
-    self.textView.editable = YES;
-    
     self.currentDocument = (DocumentsForSpeech *)[self.fetchedResultsController objectAtIndexPath:indexPath];
     NSLog (@"didSelectRowAtIndexPath > self.currentDocument: %@\n", self.currentDocument);
     
     self.textView.text = self.currentDocument.document;
     _lastViewedDocument = self.currentDocument.document;
+    
+    //TextView become editable
+    [self setTextViewBecomeEditable:self.textView];
+    //TextView caret position
+    [self performSelector:@selector(setCursorToBeginning:) withObject:self.textView afterDelay:0.01];
     
     self.volumeSlider.value = [self.currentDocument.volume floatValue];
     self.pitchSlider.value = [self.currentDocument.pitch floatValue];
@@ -1620,8 +1633,8 @@
             NSLog(@"self.currentDocument was deleted");
             self.currentDocument = nil;
             self.textView.text = kBlankText;
-            self.textView.editable = NO;
             [self stopSpeaking]; //If there's paused speech, stop it.
+            [self performSelector:@selector(setTextViewBecomeNotEditable:) withObject:self.textView afterDelay:0.1];
         }
     }
 }
