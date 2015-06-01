@@ -66,7 +66,9 @@ Copy text wherever you want or bring text from other apps, ReadToMe will speak t
                         <constraint firstItem="HKl-Gx-tWp" firstAttribute="top" secondItem="86v-qd-Tkv" secondAttribute="bottom" constant="30" id="ShC-Gz-z3S">
                             <variation key="heightClass=compact" constant="10"/>
                         </constraint>
-                        <constraint firstAttribute="centerY" secondItem="86v-qd-Tkv" secondAttribute="centerY" constant="44" id="gAC-EW-1oW"/>
+                        <constraint firstAttribute="centerY" secondItem="86v-qd-Tkv" secondAttribute="centerY" constant="44" id="gAC-EW-1oW">
+                            <variation key="heightClass=compact" constant="40"/>
+                        </constraint>
                         <constraint firstAttribute="trailing" secondItem="HKl-Gx-tWp" secondAttribute="trailing" constant="40" id="ksZ-Pq-kcS"/>
                     </constraints>
                 </view>
