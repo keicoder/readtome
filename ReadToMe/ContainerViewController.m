@@ -37,7 +37,6 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *floatingBackgroundViewWidthConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *floatingViewWidthConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *howToViewEqualWidthConstraint;
 
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIButton *listButton;
@@ -85,6 +84,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *closeButton;
 
 @property (nonatomic, strong) DRPageScrollView *pageScrollView;
+@property (weak, nonatomic) IBOutlet UIButton *howToViewCloseButton;
 
 @end
 
@@ -1550,6 +1550,11 @@
             [weakSelf applyConstraints:view];
         }];
     }
+    
+    //howToCloseButton
+    float cornerRadius = self.howToViewCloseButton.bounds.size.height/2;
+    self.howToViewCloseButton.layer.cornerRadius = cornerRadius;
+    self.howToViewCloseButton.backgroundColor = [UIColor colorWithRed:0.906 green:0.298 blue:0.235 alpha:1];
 }
 
 

@@ -679,9 +679,9 @@
 			isa = PBXGroup;
 			children = (
 				C12F07841ABF88FD0039EA89 /* Main.storyboard */,
-				C12F07871ABF88FD0039EA89 /* Images.xcassets */,
 				C12F07891ABF88FD0039EA89 /* LaunchScreen.xib */,
 				3270436F1B1ADF640019DA81 /* PageViews.xib */,
+				C12F07871ABF88FD0039EA89 /* Images.xcassets */,
 			);
 			name = UI;
 			sourceTree = "<group>";
