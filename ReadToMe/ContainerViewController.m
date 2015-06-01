@@ -1557,6 +1557,11 @@
     
     //howToCloseButton
     float cornerRadius = self.howToViewCloseButton.bounds.size.height/2;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        cornerRadius = 25.0;
+    } else {
+        cornerRadius = self.howToViewCloseButton.bounds.size.height/2;
+    }
     self.howToViewCloseButton.layer.cornerRadius = cornerRadius;
     self.howToViewCloseButton.backgroundColor = [UIColor colorWithRed:0.906 green:0.298 blue:0.235 alpha:1];
 }
