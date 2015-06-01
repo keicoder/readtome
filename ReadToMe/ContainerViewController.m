@@ -37,6 +37,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *equalizerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *floatingBackgroundViewWidthConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *floatingViewWidthConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *howToViewEqualWidthConstraint;
 
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet UIButton *listButton;
