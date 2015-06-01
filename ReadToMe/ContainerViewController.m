@@ -1527,7 +1527,11 @@
         
         [self.defaults setBool:YES forKey:kHasLaunchedOnce];
         [self.defaults synchronize];
+        
+        [self performSelector:@selector(howToButtonTapped:) withObject:nil afterDelay:0.3];
     }
+    
+    [self performSelector:@selector(howToButtonTapped:) withObject:nil afterDelay:0.3];
 }
 
 
