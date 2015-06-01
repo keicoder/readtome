@@ -445,9 +445,9 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="Day" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="9z3-XN-2px">
-                                                            <rect key="frame" x="8" y="8" width="44" height="44"/>
+                                                            <rect key="frame" x="8" y="8" width="48" height="44"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="44" id="1Ik-6V-rBW"/>
+                                                                <constraint firstAttribute="width" constant="48" id="1Ik-6V-rBW"/>
                                                                 <constraint firstAttribute="height" constant="44" id="ojJ-EU-QIe"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="40"/>
@@ -455,7 +455,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c8E-Cu-pMp">
-                                                            <rect key="frame" x="60" y="8" width="232" height="44"/>
+                                                            <rect key="frame" x="64" y="8" width="228" height="44"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="44" id="ptw-ye-ETr"/>
                                                             </constraints>
@@ -464,10 +464,9 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="lOw-NG-p1J">
-                                                            <rect key="frame" x="6" y="59" width="50" height="20"/>
+                                                            <rect key="frame" x="6" y="59" width="48" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="20" id="bZZ-Jg-sPT"/>
-                                                                <constraint firstAttribute="width" constant="50" id="dWB-kk-Hk0"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
                                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -485,7 +484,7 @@
                                                         </label>
                                                     </subviews>
                                                     <constraints>
-                                                        <constraint firstItem="lOw-NG-p1J" firstAttribute="centerX" secondItem="9z3-XN-2px" secondAttribute="centerX" constant="0.5" id="0FV-iC-ROl"/>
+                                                        <constraint firstItem="9z3-XN-2px" firstAttribute="leading" secondItem="lOw-NG-p1J" secondAttribute="leading" constant="2" id="0OX-Ma-CNu"/>
                                                         <constraint firstItem="1Dv-77-WrU" firstAttribute="bottom" secondItem="TWV-sf-dyg" secondAttribute="bottomMargin" id="0uA-uy-Q1S"/>
                                                         <constraint firstItem="lOw-NG-p1J" firstAttribute="bottom" secondItem="TWV-sf-dyg" secondAttribute="bottomMargin" id="Eqh-Qj-sOY"/>
                                                         <constraint firstItem="c8E-Cu-pMp" firstAttribute="leading" secondItem="9z3-XN-2px" secondAttribute="trailing" constant="8" id="Lvu-wV-N6B"/>
@@ -493,6 +492,7 @@
                                                         <constraint firstItem="9z3-XN-2px" firstAttribute="leading" secondItem="TWV-sf-dyg" secondAttribute="leadingMargin" id="f90-xz-I15"/>
                                                         <constraint firstItem="c8E-Cu-pMp" firstAttribute="trailing" secondItem="TWV-sf-dyg" secondAttribute="trailingMargin" id="iCF-Nq-YnL"/>
                                                         <constraint firstItem="1Dv-77-WrU" firstAttribute="trailing" secondItem="TWV-sf-dyg" secondAttribute="trailingMargin" id="nsN-ED-VtE"/>
+                                                        <constraint firstItem="9z3-XN-2px" firstAttribute="width" secondItem="lOw-NG-p1J" secondAttribute="width" id="oY6-xb-Po0"/>
                                                         <constraint firstItem="c8E-Cu-pMp" firstAttribute="top" secondItem="TWV-sf-dyg" secondAttribute="topMargin" id="uOW-eB-sLe"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
