@@ -1530,8 +1530,6 @@
         
         [self performSelector:@selector(howToButtonTapped:) withObject:nil afterDelay:0.3];
     }
-    
-    [self performSelector:@selector(howToButtonTapped:) withObject:nil afterDelay:0.3];
 }
 
 
