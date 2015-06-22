@@ -82,6 +82,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIButton *addButton;
 @property (weak, nonatomic) IBOutlet UIButton *closeButton;
+@property (weak, nonatomic) IBOutlet UILabel *blankCellLabel;
 
 @property (nonatomic, strong) DRPageScrollView *pageScrollView;
 @property (weak, nonatomic) IBOutlet UIButton *howToViewCloseButton;
@@ -1611,7 +1612,30 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSLog (@"numberOfRowsInSection: %lu\n", (unsigned long)[[self.fetchedResultsController sections][section] numberOfObjects]);
-    return [[self.fetchedResultsController sections][section] numberOfObjects];
+    
+    if ([[self.fetchedResultsController sections] [section]numberOfObjects] > 0) {
+        
+        CGFloat duration = 0.25f;
+        [UIView animateWithDuration:duration delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+            
+            self.tableView.separatorColor = [UIColor lightGrayColor];
+            self.blankCellLabel.alpha = 0.0;
+            
+        } completion:^(BOOL finished) { }];
+        
+        return [[self.fetchedResultsController sections] [section]numberOfObjects];
+    } else {
+        
+        CGFloat duration = 0.25f;
+        [UIView animateWithDuration:duration delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+            
+            self.tableView.separatorColor = [UIColor clearColor];
+            self.blankCellLabel.alpha = 1.0;
+            
+        } completion:^(BOOL finished) { }];
+        
+        return 0;
+    }
 }
 
 
