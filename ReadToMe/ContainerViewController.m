@@ -1040,10 +1040,6 @@
 
 - (IBAction)rateSliderValueChanged:(UISlider *)sender
 {
-//    if (!self.defaults) {
-//        self.defaults = [NSUserDefaults standardUserDefaults];
-//    }
-    
     [self stopSpeaking];
     [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
     [self.defaults synchronize];
@@ -1064,9 +1060,6 @@
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:self.view.window];
     [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window];
     
-    //Device Orientation
-//    [center addObserver:self selector:@selector(deviceOrientationChanged:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
-    
     //Application Status
     [center addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     [center addObserver:self selector:@selector(applicationDidEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -1085,15 +1078,13 @@
     
     [self stopSpeaking];
     
-    if (self.defaults) { self.defaults = [NSUserDefaults standardUserDefaults]; }
-    
     self.currentDocument.language = [self.defaults objectForKey:kLanguage];
     [self.defaults setObject:self.currentDocument.language forKey:kLanguage];
     [self.defaults synchronize];
     
     [self saveSpeechDocumentAndAttributes];
     
-    NSLog (@"didPickedLanguageNotification > self.currentDocument: %@\n", self.currentDocument);
+    NSLog (@"didPickedLanguageNotification > self.currentDocument.language: %@\n", self.currentDocument.language);
 }
 
 
@@ -1120,6 +1111,7 @@
         [self.view layoutIfNeeded];
         self.keyboardDownButton.alpha = 1.0;
         self.listButton.alpha = 0.0;
+        self.playPauseButton.alpha = 0.0;
     } completion:^(BOOL finished) { }];
 }
 
@@ -1139,7 +1131,8 @@
         [self.view layoutIfNeeded];
         self.keyboardDownButton.alpha = 0.0;
         self.listButton.alpha = 1.0;
-    } completion:nil];
+        self.playPauseButton.alpha = 1.0;
+    } completion:^(BOOL finished) { }];
 }
 
 
@@ -1158,8 +1151,8 @@
         
         [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.0];
         
-        CGFloat width = [UIScreen mainScreen].bounds.size.height * 0.7;
-        self.floatingViewWidthConstraint.constant = width;
+        CGFloat width = [UIScreen mainScreen].bounds.size.height;
+        self.floatingViewWidthConstraint.constant = width * 0.7;
         self.floatingBackgroundViewWidthConstraint.constant = width;
         
         CGFloat duration = 0.25;
@@ -1190,39 +1183,19 @@
 
 #pragma mark UITextView delegate method
 
-- (void)textViewDidBeginEditing:(UITextView *)textView
-{
-    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    
-    CGFloat duration = 0.25f;
-    [UIView animateWithDuration:duration animations:^{
-        self.playPauseButton.alpha = 0.0;
-    }completion:^(BOOL finished) { }];
-}
-
-
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    if ([textView isFirstResponder]) {
-        [textView resignFirstResponder];
-    }
-    
-    CGFloat duration = 0.25f;
-    [UIView animateWithDuration:duration animations:^{
-        self.playPauseButton.alpha = 1.0;
-    }completion:^(BOOL finished) { }];
-    
     if (![_lastViewedDocument isEqualToString:self.textView.text]) {
-        NSLog(@"textViewDidEndEditing > TextView texts are changed, so stop speaking");
+        if (debugLog==1) { NSLog(@"textViewDidEndEditing > TextView texts are changed, so stop speaking"); }
         [self stopSpeaking];
         self.currentDocument.document = self.textView.text;
         self.pasteBoard.string = self.textView.text;
         [self saveSpeechDocumentAndAttributes];
         
     } else {
-        NSLog(@"textViewDidEndEditing > Nothing Changed");
+        if (debugLog==1) { NSLog(@"textViewDidEndEditing > Nothing Changed"); }
     }
 }
 
