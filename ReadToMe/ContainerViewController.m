@@ -102,6 +102,47 @@
 }
 
 
+#pragma mark - Lazy instantiation
+
+- (NSUserDefaults *)sharedDefaults
+{
+    if (_sharedDefaults == nil) {
+        _sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
+    }
+    return _sharedDefaults;
+}
+
+
+- (NSUserDefaults *)defaults
+{
+    if (_defaults == nil) {
+        _defaults = [NSUserDefaults standardUserDefaults];
+    }
+    return _defaults;
+}
+
+
+- (UIPasteboard *)pasteBoard
+{
+    if (_pasteBoard == nil) {
+        _pasteBoard = [UIPasteboard generalPasteboard];
+        _pasteBoard.persistent = YES;
+    }
+    return _pasteBoard;
+}
+
+
+- (AVSpeechSynthesizer *)synthesizer
+{
+    if (_synthesizer == nil) {
+        _synthesizer = [[AVSpeechSynthesizer alloc] init];
+        _synthesizer.delegate = self;
+    }
+    
+    return _synthesizer;
+}
+
+
 #pragma mark - View life cycle
 
 - (void)viewDidLoad
@@ -135,7 +176,7 @@
     
     _paused = YES;
     
-    [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
+    [self addShadowEffectToTheView:self.floatingView withOpacity:0.4 andRadius:2.0 afterDelay:0.0 andDuration:0.15];
 }
 
 
@@ -154,27 +195,12 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    if (!self.synthesizer) {
-        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-        self.synthesizer.delegate = self;
-    }
+//    self.volumeSlider.value = [self.defaults floatForKey:kVolumeValue];
+//    self.pitchSlider.value = [self.defaults floatForKey:kPitchValue];
+//    self.rateSlider.value = [self.defaults floatForKey:kRateValue];
     
-    if (!self.pasteBoard) {
-        self.pasteBoard = [UIPasteboard generalPasteboard];
-        self.pasteBoard.persistent = YES;
-    }
+    [self setSpeechAttributesValue];
     
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
-    
-    if (!self.sharedDefaults) {
-        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
-    }
-    
-    self.volumeSlider.value = [self.defaults floatForKey:kVolumeValue];
-    self.pitchSlider.value = [self.defaults floatForKey:kPitchValue];
-    self.rateSlider.value = [self.defaults floatForKey:kRateValue];
     _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
     
     _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
@@ -184,7 +210,7 @@
         [self changeSelectionButtonToColored:NO withSlideAnimation:NO];
     }
     
-    [self showLog];
+    if (debugLog==1) { [self showLog]; }
 }
 
 
@@ -192,10 +218,10 @@
 
 #pragma mark Utterance
 
-- (void)setupUtterance
+- (void)setupUtteranceWithTexts:(NSString *)texts
 {
     //Put attributes into objects
-    self.utterance = [AVSpeechUtterance speechUtteranceWithString:self.textView.text];
+    self.utterance = [AVSpeechUtterance speechUtteranceWithString:texts];
     self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
     self.utterance.volume = [self.currentDocument.volume floatValue];
     self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
@@ -203,12 +229,53 @@
     self.utterance.preUtteranceDelay = 0.3f;
     self.utterance.postUtteranceDelay = 0.3f;
     
-    if (!self.synthesizer) {
-        self.synthesizer = [[AVSpeechSynthesizer alloc]init];
-        self.synthesizer.delegate = self;
+    [self.synthesizer speakUtterance:self.utterance];
+}
+
+
+- (void)setSpeechAttributesValue
+{
+    NSString *language = [self.defaults objectForKey:kLanguage];
+    if (!language) {
+        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
+        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
+        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
+        language = defaultLanguageName;
+        
+        [self.defaults setObject:language forKey:kLanguage];
     }
     
-    [self.synthesizer speakUtterance:self.utterance];
+    float volume = [self.defaults floatForKey:kVolumeValue];
+    if (volume <= 0.0) {
+        volume = 1.0;
+        [self.defaults setFloat:volume forKey:kVolumeValue];
+    }
+    
+    float pitch = [self.defaults floatForKey:kPitchValue];
+    if (pitch <= 0.5) {
+        pitch = 1.0;
+        [self.defaults setFloat:pitch forKey:kPitchValue];
+    }
+    
+    float rate = [self.defaults floatForKey:kRateValue];
+    if (rate <= 0.0) {
+        rate = 0.07;
+        [self.defaults setFloat:rate forKey:kRateValue];
+    }
+    
+    //User Defaults
+    [self.defaults synchronize];
+    
+    //Current Document
+    self.currentDocument.language = language;
+    self.currentDocument.volume = [NSNumber numberWithFloat:volume];
+    self.currentDocument.pitch = [NSNumber numberWithFloat:pitch];
+    self.currentDocument.rate = [NSNumber numberWithFloat:rate];
+    
+    //Slider value
+    self.volumeSlider.value = volume;
+    self.pitchSlider.value = pitch;
+    self.rateSlider.value = rate;
 }
 
 
@@ -218,11 +285,11 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    [self setupUtterance];
+    [self setupUtteranceWithTexts:self.textView.text];
     
-    if ([self.currentDocument.volume floatValue] <= 0) {
-        [self setSpeechAttributesValue];
-    }
+//    if ([self.currentDocument.volume floatValue] <= 0) {
+//        [self setSpeechAttributesValue];
+//    }
     
     [self performSelector:@selector(setCursorToBeginning:) withObject:self.textView afterDelay:0.01];
     [self setTextViewBecomeNotEditable:self.textView];
@@ -373,7 +440,7 @@
             CGFloat floatingBackgroundViewWidth = CGRectGetWidth(self.view.bounds);
             self.floatingBackgroundViewWidthConstraint.constant = floatingBackgroundViewWidth;
             
-            [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
+            [self addShadowEffectToTheView:self.floatingView withOpacity:0.4 andRadius:2.0 afterDelay:0.0 andDuration:0.15];
         }];
         
         //Whether to save
@@ -381,7 +448,7 @@
         
     } else {
         
-        [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.25];
+        [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.15];
         
         self.floatingViewWidthConstraint.constant = 0.0;
         
@@ -487,59 +554,6 @@
     
     [self setTextViewBecomeEditable:self.textView];
     [self setCursorToBeginning:self.textView];
-}
-
-
-- (void)setSpeechAttributesValue
-{
-    //Speech Attributes
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
-    
-    NSString *language = [self.defaults objectForKey:kLanguage];
-    if (!language) {
-        NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
-        NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
-        NSString *defaultLanguageName = [defaultLanguage objectForKey:kLanguage];
-        language = defaultLanguageName;
-        //UserDefaults
-        [self.defaults setObject:language forKey:kLanguage];
-        [self.defaults synchronize];
-    }
-    self.currentDocument.language = language;
-    
-    float volume = [self.defaults floatForKey:kVolumeValue];
-    if (volume <= 0.0) {
-        volume = 1.0;
-        //UserDefaults
-        [self.defaults setFloat:volume forKey:kVolumeValue];
-        [self.defaults synchronize];
-    }
-    self.currentDocument.volume = [NSNumber numberWithFloat:volume];
-    
-    float pitch = [self.defaults floatForKey:kPitchValue];
-    if (pitch <= 0.5) {
-        pitch = 1.0;
-        //UserDefaults
-        [self.defaults setFloat:pitch forKey:kPitchValue];
-        [self.defaults synchronize];
-    }
-    self.currentDocument.pitch = [NSNumber numberWithFloat:pitch];
-    
-    float rate = [self.defaults floatForKey:kRateValue];
-    if (rate <= 0.0) {
-        rate = 0.07;
-        //UserDefaults
-        [self.defaults setFloat:rate forKey:kRateValue];
-        [self.defaults synchronize];
-    }
-    self.currentDocument.rate = [NSNumber numberWithFloat:rate];
-    
-    //Slider value
-    self.volumeSlider.value = volume;
-    self.pitchSlider.value = pitch;
-    self.rateSlider.value = rate;
 }
 
 
@@ -724,9 +738,9 @@
 - (void)updateSpeechDocumentAndAttributes
 {
     //User defaults
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+//    if (!self.defaults) {
+//        self.defaults = [NSUserDefaults standardUserDefaults];
+//    }
     
     //Speech Attributes
     self.currentDocument.language = [self.defaults objectForKey:kLanguage];
@@ -960,9 +974,9 @@
 
 - (void)saveSelectedRangeValue
 {
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+//    if (!self.defaults) {
+//        self.defaults = [NSUserDefaults standardUserDefaults];
+//    }
     
     UITextPosition* beginning = self.textView.beginningOfDocument;
     UITextRange* selectedRange = self.textView.selectedTextRange;
@@ -981,9 +995,9 @@
 
 - (void)retrieveSelectedRangeValue
 {
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+//    if (!self.defaults) {
+//        self.defaults = [NSUserDefaults standardUserDefaults];
+//    }
     NSInteger selectedRangeLocation = [self.defaults integerForKey:kSelectedRangeLocation];
     NSInteger selectedRangeLength =[self.defaults integerForKey:kSelectedRangeLength];
     self.textView.selectedRange = NSMakeRange(selectedRangeLocation, selectedRangeLength);
@@ -1000,9 +1014,9 @@
 
 - (IBAction)volumeSliderValueChanged:(UISlider *)sender
 {
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+//    if (!self.defaults) {
+//        self.defaults = [NSUserDefaults standardUserDefaults];
+//    }
     
     [self stopSpeaking];
     [self.defaults setFloat:self.volumeSlider.value forKey:kVolumeValue];
@@ -1013,9 +1027,9 @@
 
 - (IBAction)pitchSliderValueChanged:(UISlider *)sender
 {
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+//    if (!self.defaults) {
+//        self.defaults = [NSUserDefaults standardUserDefaults];
+//    }
     
     [self stopSpeaking];
     [self.defaults setFloat:self.pitchSlider.value forKey:kPitchValue];
@@ -1026,9 +1040,9 @@
 
 - (IBAction)rateSliderValueChanged:(UISlider *)sender
 {
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+//    if (!self.defaults) {
+//        self.defaults = [NSUserDefaults standardUserDefaults];
+//    }
     
     [self stopSpeaking];
     [self.defaults setFloat:self.rateSlider.value forKey:kRateValue];
@@ -1051,7 +1065,7 @@
     [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window];
     
     //Device Orientation
-    [center addObserver:self selector:@selector(deviceOrientationChanged:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
+//    [center addObserver:self selector:@selector(deviceOrientationChanged:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
     
     //Application Status
     [center addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
@@ -1131,24 +1145,30 @@
 
 #pragma mark Device Orientation Changed
 
-- (void)deviceOrientationChanged:(NSNotification *)notification
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {
+        NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));
+        
+        CGRect bounds = [UIScreen mainScreen].bounds;
+        NSLog(@"(bounds.size.width: %f, bounds.size.height: %f)", bounds.size.width, bounds.size.height);
+    }
     
     if (_floatingViewExpanded) {
+        
         [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.0];
         
-        CGFloat floatingViewWidth = CGRectGetWidth(self.view.bounds) * 0.7;
-        self.floatingViewWidthConstraint.constant = floatingViewWidth;
+        CGFloat width = [UIScreen mainScreen].bounds.size.height * 0.7;
+        self.floatingViewWidthConstraint.constant = width;
+        self.floatingBackgroundViewWidthConstraint.constant = width;
         
         CGFloat duration = 0.25;
         [UIView animateWithDuration:duration animations:^{
             [self.view layoutIfNeeded];
             
         }completion:^(BOOL finished) {
-            CGFloat floatingBackgroundViewWidth = CGRectGetWidth(self.view.bounds);
-            self.floatingBackgroundViewWidthConstraint.constant = floatingBackgroundViewWidth;
-            [self addShadowEffectToTheView:self.floatingView withOpacity:0.5 andRadius:5.0 afterDelay:0.0 andDuration:0.25];
+            
+            [self addShadowEffectToTheView:self.floatingView withOpacity:0.4 andRadius:2.0 afterDelay:0.0 andDuration:0.15];
         }];
     }
 }
@@ -1260,9 +1280,9 @@
 {
     if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    if (!self.sharedDefaults) {
-        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
-    }
+//    if (!self.sharedDefaults) {
+//        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
+//    }
     
     //Today Extension
     self.isTodayDocument = [self.sharedDefaults boolForKey:kIsTodayDocument];
@@ -1499,9 +1519,9 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+//    if (!self.defaults) {
+//        self.defaults = [NSUserDefaults standardUserDefaults];
+//    }
     
     if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
         NSLog(@"First time launching!");
@@ -1693,9 +1713,10 @@
     [self listButtonTapped:self];
     
     //User defaults
-    if (!self.defaults) {
-        self.defaults = [NSUserDefaults standardUserDefaults];
-    }
+//    if (!self.defaults) {
+//        self.defaults = [NSUserDefaults standardUserDefaults];
+//    }
+    
     //User defaults sync
     [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
     [self.defaults setObject:self.currentDocument.language forKey:kLanguage];
