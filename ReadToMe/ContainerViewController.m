@@ -143,6 +143,15 @@
 }
 
 
+- (NSDateFormatter *)formatter
+{
+    if (_formatter == nil) {
+        _formatter = [[NSDateFormatter alloc] init];
+    }
+    return _formatter;
+}
+
+
 #pragma mark - View life cycle
 
 - (void)viewDidLoad
@@ -195,17 +204,14 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-//    self.volumeSlider.value = [self.defaults floatForKey:kVolumeValue];
-//    self.pitchSlider.value = [self.defaults floatForKey:kPitchValue];
-//    self.rateSlider.value = [self.defaults floatForKey:kRateValue];
-    
     [self setSpeechAttributesValue];
     
     _lastViewedDocument = [self.defaults objectForKey:kLastViewedDocument];
     
     _isTypeSelecting = [self.defaults boolForKey:kTypeSelecting];
-    if (_isTypeSelecting) { //Change icon color
-        [self changeSelectionButtonToColored:YES withSlideAnimation:NO];
+    
+    if (_isTypeSelecting) {
+        [self changeSelectionButtonToColored:YES withSlideAnimation:NO]; //Change icon color
     } else {
         [self changeSelectionButtonToColored:NO withSlideAnimation:NO];
     }
@@ -214,27 +220,10 @@
 }
 
 
-#pragma mark - Speech Synthesizer
-
-#pragma mark Utterance
-
-- (void)setupUtteranceWithTexts:(NSString *)texts
-{
-    //Put attributes into objects
-    self.utterance = [AVSpeechUtterance speechUtteranceWithString:texts];
-    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
-    self.utterance.volume = [self.currentDocument.volume floatValue];
-    self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
-    self.utterance.rate = [self.currentDocument.rate floatValue];
-    self.utterance.preUtteranceDelay = 0.3f;
-    self.utterance.postUtteranceDelay = 0.3f;
-    
-    [self.synthesizer speakUtterance:self.utterance];
-}
-
-
 - (void)setSpeechAttributesValue
 {
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    
     NSString *language = [self.defaults objectForKey:kLanguage];
     if (!language) {
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
@@ -279,6 +268,25 @@
 }
 
 
+#pragma mark - Speech Synthesizer
+
+#pragma mark Utterance
+
+- (void)setupUtteranceWithTexts:(NSString *)texts
+{
+    //Put attributes into objects
+    self.utterance = [AVSpeechUtterance speechUtteranceWithString:texts];
+    self.utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:self.currentDocument.language];
+    self.utterance.volume = [self.currentDocument.volume floatValue];
+    self.utterance.pitchMultiplier = [self.currentDocument.pitch floatValue];
+    self.utterance.rate = [self.currentDocument.rate floatValue];
+    self.utterance.preUtteranceDelay = 0.3f;
+    self.utterance.postUtteranceDelay = 0.3f;
+    
+    [self.synthesizer speakUtterance:self.utterance];
+}
+
+
 #pragma mark Speech State
 
 - (void)startSpeaking
@@ -287,13 +295,12 @@
     
     [self setupUtteranceWithTexts:self.textView.text];
     
-//    if ([self.currentDocument.volume floatValue] <= 0) {
-//        [self setSpeechAttributesValue];
-//    }
-    
-    [self performSelector:@selector(setCursorToBeginning:) withObject:self.textView afterDelay:0.01];
+    [self performSelector:@selector(setCursorToBeginning:) withObject:self.textView afterDelay:0.0];
     [self setTextViewBecomeNotEditable:self.textView];
-    [self.textView resignFirstResponder];
+    
+    if ([self.textView isFirstResponder]) {
+        [self.textView resignFirstResponder];
+    }
     
     if (_isTypeSelecting) {
         [self selectWord];
@@ -320,7 +327,7 @@
     
     [self saveSelectedRangeValue];
     
-    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.synthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryWord];
     
     _paused = YES;
     CGFloat duration = 0.25f;
@@ -361,7 +368,7 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryWord];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     
     _paused = YES;
@@ -835,17 +842,6 @@
 }
 
 
-#pragma mark Formatter
-
-- (NSDateFormatter *)formatter
-{
-    if (!_formatter) {
-        _formatter = [[NSDateFormatter alloc] init];
-    }
-    return _formatter;
-}
-
-
 #pragma mark 유저 디폴트 > 현재 인덱스패스 저장
 
 - (void)saveIndexPath:(NSIndexPath *)indexPath
@@ -974,10 +970,6 @@
 
 - (void)saveSelectedRangeValue
 {
-//    if (!self.defaults) {
-//        self.defaults = [NSUserDefaults standardUserDefaults];
-//    }
-    
     UITextPosition* beginning = self.textView.beginningOfDocument;
     UITextRange* selectedRange = self.textView.selectedTextRange;
     UITextPosition* selectionStart = selectedRange.start;
@@ -995,9 +987,6 @@
 
 - (void)retrieveSelectedRangeValue
 {
-//    if (!self.defaults) {
-//        self.defaults = [NSUserDefaults standardUserDefaults];
-//    }
     NSInteger selectedRangeLocation = [self.defaults integerForKey:kSelectedRangeLocation];
     NSInteger selectedRangeLength =[self.defaults integerForKey:kSelectedRangeLength];
     self.textView.selectedRange = NSMakeRange(selectedRangeLocation, selectedRangeLength);
@@ -1014,10 +1003,6 @@
 
 - (IBAction)volumeSliderValueChanged:(UISlider *)sender
 {
-//    if (!self.defaults) {
-//        self.defaults = [NSUserDefaults standardUserDefaults];
-//    }
-    
     [self stopSpeaking];
     [self.defaults setFloat:self.volumeSlider.value forKey:kVolumeValue];
     [self.defaults synchronize];
@@ -1027,10 +1012,6 @@
 
 - (IBAction)pitchSliderValueChanged:(UISlider *)sender
 {
-//    if (!self.defaults) {
-//        self.defaults = [NSUserDefaults standardUserDefaults];
-//    }
-    
     [self stopSpeaking];
     [self.defaults setFloat:self.pitchSlider.value forKey:kPitchValue];
     [self.defaults synchronize];
@@ -1093,6 +1074,9 @@
 - (void)keyboardWillShow:(NSNotification *)notification
 {
     NSDictionary *info = [notification userInfo];
+    CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    CGFloat curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] floatValue];
+    
     CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
     CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
@@ -1107,17 +1091,32 @@
         self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
     }
     
-    [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
-        [self.view layoutIfNeeded];
+    //UI alpham, color
+    self.progressSlider.alpha = 0.0;
+    self.volumeSlider.alpha = 0.0;
+    self.pitchSlider.alpha = 0.0;
+    self.rateSlider.alpha = 0.0;
+    self.progressView.backgroundColor = [UIColor clearColor];
+    self.equalizerView.backgroundColor = [UIColor clearColor];
+    
+    [UIView animateWithDuration:duration delay:0.0 options:curve animations:^{
+        self.previousButton.alpha = 1.0;
         self.keyboardDownButton.alpha = 1.0;
+        self.selectButton.alpha = 1.0;
+        self.nextButton.alpha = 1.0;
         self.listButton.alpha = 0.0;
         self.playPauseButton.alpha = 0.0;
+        [self.view layoutIfNeeded];
     } completion:^(BOOL finished) { }];
 }
 
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
+    NSDictionary *info = [notification userInfo];
+    CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    CGFloat curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] floatValue];
+    
     [self adjustEqualizerViewHeight:0.0];
     if (iPad) {
         self.menuViewHeightConstraint.constant = 60.0;
@@ -1125,13 +1124,35 @@
         self.menuViewHeightConstraint.constant = 44.0;
     }
     
+    //UI alpha, color
+    self.progressSlider.alpha = 1.0;
+    self.volumeSlider.alpha = 0.0;
+    self.pitchSlider.alpha = 0.0;
+    self.rateSlider.alpha = 0.0;
+    self.progressView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    self.equalizerView.backgroundColor = [UIColor colorWithRed:0.294 green:0.463 blue:0.608 alpha:1];
+    
+    //Slider UI
+    UIImage *thumbImageNormal = [UIImage imageNamed:@"recordNormal"];
+    [self.progressSlider setThumbImage:thumbImageNormal forState:UIControlStateNormal];
+    UIImage *thumbImageHighlighted = [UIImage imageNamed:@"record"];
+    [self.progressSlider setThumbImage:thumbImageHighlighted forState:UIControlStateHighlighted];
+    UIImage *trackLeftImage = [[UIImage imageNamed:@"SliderTrackLeft"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
+    [self.progressSlider setMinimumTrackImage:trackLeftImage forState:UIControlStateNormal];
+    UIImage *trackRightImage = [[UIImage imageNamed:@"SliderTrackRight"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
+    [self.progressSlider setMaximumTrackImage:trackRightImage forState:UIControlStateNormal];
+    
+    
     self.keyboardAccessoryViewHeightConstraint.constant = 0.0;
     
-    [UIView animateWithDuration:0.35 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
-        [self.view layoutIfNeeded];
+    [UIView animateWithDuration:duration delay:0.0 options:curve animations:^{
+        self.previousButton.alpha = 0.0;
         self.keyboardDownButton.alpha = 0.0;
+        self.selectButton.alpha = 0.0;
+        self.nextButton.alpha = 0.0;
         self.listButton.alpha = 1.0;
         self.playPauseButton.alpha = 1.0;
+        [self.view layoutIfNeeded];
     } completion:^(BOOL finished) { }];
 }
 
@@ -1897,7 +1918,11 @@
     self.tableView.backgroundColor = [UIColor whiteColor];
     
     //키보드 액세서리 뷰
-    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.310  green:0.451  blue:0.584 alpha:1]; //[UIColor colorWithRed:0.169  green:0.282  blue:0.396 alpha:1]; //[UIColor colorWithRed:0.255 green:0.427 blue:0.475 alpha:1];
+    self.keyboardAccessoryView.backgroundColor = [UIColor colorWithRed:0.310  green:0.451  blue:0.584 alpha:1];
+    self.previousButton.alpha = 0.0;
+    self.keyboardDownButton.alpha = 0.0;
+    self.selectButton.alpha = 0.0;
+    self.nextButton.alpha = 0.0;
     
     //Image View
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
