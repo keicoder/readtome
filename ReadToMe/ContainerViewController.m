@@ -744,11 +744,6 @@
 
 - (void)updateSpeechDocumentAndAttributes
 {
-    //User defaults
-//    if (!self.defaults) {
-//        self.defaults = [NSUserDefaults standardUserDefaults];
-//    }
-    
     //Speech Attributes
     self.currentDocument.language = [self.defaults objectForKey:kLanguage];
     self.currentDocument.volume = [NSNumber numberWithFloat:[self.defaults floatForKey:kVolumeValue]];
@@ -1274,10 +1269,6 @@
 {
     if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-//    if (!self.sharedDefaults) {
-//        self.sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:kSharedDefaultsSuiteName];
-//    }
-    
     //Today Extension
     self.isTodayDocument = [self.sharedDefaults boolForKey:kIsTodayDocument];
     kLogBOOL(self.isTodayDocument);
@@ -1513,10 +1504,6 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-//    if (!self.defaults) {
-//        self.defaults = [NSUserDefaults standardUserDefaults];
-//    }
-    
     if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
         NSLog(@"First time launching!");
         
@@ -1597,7 +1584,6 @@
         [UIView animateWithDuration:duration animations:^{
             [self.view layoutIfNeeded];
         }completion:^(BOOL finished) { }];
-        
     }
 }
 
@@ -1705,11 +1691,6 @@
     [self saveIndexPath:indexPath];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     [self listButtonTapped:self];
-    
-    //User defaults
-//    if (!self.defaults) {
-//        self.defaults = [NSUserDefaults standardUserDefaults];
-//    }
     
     //User defaults sync
     [self.defaults setObject:_lastViewedDocument forKey:kLastViewedDocument];
@@ -1996,23 +1977,6 @@
     NSLog (@"self.currentDocument.monthAndYearString: %@\n", self.currentDocument.monthAndYearString);
     NSLog (@"self.currentDocument.documentTitle: %@\n", self.currentDocument.documentTitle);
     NSLog (@"self.currentDocument.document: %@\n", self.currentDocument.document);
-    
-    /*
-     @property (nonatomic, retain) NSDate * createdDate;
-     @property (nonatomic, retain) NSDate * modifiedDate;
-     @property (nonatomic, retain) NSString * dateString;
-     @property (nonatomic, retain) NSString * dayString;
-     @property (nonatomic, retain) NSString * language;
-     @property (nonatomic, retain) NSString * monthString;
-     @property (nonatomic, retain) NSString * monthAndYearString;
-     @property (nonatomic, retain) NSNumber * pitch;
-     @property (nonatomic, retain) NSNumber * rate;
-     @property (nonatomic, retain) NSNumber * isNewDocument;
-     @property (nonatomic, retain) NSString * documentTitle;
-     @property (nonatomic, retain) NSNumber * volume;
-     @property (nonatomic, retain) NSString * yearString;
-     @property (nonatomic, retain) NSString * document;
-     */
 }
 
 
