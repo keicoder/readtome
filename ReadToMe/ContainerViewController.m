@@ -1928,12 +1928,15 @@
     self.resetButton.alpha = 0.0;
     
     //Floating View
-    self.addButton.backgroundColor = [UIColor colorWithRed:0.157  green:0.533  blue:0.835 alpha:0.7];
-    CGFloat addButtonRadius = CGRectGetHeight(self.addButton.bounds) / 2;
+    self.addButton.backgroundColor = self.menuView.backgroundColor;
+    CGFloat addButtonRadius;
+    if (iPad) {
+        addButtonRadius = 30.0;
+    } else {
+        addButtonRadius = CGRectGetHeight(self.addButton.bounds) / 2;
+    }
     self.addButton.layer.cornerRadius = addButtonRadius;
-    self.closeButton.backgroundColor = [UIColor lightGrayColor];
-    CGFloat closeButtonRadius = CGRectGetHeight(self.closeButton.bounds) / 2;
-    self.closeButton.layer.cornerRadius = closeButtonRadius;
+    self.closeButton.backgroundColor = [UIColor colorWithRed:0.929  green:0.035  blue:0.149 alpha:1];
     
     //Slider UI
     UIImage *thumbImageNormal = [UIImage imageNamed:@"recordNormal"];

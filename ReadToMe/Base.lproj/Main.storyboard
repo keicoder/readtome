@@ -431,6 +431,22 @@
                                             </constraint>
                                         </constraints>
                                     </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uTF-u7-cZ8" userLabel="CloseButton" customClass="PopAnimationClearButton">
+                                        <rect key="frame" x="262" y="268" width="44" height="44"/>
+                                        <animations/>
+                                        <color key="backgroundColor" red="0.29519197660000002" green="0.64225473779999998" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="G4h-c6-9hH"/>
+                                            <constraint firstAttribute="height" constant="44" id="USJ-hQ-4IW"/>
+                                        </constraints>
+                                        <inset key="contentEdgeInsets" minX="10" minY="6" maxX="12" maxY="6"/>
+                                        <state key="normal" image="close">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="listButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zwu-jm-cBU"/>
+                                        </connections>
+                                    </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="88" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="hCE-l8-64e">
                                         <rect key="frame" x="0.0" y="44" width="300" height="536"/>
                                         <animations/>
@@ -517,12 +533,16 @@
                                         </connections>
                                     </tableView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jNs-6D-jHY" userLabel="AddButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="120" y="14" width="60" height="60"/>
+                                        <rect key="frame" x="128" y="10" width="44" height="44"/>
                                         <animations/>
                                         <color key="backgroundColor" red="0.29519197656658169" green="0.64225473782030251" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="60" id="2m3-9i-fP4"/>
-                                            <constraint firstAttribute="height" constant="60" id="tBh-dL-fbc"/>
+                                            <constraint firstAttribute="width" constant="44" id="2m3-9i-fP4">
+                                                <variation key="heightClass=regular-widthClass=regular" constant="60"/>
+                                            </constraint>
+                                            <constraint firstAttribute="height" constant="44" id="tBh-dL-fbc">
+                                                <variation key="heightClass=regular-widthClass=regular" constant="60"/>
+                                            </constraint>
                                         </constraints>
                                         <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" image="plus">
@@ -530,26 +550,6 @@
                                         </state>
                                         <connections>
                                             <action selector="addButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qc4-KV-6Eg"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uTF-u7-cZ8" userLabel="CloseButton" customClass="PopAnimationClearButton">
-                                        <rect key="frame" x="285" y="275" width="30" height="30"/>
-                                        <animations/>
-                                        <color key="backgroundColor" red="0.29519197660000002" green="0.64225473779999998" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="30" id="G4h-c6-9hH">
-                                                <variation key="heightClass=regular-widthClass=regular" constant="30"/>
-                                            </constraint>
-                                            <constraint firstAttribute="height" constant="30" id="USJ-hQ-4IW">
-                                                <variation key="heightClass=regular-widthClass=regular" constant="30"/>
-                                            </constraint>
-                                        </constraints>
-                                        <inset key="contentEdgeInsets" minX="10" minY="6" maxX="12" maxY="6"/>
-                                        <state key="normal" image="close">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="listButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zwu-jm-cBU"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap + button to create a new document." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="agF-mT-rE9" userLabel="BlankCellLabel">
@@ -566,15 +566,10 @@
                                     <constraint firstAttribute="trailing" secondItem="hCE-l8-64e" secondAttribute="trailing" id="37Z-6z-q5T"/>
                                     <constraint firstAttribute="trailing" secondItem="agF-mT-rE9" secondAttribute="trailing" constant="20" id="9bT-LU-32z"/>
                                     <constraint firstItem="agF-mT-rE9" firstAttribute="leading" secondItem="Tdd-2O-eyE" secondAttribute="leading" constant="20" id="ARq-zG-3ZG"/>
-                                    <constraint firstItem="jNs-6D-jHY" firstAttribute="top" secondItem="Tdd-2O-eyE" secondAttribute="top" constant="14" id="FnX-1P-QwN">
-                                        <variation key="heightClass=compact" constant="14"/>
-                                        <variation key="heightClass=regular-widthClass=regular" constant="30"/>
-                                    </constraint>
+                                    <constraint firstItem="jNs-6D-jHY" firstAttribute="top" secondItem="Tdd-2O-eyE" secondAttribute="top" constant="10" id="FnX-1P-QwN"/>
                                     <constraint firstItem="hCE-l8-64e" firstAttribute="leading" secondItem="Tdd-2O-eyE" secondAttribute="leading" id="HyD-Gd-Wlg"/>
                                     <constraint firstAttribute="centerY" secondItem="uTF-u7-cZ8" secondAttribute="centerY" id="Kw9-af-n6N"/>
-                                    <constraint firstAttribute="trailing" secondItem="uTF-u7-cZ8" secondAttribute="trailing" constant="-15" id="Oj8-wW-sjr">
-                                        <variation key="heightClass=regular-widthClass=regular" constant="-15"/>
-                                    </constraint>
+                                    <constraint firstAttribute="trailing" secondItem="uTF-u7-cZ8" secondAttribute="trailing" constant="-6" id="Oj8-wW-sjr"/>
                                     <constraint firstAttribute="centerY" secondItem="agF-mT-rE9" secondAttribute="centerY" id="RK7-CA-XNb"/>
                                     <constraint firstItem="ghh-pj-xbn" firstAttribute="leading" secondItem="Tdd-2O-eyE" secondAttribute="leading" id="TKX-h2-Qq2"/>
                                     <constraint firstAttribute="width" constant="300" id="a2F-jW-kZL"/>
