@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>ReadToMe.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+		<key>ReadToMeKit.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>ReadToMeShareExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>ReadToMeTodayExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>32281F4C1AD8AA7600584E4A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>32281F561AD8AA7600584E4A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>32281F701AD8B0AB00584E4A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>32D6516C1ADA050100B16DCE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C12F07731ABF88FD0039EA89</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C12F078F1ABF88FD0039EA89</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>
