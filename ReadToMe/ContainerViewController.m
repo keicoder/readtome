@@ -420,7 +420,6 @@
 {
     if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    [self pauseSpeaking];
     _floatingViewExpanded = !_floatingViewExpanded;
     
     CGFloat duration = 0.25f;
@@ -460,6 +459,12 @@
         [self checkWhetherSavingDocumentOrNot];
         
     } else {
+        
+        if ([self.synthesizer isSpeaking]) {
+            if (_isTypeSelecting) {
+                [self selectWord];
+            }
+        }
         
         [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.15];
         
@@ -745,8 +750,7 @@
             
             NSLog(@"Document saved > executePerformFetch, tableView reloadData");
             [self executePerformFetch];
-            [self.tableView reloadData];
-            [self showLog];
+            
         } else {
             NSLog(@"Error saving context: %@", error);
         }
@@ -871,6 +875,14 @@
         NSLog (@"executePerformFetch > error occurred");
         NSLog(@"%@, %@", error, error.localizedDescription);
         //abort();
+    } else {
+        
+        //Main Queue
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+        
+        [self showLog];
     }
 }
 
