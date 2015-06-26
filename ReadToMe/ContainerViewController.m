@@ -448,6 +448,12 @@
             self.floatingBackgroundViewWidthConstraint.constant = floatingBackgroundViewWidth;
             
             [self addShadowEffectToTheView:self.floatingView withOpacity:0.4 andRadius:2.0 afterDelay:0.0 andDuration:0.15];
+            
+            //FloatingBackgroundView BackgroundColor
+            CGFloat duration = 0.25f;
+            [UIView animateWithDuration:duration animations:^{
+                self.floatingBackgroundView.backgroundColor = [UIColor colorWithRed:0.9  green:0.9  blue:0.9 alpha:0.3];
+            }completion:^(BOOL finished) { }];
         }];
         
         //Whether to save
@@ -456,6 +462,12 @@
     } else {
         
         [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.15];
+        
+        //FloatingBackgroundView BackgroundColor
+        CGFloat duration = 0.25f;
+        [UIView animateWithDuration:duration animations:^{
+            self.floatingBackgroundView.backgroundColor = [UIColor colorWithRed:0.9  green:0.9  blue:0.9 alpha:0.0];
+        }completion:^(BOOL finished) { }];
         
         self.floatingViewWidthConstraint.constant = 0.0;
         
@@ -1167,17 +1179,28 @@
         
         [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.0];
         
+        //FloatingBackgroundView BackgroundColor
+        CGFloat duration = 0.25f;
+        [UIView animateWithDuration:duration animations:^{
+            self.floatingBackgroundView.backgroundColor = [UIColor colorWithRed:0.9  green:0.9  blue:0.9 alpha:0.0];
+        }completion:^(BOOL finished) { }];
+        
         CGFloat width = [UIScreen mainScreen].bounds.size.height;
         self.floatingViewWidthConstraint.constant = width * 0.7;
         self.floatingBackgroundViewWidthConstraint.constant = width;
         
-        CGFloat duration = 0.25;
         [UIView animateWithDuration:duration animations:^{
             [self.view layoutIfNeeded];
             
         }completion:^(BOOL finished) {
             
             [self addShadowEffectToTheView:self.floatingView withOpacity:0.4 andRadius:2.0 afterDelay:0.0 andDuration:0.15];
+            
+            //FloatingBackgroundView BackgroundColor
+            CGFloat duration = 0.25f;
+            [UIView animateWithDuration:duration animations:^{
+                self.floatingBackgroundView.backgroundColor = [UIColor colorWithRed:0.9  green:0.9  blue:0.9 alpha:0.3];
+            }completion:^(BOOL finished) { }];
         }];
     }
 }
