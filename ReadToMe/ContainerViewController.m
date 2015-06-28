@@ -460,7 +460,7 @@
         
     } else {
         
-        if ([self.synthesizer isSpeaking]) {
+        if ([self.synthesizer isSpeaking] && ![self.synthesizer isPaused]) {
             if (_isTypeSelecting) {
                 [self selectWord];
             }
@@ -977,7 +977,7 @@
     if (_isTypeSelecting == YES) {
         
         if (self.synthesizer.continueSpeaking == YES) {
-            
+        
             [self retrieveSelectedRangeValue];
             [self.textView select:self];
         }
