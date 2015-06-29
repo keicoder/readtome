@@ -424,7 +424,7 @@
     
     _floatingViewExpanded = !_floatingViewExpanded;
     
-    CGFloat duration = 0.25f;
+    CGFloat duration = 0.3f;
     
     if (_floatingViewExpanded) {
         [self.textView resignFirstResponder];
@@ -448,10 +448,10 @@
             CGFloat floatingBackgroundViewWidth = CGRectGetWidth(self.view.bounds);
             self.floatingBackgroundViewWidthConstraint.constant = floatingBackgroundViewWidth;
             
-            [self addShadowEffectToTheView:self.floatingView withOpacity:0.4 andRadius:2.0 afterDelay:0.0 andDuration:0.15];
+            [self addShadowEffectToTheView:self.floatingView withOpacity:0.4 andRadius:2.0 afterDelay:0.0 andDuration:0.1];
             
             //FloatingBackgroundView BackgroundColor
-            CGFloat duration = 0.25f;
+            CGFloat duration = 0.2f;
             [UIView animateWithDuration:duration animations:^{
                 self.floatingBackgroundView.backgroundColor = [UIColor colorWithRed:0.9  green:0.9  blue:0.9 alpha:0.3];
             }completion:^(BOOL finished) { }];
@@ -471,7 +471,7 @@
         [self addShadowEffectToTheView:self.floatingView withOpacity:0.0 andRadius:0.0 afterDelay:0.0 andDuration:0.15];
         
         //FloatingBackgroundView BackgroundColor
-        CGFloat duration = 0.25f;
+        CGFloat duration = 0.3f;
         [UIView animateWithDuration:duration animations:^{
             self.floatingBackgroundView.backgroundColor = [UIColor colorWithRed:0.9  green:0.9  blue:0.9 alpha:0.0];
         }completion:^(BOOL finished) { }];
