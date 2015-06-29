@@ -368,7 +368,7 @@
 {
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryWord];
+    [self.synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     [self.playPauseButton setImage:kPlay forState:UIControlStateNormal];
     
     _paused = YES;
@@ -1706,18 +1706,11 @@
 {
     if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
-    [self stopSpeaking];
-    
     self.currentDocument = (DocumentsForSpeech *)[self.fetchedResultsController objectAtIndexPath:indexPath];
     NSLog (@"didSelectRowAtIndexPath > self.currentDocument: %@\n", self.currentDocument);
     
     self.textView.text = self.currentDocument.document;
     _lastViewedDocument = self.currentDocument.document;
-    
-    //TextView become editable
-    [self setTextViewBecomeEditable:self.textView];
-    //TextView caret position
-    [self performSelector:@selector(setCursorToBeginning:) withObject:self.textView afterDelay:0.01];
     
     self.volumeSlider.value = [self.currentDocument.volume floatValue];
     self.pitchSlider.value = [self.currentDocument.pitch floatValue];
@@ -1735,6 +1728,9 @@
     [self.defaults setFloat:[self.currentDocument.rate floatValue] forKey:kRateValue];
     [self.defaults synchronize];
     
+    if ([self.synthesizer isSpeaking] || [self.synthesizer isPaused]) {
+        [self stopSpeaking];
+    }
 }
 
 
