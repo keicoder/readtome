@@ -1065,7 +1065,9 @@
 
 - (void)didPickedLanguageNotification:(NSNotification *)notification
 {
-    NSLog(@"DidPickedLanguageNotification Recieved");
+    if (debugLog==1) {
+        NSLog(@"DidPickedLanguageNotification Recieved");
+    }
     
     [self stopSpeaking];
     
@@ -1082,7 +1084,9 @@
 
 - (void)didReceivedSelectDocumentsForSpeechNotification:(NSNotification *)notification
 {
-    NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
+    if (debugLog==1) {
+        NSLog(@"DidSelectDocumentsForSpeechNotification Recieved");
+    }
     
     [self stopSpeaking];
     

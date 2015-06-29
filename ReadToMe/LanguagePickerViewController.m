@@ -154,7 +154,9 @@
 
 - (IBAction)returnButtonTapped:(id)sender
 {
-	NSLog(@"self.returnButton Tapped");
+    if (debugLog==1) {
+        NSLog(@"self.returnButton Tapped");
+    }
     //Post a notification when picked
     [[NSNotificationCenter defaultCenter] postNotificationName: @"DidPickedLanguageNotification" object:nil userInfo:nil];
     

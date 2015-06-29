@@ -1101,7 +1101,9 @@
 
 - (void)didPickedLanguageNotification:(NSNotification *)notification
 {
-    NSLog(@"DidPickedLanguageNotification Recieved");
+    if (debugLog==1) {
+        NSLog(@"DidPickedLanguageNotification Recieved");
+    }
     
     [self stopSpeaking];
     
@@ -1788,6 +1790,10 @@
     
     if ([self.synthesizer isSpeaking] || [self.synthesizer isPaused]) {
         [self stopSpeaking];
+    }
+    
+    if (self.textView.isEditable == NO) {
+        [self.textView setEditable:YES];
     }
 }
 
