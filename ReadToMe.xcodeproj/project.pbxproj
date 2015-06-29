@@ -1204,8 +1204,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ReadToMeShareExtension/ReadToMeShareExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1216,7 +1216,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c3254dad-258e-432f-8e19-bd7baeaf51e7";
+				PROVISIONING_PROFILE = "f2082ff0-80f1-4917-9c5e-89dfc4028d9e";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -1225,15 +1225,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ReadToMeShareExtension/ReadToMeShareExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = ReadToMeShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c3254dad-258e-432f-8e19-bd7baeaf51e7";
+				PROVISIONING_PROFILE = "f2082ff0-80f1-4917-9c5e-89dfc4028d9e";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -1269,7 +1269,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "854e0441-7f71-41a8-b367-3ae20fe7759e";
+				PROVISIONING_PROFILE = "c29fdcc9-a213-4b22-8bc3-e85a136a2aea";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1281,8 +1281,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				GCC_PREFIX_HEADER = ReadToMe/KeiPrefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1292,7 +1292,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "20de4494-f30e-4bc7-b10c-a2a90190ce9f";
+				PROVISIONING_PROFILE = "c29fdcc9-a213-4b22-8bc3-e85a136a2aea";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/ReadToMe/BHTKeyboardAnimationBlocks";
 			};
 			name = Distribution;
@@ -1363,15 +1363,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ReadToMeShareExtension/ReadToMeShareExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = ReadToMeShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c3254dad-258e-432f-8e19-bd7baeaf51e7";
+				PROVISIONING_PROFILE = "f2082ff0-80f1-4917-9c5e-89dfc4028d9e";
 				SKIP_INSTALL = YES;
 			};
 			name = Distribution;
@@ -1380,15 +1380,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ReadToMeTodayExtension/ReadToMeTodayExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = ReadToMeTodayExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f878cac9-6efa-41d2-9023-c3a048406ef8";
+				PROVISIONING_PROFILE = "f2d9447d-9266-4f59-908b-5e6032ce73b1";
 				SKIP_INSTALL = YES;
 			};
 			name = Distribution;
@@ -1397,8 +1397,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ReadToMeTodayExtension/ReadToMeTodayExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1409,7 +1409,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f878cac9-6efa-41d2-9023-c3a048406ef8";
+				PROVISIONING_PROFILE = "f2d9447d-9266-4f59-908b-5e6032ce73b1";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -1418,15 +1418,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ReadToMeTodayExtension/ReadToMeTodayExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = ReadToMeTodayExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f878cac9-6efa-41d2-9023-c3a048406ef8";
+				PROVISIONING_PROFILE = "f2d9447d-9266-4f59-908b-5e6032ce73b1";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -1469,7 +1469,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "854e0441-7f71-41a8-b367-3ae20fe7759e";
+				PROVISIONING_PROFILE = "c29fdcc9-a213-4b22-8bc3-e85a136a2aea";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1506,7 +1506,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "854e0441-7f71-41a8-b367-3ae20fe7759e";
+				PROVISIONING_PROFILE = "c29fdcc9-a213-4b22-8bc3-e85a136a2aea";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1518,8 +1518,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				GCC_PREFIX_HEADER = ReadToMe/KeiPrefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1529,7 +1529,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "20de4494-f30e-4bc7-b10c-a2a90190ce9f";
+				PROVISIONING_PROFILE = "c29fdcc9-a213-4b22-8bc3-e85a136a2aea";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/ReadToMe/BHTKeyboardAnimationBlocks";
 			};
 			name = Debug;
@@ -1539,8 +1539,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ReadToMe/ReadToMe.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jaehyun Park (4G33DL5DA4)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jaehyun Park (9DHQ6GLLC9)";
 				GCC_PREFIX_HEADER = ReadToMe/KeiPrefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1550,7 +1550,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "20de4494-f30e-4bc7-b10c-a2a90190ce9f";
+				PROVISIONING_PROFILE = "c29fdcc9-a213-4b22-8bc3-e85a136a2aea";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/ReadToMe/BHTKeyboardAnimationBlocks";
 			};
 			name = Release;
