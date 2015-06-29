@@ -22,9 +22,17 @@
     NSError *error = NULL;
     AVAudioSession *session = [AVAudioSession sharedInstance];
     [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-    if(error) { NSLog(@"Speech in background mode error occurred."); }
+    if(error) {
+        if (debugLog==1) {
+            NSLog(@"Speech in background mode error occurred.");
+        }
+    }
     [session setActive:YES error:&error];
-    if (error) { NSLog(@"Speech in background mode setActive error occurred."); }
+    if (error) {
+        if (debugLog==1) {
+            NSLog(@"Speech in background mode setActive error occurred.");
+        }
+    }
     
 	return YES;
 }

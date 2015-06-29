@@ -50,23 +50,35 @@
     if (!self.defaults) {
         self.defaults = [NSUserDefaults standardUserDefaults];
     }
-	
-    NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
+    
+    if (debugLog==1) {
+        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
+    }
     
     if (self.currentDocument.language == nil) {
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language == nil");
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
+        
+        if (debugLog==1) {
+            NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language == nil");
+            NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
+        }
+        
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
         NSDictionary *currentLanguage = @{ kLanguage:currentLanguageCode };
         [self.defaults registerDefaults:currentLanguage];
         self.currentDocument.language = [self.defaults stringForKey:kLanguage];
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
+        
+        if (debugLog==1) {
+            NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
+            NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
+        }
         
     } else {
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language == not nil");
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
-        NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
+        
+        if (debugLog==1) {
+            NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language == not nil");
+            NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument.language: %@\n", self.currentDocument.language);
+            NSLog (@"LanguagePickerViewController > restoreUserPreferences > self.currentDocument: %@\n", self.currentDocument);
+        }
     }
 }
 

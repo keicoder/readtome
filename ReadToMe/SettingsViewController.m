@@ -70,7 +70,9 @@
 - (void)getTheBackgroundPlayValue
 {
 	_backgroundPlayValue = [self.defaults objectForKey:kBackgroundPlayValue];
-	NSLog (@"_backgroundPlayValue: %@\n", _backgroundPlayValue);
+    if (debugLog==1) {
+        NSLog (@"_backgroundPlayValue: %@\n", _backgroundPlayValue);
+    }
     
 	if ([_backgroundPlayValue isEqualToString:kBackgroundOn]) {
 		
@@ -114,12 +116,18 @@
             
             [self.audioSession setCategory:AVAudioSessionCategoryPlayback error:&error];
             if(error) {
-                NSLog(@"Speech in background mode error occurred.");
+                if (debugLog==1) {
+                    NSLog(@"Speech in background mode error occurred.");
+                }
             }
             [self.audioSession setActive:NO error:&error];
-            NSLog(@"self.audioSession setActive No");
+            if (debugLog==1) {
+                NSLog(@"self.audioSession setActive No");
+            }
             if (error) {
-                NSLog(@"Speech in background mode error occurred.");
+                if (debugLog==1) {
+                    NSLog(@"Speech in background mode error occurred.");
+                }
             }
 			
 		} else {
@@ -131,10 +139,20 @@
 			[self playSound];
             
             [self.audioSession setCategory:AVAudioSessionCategoryPlayback error:&error];
-            if(error) { NSLog(@"Speech in background mode error occurred."); }
+            if(error) {
+                if (debugLog==1) {
+                    NSLog(@"Speech in background mode error occurred.");
+                }
+            }
             [self.audioSession setActive:YES error:&error];
-            NSLog(@"self.audioSession setActive YES");
-            if (error) { NSLog(@"Speech in background mode setActive error occurred."); }
+            if (debugLog==1) {
+                NSLog(@"self.audioSession setActive YES");
+            }
+            if (error) {
+                if (debugLog==1) {
+                    NSLog(@"Speech in background mode setActive error occurred.");
+                }
+            }
 		}
 		
 		self.backgroundPlayValueLabel.text = _backgroundPlayValue;
@@ -204,7 +222,7 @@
 		NSString *messageSubject = @"ReadToMe iOS Feedback";
 		NSString *messageBody = [NSString stringWithFormat:@"ReadToMe iOS Version %@ (Build %@)\n\n\n", versionString, buildNumberString];
 		
-		[mailViewController setToRecipients:@[@"lovejun.soft@gmail.com"]];
+		[mailViewController setToRecipients:@[@"keicoder@gmail.com"]];
 		[mailViewController setSubject:NSLocalizedString(messageSubject, messageSubject)];
 		[mailViewController setMessageBody:NSLocalizedString(messageBody, messageBody) isHTML:NO];
 		

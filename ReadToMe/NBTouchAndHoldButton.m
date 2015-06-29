@@ -29,7 +29,7 @@
 
 #import "NBTouchAndHoldButton.h"
 
-@implementation NBTouchAndHoldButton{
+@implementation NBTouchAndHoldButton {
     NSTimer* holdTimer;
     NSTimeInterval dt;
     NSValue* repeateSelectorAsValue;
@@ -37,7 +37,7 @@
 }
 
 
-- (void)addTarget:(id)target action:(SEL)action forTouchAndHoldControlEventWithTimeInterval:(NSTimeInterval)periodTime{
+- (void)addTarget:(id)target action:(SEL)action forTouchAndHoldControlEventWithTimeInterval:(NSTimeInterval)periodTime {
     dt = periodTime;
     targetOfRepeatSel = target;
     [self addTarget:self action:@selector(sourceTouchUp:)
@@ -64,5 +64,6 @@
         holdTimer = [NSTimer scheduledTimerWithTimeInterval:dt  target:targetOfRepeatSel selector:selector userInfo:nil repeats: YES];
     }
 }
+
     
 @end

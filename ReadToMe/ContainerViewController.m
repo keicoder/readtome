@@ -216,7 +216,9 @@
         [self changeSelectionButtonToColored:NO withSlideAnimation:NO];
     }
     
-    if (debugLog==1) { [self showLog]; }
+    if (debugLog==1) {
+        [self showLog];
+    }
 }
 
 
@@ -511,9 +513,9 @@
     if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (self.pasteBoard.string.length > 0 && ![self.pasteBoard.string isEqualToString:_lastViewedDocument]) {
-        
-        //Arert view showing
-        NSLog(@"addButtonTapped > checkIfThereAreNewClipboardTexts > Found new pasteboard string > Arert view displaying");
+        if (debugLog==1) {
+            NSLog(@"addButtonTapped > checkIfThereAreNewClipboardTexts > Found new pasteboard string > Arert view displaying");
+        }
         
         //Alert cotroller and Alert action
         NSString *title = @"Found clipboard texts.";
@@ -522,19 +524,25 @@
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction *clipboardAction  = [UIAlertAction actionWithTitle:@"Paste Clipboard Texts" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            NSLog(@"New document with clipboard texts");
+            if (debugLog==1) {
+                NSLog(@"New document with clipboard texts");
+            }
             [self createNewDocumentWithTexts:self.pasteBoard.string];
             [self.textView becomeFirstResponder];
         }];
         
         UIAlertAction *addAction  = [UIAlertAction actionWithTitle:@"New Document" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            NSLog(@"New document with blank text");
+            if (debugLog==1) {
+                NSLog(@"New document with blank text");
+            }
             [self createNewDocumentWithTexts:kBlankText];
             [self.textView becomeFirstResponder];
         }];
         
         UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            NSLog(@"Cancel");
+            if (debugLog==1) {
+                NSLog(@"Cancel");
+            }
         }];
         
         [alert addAction:clipboardAction];
@@ -605,7 +613,9 @@
 
 - (void)action:(id)sender
 {
-	NSLog(@"Action > Show UIActivityViewController");
+    if (debugLog==1) {
+        NSLog(@"Action > Show UIActivityViewController");
+    }
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.textView.text] applicationActivities:nil];
     [self presentViewController:activityVC animated:YES completion:nil];
 }
@@ -645,9 +655,10 @@
 - (void)showLanguagePickerView:(id)sender
 {
 	LanguagePickerViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LanguagePickerViewController"];
-    
     controller.currentDocument = self.currentDocument;
-    NSLog (@"showLanguagePickerView > self.currentDocument: %@\n", self.currentDocument);
+    if (debugLog==1) {
+        NSLog (@"showLanguagePickerView > self.currentDocument: %@\n", self.currentDocument);
+    }
 	[self presentViewController:controller animated:YES completion:^{ }];
 }
 
@@ -691,7 +702,9 @@
     UIResponder* responder = self;
     
     while ((responder = [responder nextResponder]) != nil) {
-        NSLog(@"responder = %@", responder);
+        if (debugLog==1) {
+            NSLog(@"responder = %@", responder);
+        }
         
         if([responder respondsToSelector:@selector(openURL:)] == YES) {
             [responder performSelector:@selector(openURL:) withObject:[NSURL URLWithString:@"https://itunes.apple.com/us/app/talk-to-me-world/id985869735?l=ko&ls=1&mt=8"]];
@@ -710,20 +723,28 @@
     if ([self.currentDocument.isNewDocument boolValue] == YES) {
         
         if ([_lastViewedDocument isEqualToString:self.textView.text]) {
-            NSLog(@"It's new document but no texts, so nothing to save");
+            if (debugLog==1) {
+                NSLog(@"It's new document but no texts, so nothing to save");
+            }
             
         } else {
-            NSLog(@"It's new document and have texts, so save document");
+            if (debugLog==1) {
+                NSLog(@"It's new document and have texts, so save document");
+            }
             [self saveSpeechDocumentAndAttributes];
         }
         
     } else {
         
         if ([_lastViewedDocument isEqualToString:self.textView.text]) {
-            NSLog(@"Can't find any changing in document, so nothing updated");
+            if (debugLog==1) {
+                NSLog(@"Can't find any changing in document, so nothing updated");
+            }
             
         } else {
-            NSLog(@"Document updated, so save document");
+            if (debugLog==1) {
+                NSLog(@"Document updated, so save document");
+            }
             [self saveSpeechDocumentAndAttributes];
         }
     }
@@ -747,12 +768,15 @@
     [[DataManager sharedDataManager].managedObjectContext performBlock:^{
         NSError *error = nil;
         if ([[DataManager sharedDataManager].managedObjectContext save:&error]) {
-            
-            NSLog(@"Document saved > executePerformFetch, tableView reloadData");
+            if (debugLog==1) {
+                NSLog(@"Document saved > executePerformFetch, tableView reloadData");
+            }
             [self executePerformFetch];
             
         } else {
-            NSLog(@"Error saving context: %@", error);
+            if (debugLog==1) {
+                NSLog(@"Error saving context: %@", error);
+            }
         }
     }];
 }
@@ -872,8 +896,10 @@
     
     NSError *error = nil;
     if (![[self fetchedResultsController] performFetch:&error]) {
-        NSLog (@"executePerformFetch > error occurred");
-        NSLog(@"%@, %@", error, error.localizedDescription);
+        if (debugLog==1) {
+            NSLog (@"executePerformFetch > error occurred");
+            NSLog(@"%@, %@", error, error.localizedDescription);
+        }
         //abort();
     } else {
         
@@ -881,8 +907,9 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
-        
-        [self showLog];
+        if (debugLog==1) {
+            [self showLog];
+        }
     }
 }
 
@@ -1084,7 +1111,9 @@
     
     [self saveSpeechDocumentAndAttributes];
     
-    NSLog (@"didPickedLanguageNotification > self.currentDocument.language: %@\n", self.currentDocument.language);
+    if (debugLog==1) {
+        NSLog (@"didPickedLanguageNotification > self.currentDocument.language: %@\n", self.currentDocument.language);
+    }
 }
 
 
@@ -1180,8 +1209,7 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    if (debugLog==1) {
-        NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));
         
         CGRect bounds = [UIScreen mainScreen].bounds;
         NSLog(@"(bounds.size.width: %f, bounds.size.height: %f)", bounds.size.width, bounds.size.height);
@@ -1239,14 +1267,18 @@
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (![_lastViewedDocument isEqualToString:self.textView.text]) {
-        if (debugLog==1) { NSLog(@"textViewDidEndEditing > TextView texts are changed, so stop speaking"); }
+        if (debugLog==1) {
+            NSLog(@"textViewDidEndEditing > TextView texts are changed, so stop speaking");
+        }
         [self stopSpeaking];
         self.currentDocument.document = self.textView.text;
         self.pasteBoard.string = self.textView.text;
         [self saveSpeechDocumentAndAttributes];
         
     } else {
-        if (debugLog==1) { NSLog(@"textViewDidEndEditing > Nothing Changed"); }
+        if (debugLog==1) {
+            NSLog(@"textViewDidEndEditing > Nothing Changed");
+        }
     }
 }
 
@@ -1261,8 +1293,9 @@
 
 - (void)applicationDidEnterBackground
 {
-    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    NSLog(@"applicationDidEnterBackground > checkWhetherSavingDocumentOrNot");
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
+        NSLog(@"applicationDidEnterBackground > checkWhetherSavingDocumentOrNot");
+    }
     [self checkWhetherSavingDocumentOrNot];
 }
 
@@ -1282,8 +1315,9 @@
 
 - (void)applicationDidReceiveMemoryWarning
 {
-    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    NSLog(@"applicationDidReceiveMemoryWarning > checkWhetherSavingDocumentOrNot");
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
+        NSLog(@"applicationDidReceiveMemoryWarning > checkWhetherSavingDocumentOrNot");
+    }
     [self checkWhetherSavingDocumentOrNot];
     [self stopSpeaking];
 }
@@ -1291,8 +1325,9 @@
 
 - (void)applicationWillTerminate
 {
-    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
-    NSLog(@"applicationWillTerminate > checkWhetherSavingDocumentOrNot");
+    if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));
+        NSLog(@"applicationWillTerminate > checkWhetherSavingDocumentOrNot");
+    }
     [self checkWhetherSavingDocumentOrNot];
     [self stopSpeaking];
 }
@@ -1306,14 +1341,19 @@
     
     //Today Extension
     self.isTodayDocument = [self.sharedDefaults boolForKey:kIsTodayDocument];
-    kLogBOOL(self.isTodayDocument);
     
     //Share Extension
     self.isSharedDocument = [self.sharedDefaults boolForKey:kIsSharedDocument];
-    kLogBOOL(self.isSharedDocument);
+    
+    if (debugLog==1) {
+        kLogBOOL(self.isTodayDocument);
+        kLogBOOL(self.isSharedDocument);
+    }
     
     if (self.isTodayDocument) {
-        NSLog(@"Found Today Document");
+        if (debugLog==1) {
+            NSLog(@"Found Today Document");
+        }
         
         //add new document
         NSString *document = [self.sharedDefaults objectForKey:kTodayDocument];
@@ -1323,10 +1363,15 @@
         [self.sharedDefaults setBool:NO forKey:kIsTodayDocument];
         [self.sharedDefaults synchronize];
         self.isTodayDocument = NO;
-        kLogBOOL(self.isTodayDocument);
+        
+        if (debugLog==1) {
+            kLogBOOL(self.isTodayDocument);
+        }
         
     } else if (self.isSharedDocument) {
-        NSLog(@"Found Shared Document");
+        if (debugLog==1) {
+            NSLog(@"Found Shared Document");
+        }
         
         //add new document
         NSString *document = [self.sharedDefaults objectForKey:kSharedDocument];
@@ -1336,7 +1381,10 @@
         [self.sharedDefaults setBool:NO forKey:kIsSharedDocument];
         [self.sharedDefaults synchronize];
         self.isSharedDocument = NO;
-        kLogBOOL(self.isSharedDocument);
+        
+        if (debugLog==1) {
+            kLogBOOL(self.isSharedDocument);
+        }
     }
     
     if ([self.textView isFirstResponder]) {
@@ -1413,14 +1461,18 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    NSLog(@"speechSynthesizer didFinishSpeechUtterance, so stopSpeaking");
+    if (debugLog==1) {
+        NSLog(@"speechSynthesizer didFinishSpeechUtterance, so stopSpeaking");
+    }
     [self stopSpeaking];
 }
 
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    NSLog(@"speechSynthesizer didPauseSpeechUtterance, so pauseSpeaking");
+    if (debugLog==1) {
+        NSLog(@"speechSynthesizer didPauseSpeechUtterance, so pauseSpeaking");
+    }
     [self pauseSpeaking];
 }
 
@@ -1540,7 +1592,9 @@
     if (debugLog==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if ([self.defaults boolForKey:kHasLaunchedOnce] == NO) {
-        NSLog(@"First time launching!");
+        if (debugLog==1) {
+            NSLog(@"First time launching!");
+        }
         
         NSString *currentLanguageCode = [AVSpeechSynthesisVoice currentLanguageCode];
         NSDictionary *defaultLanguage = @{ kLanguage:currentLanguageCode };
@@ -1646,7 +1700,9 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog (@"numberOfRowsInSection: %lu\n", (unsigned long)[[self.fetchedResultsController sections][section] numberOfObjects]);
+    if (debugLog==1) {
+        NSLog (@"numberOfRowsInSection: %lu\n", (unsigned long)[[self.fetchedResultsController sections][section] numberOfObjects]);
+    }
     
     if ([[self.fetchedResultsController sections] [section]numberOfObjects] > 0) {
         
@@ -1707,7 +1763,9 @@
     if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     self.currentDocument = (DocumentsForSpeech *)[self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog (@"didSelectRowAtIndexPath > self.currentDocument: %@\n", self.currentDocument);
+    if (debugLog==1) {
+        NSLog (@"didSelectRowAtIndexPath > self.currentDocument: %@\n", self.currentDocument);
+    }
     
     self.textView.text = self.currentDocument.document;
     _lastViewedDocument = self.currentDocument.document;
@@ -1753,12 +1811,15 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSInteger index = [defaults integerForKey:kSelectedDocumentIndex];
         
-        NSLog (@"kSelectedDocumentIndex: %ld\n", (long)index);
-        NSLog (@"indexPath.row: %ld\n", (long)indexPath.row);
+        if (debugLog==1) {
+            NSLog (@"kSelectedDocumentIndex: %ld\n", (long)index);
+            NSLog (@"indexPath.row: %ld\n", (long)indexPath.row);
+        }
         
         if (index == indexPath.row) {
-            
-            NSLog(@"self.currentDocument was deleted");
+            if (debugLog==1) {
+                NSLog(@"self.currentDocument was deleted");
+            }
             self.currentDocument = nil;
             self.textView.text = kBlankText;
             [self stopSpeaking]; //If there's paused speech, stop it.
@@ -1985,7 +2046,9 @@
 
 - (void)dealloc
 {
-    NSLog(@"dealloc %@", self);
+    if (debugLog==1) {
+        NSLog(@"dealloc %@", self);
+    }
 }
 
 
@@ -1993,32 +2056,34 @@
 
 - (void)showLog
 {
-    NSLog(@"\n");
-    NSLog (@"*****Speech Attributes*****");
-    NSLog (@"self.currentDocument.language: %@\n", self.currentDocument.language);
-    NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
-    NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
-    NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
-    
-    NSLog(@"\n");
-    NSLog(@"Slider Attributes");
-    NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
-    NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
-    NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
-    
-    NSLog(@"\n");
-    NSLog(@"Document Attributes");
-    NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
-    NSLog (@"self.currentDocument.isNewDocument: %@\n", self.currentDocument.isNewDocument ? @"YES" : @"NO");
-    NSLog (@"self.currentDocument.createdDate: %@\n", self.currentDocument.createdDate);
-    NSLog (@"self.currentDocument.modifiedDate: %@\n", self.currentDocument.modifiedDate);
-    NSLog (@"self.currentDocument.yearString: %@\n", self.currentDocument.yearString);
-    NSLog (@"self.currentDocument.monthString: %@\n", self.currentDocument.monthString);
-    NSLog (@"self.currentDocument.dateString: %@\n", self.currentDocument.dateString);
-    NSLog (@"self.currentDocument.dayString: %@\n", self.currentDocument.dayString);
-    NSLog (@"self.currentDocument.monthAndYearString: %@\n", self.currentDocument.monthAndYearString);
-    NSLog (@"self.currentDocument.documentTitle: %@\n", self.currentDocument.documentTitle);
-    NSLog (@"self.currentDocument.document: %@\n", self.currentDocument.document);
+    if (debugLog==1) {
+        NSLog(@"\n");
+        NSLog (@"*****Speech Attributes*****");
+        NSLog (@"self.currentDocument.language: %@\n", self.currentDocument.language);
+        NSLog (@"[self.currentDocument.volume floatValue]: %f\n", [self.currentDocument.volume floatValue]);
+        NSLog (@"[self.currentDocument.pitch floatValue]: %f\n", [self.currentDocument.pitch floatValue]);
+        NSLog (@"[self.currentDocument.rate floatValue]: %f\n", [self.currentDocument.rate floatValue]);
+        
+        NSLog(@"\n");
+        NSLog(@"Slider Attributes");
+        NSLog (@"self.volumeSlider.value: %f\n", self.volumeSlider.value);
+        NSLog (@"self.pitchSlider.value: %f\n", self.pitchSlider.value);
+        NSLog (@"self.rateSlider.value: %f\n", self.rateSlider.value);
+        
+        NSLog(@"\n");
+        NSLog(@"Document Attributes");
+        NSLog (@"_isTypeSelecting: %@\n", _isTypeSelecting ? @"YES" : @"NO");
+        NSLog (@"self.currentDocument.isNewDocument: %@\n", self.currentDocument.isNewDocument ? @"YES" : @"NO");
+        NSLog (@"self.currentDocument.createdDate: %@\n", self.currentDocument.createdDate);
+        NSLog (@"self.currentDocument.modifiedDate: %@\n", self.currentDocument.modifiedDate);
+        NSLog (@"self.currentDocument.yearString: %@\n", self.currentDocument.yearString);
+        NSLog (@"self.currentDocument.monthString: %@\n", self.currentDocument.monthString);
+        NSLog (@"self.currentDocument.dateString: %@\n", self.currentDocument.dateString);
+        NSLog (@"self.currentDocument.dayString: %@\n", self.currentDocument.dayString);
+        NSLog (@"self.currentDocument.monthAndYearString: %@\n", self.currentDocument.monthAndYearString);
+        NSLog (@"self.currentDocument.documentTitle: %@\n", self.currentDocument.documentTitle);
+        NSLog (@"self.currentDocument.document: %@\n", self.currentDocument.document);
+    }
 }
 
 

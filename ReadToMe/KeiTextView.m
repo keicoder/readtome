@@ -104,7 +104,9 @@
 
 - (void)dealloc
 {
-    NSLog(@"dealloc %@", self);
+    if (debugLog==1) {
+        NSLog(@"dealloc %@", self);
+    }
 }
 
 
