@@ -424,6 +424,8 @@
     
     _floatingViewExpanded = !_floatingViewExpanded;
     
+    [self.view setNeedsUpdateConstraints];
+    
     CGFloat duration = 0.3f;
     
     if (_floatingViewExpanded) {
@@ -1149,6 +1151,8 @@
     self.progressView.backgroundColor = [UIColor clearColor];
     self.equalizerView.backgroundColor = [UIColor clearColor];
     
+    [self.view setNeedsUpdateConstraints];
+    
     [UIView animateWithDuration:duration delay:0.0 options:curve animations:^{
         self.previousButton.alpha = 1.0;
         self.keyboardDownButton.alpha = 1.0;
@@ -1195,6 +1199,8 @@
     
     self.keyboardAccessoryViewHeightConstraint.constant = 0.0;
     
+    [self.view setNeedsUpdateConstraints];
+    
     [UIView animateWithDuration:duration delay:0.0 options:curve animations:^{
         self.previousButton.alpha = 0.0;
         self.keyboardDownButton.alpha = 0.0;
@@ -1230,6 +1236,8 @@
         CGFloat width = [UIScreen mainScreen].bounds.size.height;
         self.floatingViewWidthConstraint.constant = width * 0.7;
         self.floatingBackgroundViewWidthConstraint.constant = width;
+        
+        [self.view setNeedsUpdateConstraints];
         
         [UIView animateWithDuration:duration animations:^{
             [self.view layoutIfNeeded];
@@ -1490,6 +1498,8 @@
     button.enabled = NO;
     self.saveAlertView.backgroundColor = color;
     
+    [self.view setNeedsUpdateConstraints];
+    
     //Spring animation
     [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
         
@@ -1527,6 +1537,8 @@
     CGFloat duration = 0.25f;
     CGFloat delay = 0.0f;
     
+    [self.view setNeedsUpdateConstraints];
+    
     //Spring animation
     [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
         
@@ -1561,6 +1573,8 @@
 
 - (void)hideSlideViewAndEqualizerViewWithNoAnimation
 {
+    [self.view setNeedsUpdateConstraints];
+    
     [UIView animateWithDuration:0.0 delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
         self.keyboardAccessoryViewHeightConstraint.constant = 0.0;
         [self.view layoutIfNeeded];
@@ -1662,6 +1676,8 @@
 {
     view.translatesAutoresizingMaskIntoConstraints = NO;
     
+    [self.view setNeedsUpdateConstraints];
+    
     NSArray *attributeArray = @[@(NSLayoutAttributeTop), @(NSLayoutAttributeLeft), @(NSLayoutAttributeBottom), @(NSLayoutAttributeRight)];
     
     for (NSNumber *attributeNumber in attributeArray) {
@@ -1681,6 +1697,8 @@
 
 - (IBAction)howToCloseButtonTapped:(id)sender
 {
+    [self.view setNeedsUpdateConstraints];
+    
     CGFloat duration = 0.3f;
     [UIView animateWithDuration:duration animations:^{
         self.pageScrollView.alpha = 0.0;
