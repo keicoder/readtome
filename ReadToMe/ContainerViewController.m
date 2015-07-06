@@ -872,7 +872,10 @@
     if (firstLine.length > 0)
     {
         __block NSString *trimmedTitle = nil;
-        [firstLine enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {trimmedTitle = line; *stop = YES;}];
+        [firstLine enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+            trimmedTitle = line;
+            *stop = YES;
+        }];
     }
     
     return firstLine;

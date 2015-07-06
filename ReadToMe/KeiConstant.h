@@ -13,7 +13,7 @@
 #define kLogBOOL(BOOL) NSLog(@"%s: %@",#BOOL, BOOL ? @"YES" : @"NO" )
 
 //Debug
-#define debugLog 0
+#define debugLog 1
 
 //Global Attributes
 #define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
