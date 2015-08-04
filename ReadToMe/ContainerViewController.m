@@ -1150,7 +1150,7 @@
     self.playPauseButton.alpha = 0.0;
     
     NSDictionary *info = [notification userInfo];
-    CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    CGFloat duration = 0.2; //[[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     //CGFloat curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] floatValue];
     
     CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
