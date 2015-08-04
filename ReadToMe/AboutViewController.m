@@ -20,9 +20,14 @@
 
 @implementation AboutViewController
 {
-	GradientView *_gradientView;
+	GradientView * _gradientView;
 }
 
+//Autolayout: content hugging vs content compression resistance priority
+/*
+ Hugging => content does not want to grow
+ Compression Resistance => content does not want to shrink
+*/
 
 - (void)viewDidLoad
 {

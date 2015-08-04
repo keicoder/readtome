@@ -138,7 +138,6 @@
         _synthesizer = [[AVSpeechSynthesizer alloc] init];
         _synthesizer.delegate = self;
     }
-    
     return _synthesizer;
 }
 
@@ -393,7 +392,7 @@
 - (IBAction)playPauseButtonTapped:(id)sender
 {
     if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight:0.0];
+        [self adjustEqualizerViewHeight:0.0 withSpringEffect:YES];
         [self performSelector:@selector(startPauseContinueStopSpeaking:) withObject:nil afterDelay:0.35];
         
     } else {
@@ -432,7 +431,7 @@
         [self.textView resignFirstResponder];
         
         if (_equalizerViewExpanded == YES) {
-            [self adjustEqualizerViewHeight:0.0];
+            [self adjustEqualizerViewHeight:0.0 withSpringEffect:YES];
         }
         
         CGFloat floatingViewWidth = CGRectGetWidth(self.view.bounds) * 0.7;
@@ -604,7 +603,7 @@
     [self pauseSpeaking];
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight:0.0];
+		[self adjustEqualizerViewHeight:0.0 withSpringEffect:YES];
 		[self performSelector:@selector(action:) withObject:nil afterDelay:0.35];
         
 	} else {
@@ -626,7 +625,7 @@
 - (IBAction)selectionButtonTapped:(id)sender
 {
     if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight:0.0];
+        [self adjustEqualizerViewHeight:0.0 withSpringEffect:YES];
     }
     
     if (_isTypeSelecting == YES) {
@@ -645,7 +644,7 @@
     [self pauseSpeaking];
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight:0.0];
+		[self adjustEqualizerViewHeight:0.0 withSpringEffect:YES];
 		[self performSelector:@selector(showLanguagePickerView:) withObject:nil afterDelay:0.35];
         
 	} else {
@@ -668,10 +667,10 @@
 - (IBAction)equalizerButtonTappped:(id)sender
 {
     if (_equalizerViewExpanded == YES) {
-        [self adjustEqualizerViewHeight:0.0];
+        [self adjustEqualizerViewHeight:0.0 withSpringEffect:YES];
         
     } else {
-        [self adjustEqualizerViewHeight:150.0];
+        [self adjustEqualizerViewHeight:150.0 withSpringEffect:YES];
     }
 }
 
@@ -681,7 +680,7 @@
     [self pauseSpeaking];
 	
 	if (_equalizerViewExpanded == YES) {
-		[self adjustEqualizerViewHeight:0.0];
+		[self adjustEqualizerViewHeight:0.0 withSpringEffect:YES];
 		[self performSelector:@selector(showSettingsView:) withObject:nil afterDelay:0.35];
         
 	} else {
@@ -1090,6 +1089,7 @@
     
     //Keyboard
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:self.view.window];
+    [center addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:self.view.window];
     [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window];
     
     //Application Status
@@ -1128,25 +1128,13 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-    NSDictionary *info = [notification userInfo];
-    CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
-    CGFloat curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] floatValue];
-    
-    CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
-    CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
-    CGFloat progressViewHeight = CGRectGetHeight(self.progressView.frame);
-    
-    self.menuViewHeightConstraint.constant = 0.0;
-    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight - progressViewHeight];
-    
-    if (iPad) {
-        self.keyboardAccessoryViewHeightConstraint.constant = 60.0;
-    } else {
-        self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
-    }
-    
-    //UI alpham, color
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
+}
+
+
+- (void)keyboardDidShow:(NSNotification *)notification
+{
+    //UI alpha, color
     self.progressSlider.alpha = 0.0;
     self.volumeSlider.alpha = 0.0;
     self.pitchSlider.alpha = 0.0;
@@ -1154,16 +1142,37 @@
     self.progressView.backgroundColor = [UIColor clearColor];
     self.equalizerView.backgroundColor = [UIColor clearColor];
     
+    self.previousButton.alpha = 1.0;
+    self.keyboardDownButton.alpha = 1.0;
+    self.selectButton.alpha = 1.0;
+    self.nextButton.alpha = 1.0;
+    self.listButton.alpha = 0.0;
+    self.playPauseButton.alpha = 0.0;
+    
+    NSDictionary *info = [notification userInfo];
+    CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    //CGFloat curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] floatValue];
+    
+    CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
+    CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
+    CGFloat progressViewHeight = CGRectGetHeight(self.progressView.frame);
+    
+    if (iPad) {
+        self.keyboardAccessoryViewHeightConstraint.constant = 60.0;
+    } else {
+        self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
+    }
+    
+    self.menuViewHeightConstraint.constant = 0.0;
+    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight - progressViewHeight withSpringEffect:NO];
+    
     [self.view setNeedsUpdateConstraints];
     
-    [UIView animateWithDuration:duration delay:0.0 options:curve animations:^{
-        self.previousButton.alpha = 1.0;
-        self.keyboardDownButton.alpha = 1.0;
-        self.selectButton.alpha = 1.0;
-        self.nextButton.alpha = 1.0;
-        self.listButton.alpha = 0.0;
-        self.playPauseButton.alpha = 0.0;
+    [UIView animateWithDuration:duration delay:0.0 options:0.0 animations:^{
+        
         [self.view layoutIfNeeded];
+        
     } completion:^(BOOL finished) { }];
 }
 
@@ -1174,7 +1183,7 @@
     CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     CGFloat curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] floatValue];
     
-    [self adjustEqualizerViewHeight:0.0];
+    [self adjustEqualizerViewHeight:0.0 withSpringEffect:NO];
     if (iPad) {
         self.menuViewHeightConstraint.constant = 60.0;
     } else {
@@ -1533,42 +1542,52 @@
 
 #pragma mark - Show equalizer view when user touches equalizer button
 
-- (void)adjustEqualizerViewHeight:(float)height
+- (void)adjustEqualizerViewHeight:(float)height withSpringEffect:(BOOL)spring
 {
     self.equalizerViewHeightConstraint.constant = height;
     
     CGFloat duration = 0.25f;
     CGFloat delay = 0.0f;
     
+    if (self.equalizerViewHeightConstraint.constant == 0) {
+        self.volumeLabel.alpha = 0.0;
+        self.pitchLabel.alpha = 0.0;
+        self.rateLabel.alpha = 0.0;
+        self.volumeSlider.alpha = 0.0;
+        self.pitchSlider.alpha = 0.0;
+        self.rateSlider.alpha = 0.0;
+        
+        _equalizerViewExpanded = NO;
+        
+    } else {
+        self.volumeLabel.alpha = 1.0;
+        self.pitchLabel.alpha = 1.0;
+        self.rateLabel.alpha = 1.0;
+        self.volumeSlider.alpha = 1.0;
+        self.pitchSlider.alpha = 1.0;
+        self.rateSlider.alpha = 1.0;
+        
+        _equalizerViewExpanded = YES;
+    }
+    
     [self.view setNeedsUpdateConstraints];
     
-    //Spring animation
-    [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
-        
-        if (height == 0) {
-            self.volumeLabel.alpha = 0.0;
-            self.pitchLabel.alpha = 0.0;
-            self.rateLabel.alpha = 0.0;
-            self.volumeSlider.alpha = 0.0;
-            self.pitchSlider.alpha = 0.0;
-            self.rateSlider.alpha = 0.0;
+    if (spring == YES) {
+        //Spring animation
+        [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
             
-            _equalizerViewExpanded = NO;
+            [self.view layoutIfNeeded];
             
-        } else {
-            self.volumeLabel.alpha = 1.0;
-            self.pitchLabel.alpha = 1.0;
-            self.rateLabel.alpha = 1.0;
-            self.volumeSlider.alpha = 1.0;
-            self.pitchSlider.alpha = 1.0;
-            self.rateSlider.alpha = 1.0;
+        } completion:^(BOOL finished) { }];
+        
+    } else {
+        //Normal Animation
+        [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
             
-            _equalizerViewExpanded = YES;
-        }
-        
-        [self.view layoutIfNeeded];
-        
-    } completion:^(BOOL finished) { }];
+            [self.view layoutIfNeeded];
+            
+        } completion:^(BOOL finished) { }];
+    }
 }
 
 
