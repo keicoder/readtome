@@ -1425,7 +1425,7 @@
         [self.defaults synchronize];
         
         //Spring animation
-        CGFloat duration = 0.25f;
+        CGFloat duration = 0.35f;
         [UIView animateWithDuration:duration animations:^{
             
             UIImage *image = [UIImage imageForChangingColor:@"selection" color:[UIColor colorWithRed:0.988 green:0.71 blue:0 alpha:1]];
@@ -1503,7 +1503,7 @@
 
 - (void)adjustSlideViewHeightWithTitle:(NSString *)string height:(float)height color:(UIColor *)color withSender:(UIButton *)button
 {
-    CGFloat duration = 0.25f;
+    CGFloat duration = 0.35f;
     CGFloat delay = 0.0f;
     
     self.saveAlertViewHeightConstraint.constant = height;
@@ -1513,7 +1513,7 @@
     [self.view setNeedsUpdateConstraints];
     
     //Spring animation
-    [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:0.6 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
+    [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:0.7 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveLinear animations:^ {
         
         [self.view layoutIfNeeded];
         self.saveAlertLabel.alpha = 1.0;
@@ -1522,11 +1522,11 @@
     } completion:^(BOOL finished) {
         
         //Dispatch After
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.6 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
             
             self.saveAlertViewHeightConstraint.constant = 0.0;
             
-            [UIView animateWithDuration:duration delay:delay options: UIViewAnimationOptionCurveEaseInOut animations:^{
+            [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveLinear animations:^{
                 
                 [self.view layoutIfNeeded];
                 self.saveAlertLabel.alpha = 0.0;

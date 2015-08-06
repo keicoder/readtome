@@ -35,7 +35,7 @@
 
 - (NSManagedObjectModel *)managedObjectModel
 {
-    //if (debug==1) {NSLog(@"Running %@ '%@'", self.class, NSStringFromSelector(_cmd));}
+    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
     
     if (_managedObjectModel != nil)
     {
