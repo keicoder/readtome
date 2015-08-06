@@ -16,11 +16,10 @@
 #define debugLog 0
 
 //iCloud Attributes
-#define ReadToMeCloudStore                      @"ReadToMeCloudStore"
-#define ReadToMeSplite                          @"ReadToMe.sqlite"
-#define ReadToMeTransactionData                 @"ReadToMe_Transaction_Data"
-#define ReadToMeDocumentsSyncronized            @"com.keicoder.documentsSynchronized"
-
+#define kReadToMeCloudStore                     @"ReadToMeCloudStore"
+#define kReadToMeSplite                         @"ReadToMe.sqlite"
+#define kReadToMeTransactionData                @"ReadToMe_Transaction_Data"
+#define kReadToMeDocumentsSyncronized           @"com.keicoder.documentsSynchronized"
 
 //Global Attributes
 #define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
@@ -34,6 +33,9 @@
 #define kVolumeValue                            @"kVolumeValue"
 #define kPitchValue                             @"kPitchValue"
 #define kRateValue                              @"kRateValue"
+
+//Keyboard Attributes
+#define kIntervalForMovingKeyboardCursor        0.1
 
 //ContainerViewController
 #define kSlideViewHeight                        40.0

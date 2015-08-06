@@ -1089,7 +1089,6 @@
     
     //Keyboard
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:self.view.window];
-    [center addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:self.view.window];
     [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window];
     
     //Application Status
@@ -1128,12 +1127,6 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-    if (debugLog==1) {NSLog(@"%@ '%@'", self.class, NSStringFromSelector(_cmd));}
-}
-
-
-- (void)keyboardDidShow:(NSNotification *)notification
-{
     //UI alpha, color
     self.progressSlider.alpha = 0.0;
     self.volumeSlider.alpha = 0.0;
@@ -1149,14 +1142,7 @@
     self.listButton.alpha = 0.0;
     self.playPauseButton.alpha = 0.0;
     
-    NSDictionary *info = [notification userInfo];
-    CGFloat duration = 0.2; //[[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
-    //CGFloat curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] floatValue];
-    
-    CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
-    CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
-    CGFloat progressViewHeight = CGRectGetHeight(self.progressView.frame);
+    self.menuViewHeightConstraint.constant = 0.0;
     
     if (iPad) {
         self.keyboardAccessoryViewHeightConstraint.constant = 60.0;
@@ -1164,16 +1150,28 @@
         self.keyboardAccessoryViewHeightConstraint.constant = 44.0;
     }
     
-    self.menuViewHeightConstraint.constant = 0.0;
-    [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight - progressViewHeight withSpringEffect:NO];
-    
-    [self.view setNeedsUpdateConstraints];
-    
-    [UIView animateWithDuration:duration delay:0.0 options:0.0 animations:^{
+    NSDictionary *info = [notification userInfo];
+    CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    CGFloat curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] floatValue];
+    [UIView animateWithDuration:duration delay:0.0 options:curve animations:^{
         
         [self.view layoutIfNeeded];
         
-    } completion:^(BOOL finished) { }];
+    } completion:^(BOOL finished) {
+        
+        CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        CGFloat keyboardHeight = CGRectGetHeight(keyboardFrame);
+        CGFloat bottomViewHeight = CGRectGetHeight(self.bottomView.frame);
+        CGFloat progressViewHeight = CGRectGetHeight(self.progressView.frame);
+    
+        [self adjustEqualizerViewHeight:keyboardHeight - bottomViewHeight - progressViewHeight withSpringEffect:NO];
+        
+        [UIView animateWithDuration:duration delay:0.2 options:curve animations:^{
+            
+            [self.view layoutIfNeeded];
+            
+        } completion:^(BOOL finished) { }];
+    }];
 }
 
 
@@ -1946,7 +1944,7 @@
 
 - (IBAction)previousButtonTapped:(id)sender
 {
-    self.previousButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previousCharacter:) userInfo:nil repeats:YES];
+    self.previousButtonTimer = [NSTimer scheduledTimerWithTimeInterval:kIntervalForMovingKeyboardCursor target:self selector:@selector(previousCharacter:) userInfo:nil repeats:YES];
     [self.previousButtonTimer fire];
 }
 
@@ -2000,7 +1998,7 @@
 
 - (IBAction)nextButtonTapped:(id)sender
 {
-    self.nextButtonTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(nextCharacter:) userInfo:nil repeats:YES];
+    self.nextButtonTimer = [NSTimer scheduledTimerWithTimeInterval:kIntervalForMovingKeyboardCursor target:self selector:@selector(nextCharacter:) userInfo:nil repeats:YES];
     [self.nextButtonTimer fire];
 }
 
