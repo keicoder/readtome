@@ -15,6 +15,13 @@
 //Debug
 #define debugLog 0
 
+//iCloud Attributes
+#define ReadToMeCloudStore                      @"ReadToMeCloudStore"
+#define ReadToMeSplite                          @"ReadToMe.sqlite"
+#define ReadToMeTransactionData                 @"ReadToMe_Transaction_Data"
+#define ReadToMeDocumentsSyncronized            @"com.keicoder.documentsSynchronized"
+
+
 //Global Attributes
 #define kSharedDefaultsSuiteName                @"group.com.keicoder.demo.readtome"
 #define kIsSharedDocument                       @"kIsSharedDocument"

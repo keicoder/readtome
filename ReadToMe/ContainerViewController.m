@@ -1746,7 +1746,10 @@
         NSLog (@"numberOfRowsInSection: %lu\n", (unsigned long)[[self.fetchedResultsController sections][section] numberOfObjects]);
     }
     
-    if ([[self.fetchedResultsController sections] [section]numberOfObjects] > 0) {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
+    NSUInteger rows = [sectionInfo numberOfObjects];
+    
+    if (rows > 0) {
         
         CGFloat duration = 0.25f;
         [UIView animateWithDuration:duration delay:0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
